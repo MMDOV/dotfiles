@@ -13,7 +13,9 @@ has_session() {
 }
 
 hydrate() {
-    if [ -f $2/.tmux-sessionizer ]; then
+    if [ $2 == "$HOME" ]; then
+        tmux send-keys -t $1 "source $HOME/personal/.tmux-sessionizer" c-M
+    elif [ -f $2/.tmux-sessionizer ]; then
         tmux send-keys -t $1 "source $2/.tmux-sessionizer" c-M
     else
         tmux send-keys -t $1 "source ~/dev/.tmux-sessionizer" c-M
@@ -23,7 +25,16 @@ hydrate() {
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$(find /home/ ~/.config/ ~/dev/personal/ ~/dev/personal/aoc/ ~/dev/pyprojects/ ~/dev/bash/ ~/dev/kotlin-projects/ -mindepth 1 -maxdepth 1 -type d | fzf)
+    dirs=(
+        "$HOME"
+        "~/dev/personal/"
+        "~/dev/personal/aoc/"
+        "~/dev/pyprojects/"
+        "~/dev/bash/"
+        "~/dev/kotlin-projects/"
+        "~/.config/"
+    )
+    selected=$(find "${dirs[@]}" -mindepth 1 -maxdepth 1 -type d | fzf)
 fi
 
 if [[ -z $selected ]]; then
