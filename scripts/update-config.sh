@@ -37,4 +37,6 @@ copyandreplace "$HOME/personal/.config" "$HOME/.config"
 copyandreplace "$HOME/personal/.local/bin" "$HOME/.local/bin"
 copyandreplace "$HOME/personal/dev" "$HOME/dev"
 
+hyprctl reload
+
 git -C "$HOME/personal" push origin main
