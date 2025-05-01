@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+tmux new-window -dn scratch
+
+dir=$(pwd)
+if [[ $(dirname "$dir") != "$HOME/dev/pyprojects" ]]; then
+    vim .
+    exit 0
+fi
+
+if command -v conda &>/dev/null; then
+    eval "$(conda shell.bash hook)"
+else
+    echo "conda not found in PATH." >&2
+    exit 1
+fi
+
+if command -v mamba &>/dev/null; then
+    ACTIVATE="mamba activate"
+    LIST_ENVS="mamba env list"
+else
+    ACTIVATE="conda activate"
+    LIST_ENVS="conda env list"
+fi
+
+activate() {
+    $ACTIVATE "$1"
+    pip install ipykernel
+    python -m ipykernel install --user --name=$1 --display-name="Python ($1)"
+    tmux send-keys -t scratch "$ACTIVATE $1" C-m
+}
+
+if [[ -d "$dir/venv" ]]; then
+    source "$dir/venv/bin/activate"
+    tmux send-keys -t scratch "source $dir/venv/bin/activate" C-m
+
+elif [[ -f "$dir/environment.yml" || -f "$dir/environment.yaml" ]]; then
+    if [[ -f "$dir/environment.yml" ]]; then
+        yaml_file="$dir/environment.yml"
+    elif [[ -f "$dir/environment.yaml" ]]; then
+        yaml_file="$dir/environment.yaml"
+    fi
+
+    env_name=$(grep -E '^name:' "$yaml_file" | head -n1 | awk '{print $2}')
+    if [[ -n "$env_name" ]]; then
+        if $ACTIVATE "$env_name" >/dev/null 2>&1; then
+            activate "$env_name"
+        else
+            prefix_path="$HOME/anaconda3/envs/$env_name"
+            if [[ -d "$prefix_path" ]]; then
+                activate "$prefix_path"
+            else
+                echo "Env '$env_name' not found by name or at $prefix_path"
+            fi
+        fi
+    else
+        echo "Found '$yaml_file' but no 'name:' entry inside."
+    fi
+
+elif [[ -d "$dir/conda-meta" ]]; then
+    activate "$dir"
+else
+    env_name=$(basename "$dir")
+
+    if $LIST_ENVS | awk '{print $1}' | grep -xq "$env_name"; then
+        activate "$env_name"
+    else
+        PREFIX_PATH="$HOME/anaconda3/envs/$env_name"
+        if [[ -d "$PREFIX_PATH" ]]; then
+            activate "$PREFIX_PATH"
+        else
+            $ACTIVATE base
+            tmux send-keys -t scratch "$ACTIVATE base" C-m
+        fi
+    fi
+fi
+
+tmux send-keys -t scratch "clear" C-m
+
+clear
+vim .

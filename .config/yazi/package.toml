@@ -1,0 +1,17 @@
+[[plugin.deps]]
+use = "Ape/mediainfo"
+rev = "c69314e"
+hash = "edbf9c7a6a69c8c09b53f860fd887f5c"
+
+[[plugin.deps]]
+use = "Reledia/miller"
+rev = "40e0265"
+hash = "2d6d77583162aaf0a599e7a3091b5878"
+
+[[plugin.deps]]
+use = "boydaihungst/mediainfo"
+rev = "f565c5a"
+hash = "15d0dbb4e9ba84eb1f2dbb8e9e249bf6"
+
+[flavor]
+deps = []

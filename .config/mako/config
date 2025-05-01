@@ -1,0 +1,7 @@
+background-color=#161A2D
+text-color=#cdd6f4
+border-color=#89b4fa
+border-size=2
+default-timeout=5000
+padding=10
+max-history=50
