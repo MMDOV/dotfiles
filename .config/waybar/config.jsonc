@@ -1,7 +1,7 @@
 // -*- mode: jsonc -*-
 {
-    // "layer": "top", // Waybar at top layer
-    // "position": "bottom", // Waybar position (top|bottom|left|right)
+    "layer": "top", // Waybar at top layer
+    "position": "top", // Waybar position (top|bottom|left|right)
     //"height": 30, // Waybar height (to be removed for auto height)
     // "width": 1280, // Waybar width
     "spacing": 4, // Gaps between modules (4px)
@@ -18,6 +18,7 @@
         "hyprland/workspaces",
         "clock",
     ],
+
     "modules-right": [
         "custom/ping",
         "battery",
@@ -25,22 +26,14 @@
         "hyprland/language",
         "tray",
     ],
+
     // Modules configuration
-"hyprland/workspaces": {
-    "active-only": true,
-    "all-outputs": false,
-    "format": "{name}",
-    "on-click": "activate",
-    "disable-scroll": false,
-    "on-scroll-up": "hyprctl dispatch workspace -1",
-    "on-scroll-down": "hyprctl dispatch workspace +1",
-    "format-icons": {
-        "active": "●",
-        "default": "○"
+    "hyprland/workspaces": {
+        "active-only": true,
+        "format": "{name}",
+        "on-scroll-up": "hyprctl dispatch workspace -1",
+        "on-scroll-down": "hyprctl dispatch workspace +1",
     },
-    "window-rewrite": {},
-    "window-rewrite-default": ""
-},
     "keyboard-state": {
     "numlock": true,
         "capslock": true,
