@@ -47,7 +47,6 @@
         "exec": "~/personal/scripts/ping-status.sh",
         "interval": 1,
         "format": "{}",
-        "on-click": "nm-connection-editor",
         "tooltip": false
     },
     "mpris": {

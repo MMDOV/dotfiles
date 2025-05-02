@@ -48,6 +48,11 @@ button:hover {
 }
 
 /* you can set a style on hover for any module like this */
+#bluetooth:hover {
+    background: inherit;
+    box-shadow: inset 0 -3px #ffffff;
+}
+
 #pulseaudio:hover {
     background: inherit;
     box-shadow: inset 0 -3px #ffffff;
