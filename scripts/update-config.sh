@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
 
 debug=false
-if [ $# -eq 1 ] && [ $1 == "--debug" ]; then
-    debug=true
+configonly=false
+
+if [ $# -ge 1 ]; then
+    if [ $1 == "--debug" ]; then
+        debug=true
+    elif [ $1 == "config" ]; then
+        configonly=true
+        if [ $# -gt 1 ]; then
+            subconf=$2
+        fi
+    fi
 fi
 
 copyandreplace() {
@@ -33,11 +42,16 @@ copyandreplace() {
     done
 }
 
-copyandreplace "$HOME/personal/.config" "$HOME/.config"
-copyandreplace "$HOME/personal/.local/bin" "$HOME/.local/bin"
-copyandreplace "$HOME/personal/dev" "$HOME/dev"
-copyandreplace "$HOME/personal/home" "$HOME"
-
-hyprctl reload
-
-git -C "$HOME/personal" push origin main
+if [ -z "$subconf" ]; then
+    copyandreplace "$HOME/personal/.config" "$HOME/.config"
+    hyprctl reload
+else
+    mkdir -p "$HOME/.config/$subconf"
+    copyandreplace "$HOME/personal/.config/$subconf" "$HOME/.config/$subconf"
+fi
+if ! $configonly; then
+    copyandreplace "$HOME/personal/.local/bin" "$HOME/.local/bin"
+    copyandreplace "$HOME/personal/dev" "$HOME/dev"
+    copyandreplace "$HOME/personal/home" "$HOME"
+    git -C "$HOME/personal" push origin main
+fi

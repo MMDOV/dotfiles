@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 # Make sure paru is installed
-chmod +x $HOME/personal/scripts/paru.sh
-$HOME/personal/scripts/paru.sh
+if ! command -v paru &>/dev/null; then
+    chmod +x $HOME/personal/scripts/paru.sh
+    $HOME/personal/scripts/paru.sh
+fi
 
 # Make sure curl is installed
 sudo pacman -S --noconfirm --needed curl
