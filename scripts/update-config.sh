@@ -36,6 +36,7 @@ copyandreplace() {
 copyandreplace "$HOME/personal/.config" "$HOME/.config"
 copyandreplace "$HOME/personal/.local/bin" "$HOME/.local/bin"
 copyandreplace "$HOME/personal/dev" "$HOME/dev"
+copyandreplace "$HOME/personal/home" "$HOME"
 
 hyprctl reload
 

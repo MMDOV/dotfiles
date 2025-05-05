@@ -7,4 +7,4 @@ sudo pacman -S --noconfirm --needed tmux git bash bc coreutils jq playerctl
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # Copy tmux config
-cp -f $HOME/personal/dev/.tmux.conf $HOME/.tmux.conf
+cp -f $HOME/personal/home/.tmux.conf $HOME/.tmux.conf
