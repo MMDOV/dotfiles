@@ -259,6 +259,14 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+  {
+    'mbbill/undotree',
+    config = function()
+      vim.g.undotree_WindowLayout = 2 -- Change layout
+      vim.g.undotree_SetFocusWhenToggle = 1 -- Auto-focus
+    end,
+  },
+
   { 'glacambre/firenvim', build = ':call firenvim#install(0)' },
   {
     'mfussenegger/nvim-dap',
@@ -1412,6 +1420,9 @@ map('n', '<leader>mr', '<cmd>MoltenReevaluateCell<CR>', { noremap = true, silent
 map('n', '<leader>mn', '<cmd>MoltenNext<CR>', { noremap = true, silent = true })
 
 map('n', '<leader>ts', '<cmd>Speedtyper<CR>', { noremap = true, silent = true })
+
+map('n', '<leader>u', ':UndotreeToggle<CR>', { noremap = true, silent = true })
+
 vim.g.magma_image_provider = 'kitty'
 if vim.g.started_by_firenvim then
   vim.api.nvim_create_autocmd('BufEnter', {
