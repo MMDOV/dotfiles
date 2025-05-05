@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+BASHRC="$HOME/.bashrc"
+
 if [ ! -d "$HOME/.oh-my-bash" ]; then
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
 else

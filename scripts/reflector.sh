@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+scripts=$1
 
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root (e.g. with sudo)"
@@ -9,8 +10,8 @@ fi
 
 pacman -S --noconfirm --needed reflector
 
-install -Dm644 ../system/reflector.conf /etc/xdg/reflector/reflector.conf
+install -Dm644 $scripts/../system/reflector.conf /etc/xdg/reflector/reflector.conf
 
 systemctl enable --now reflector.timer
 
-reflector --config /etc/xdg/reflector/reflector.conf
+systemctl start --now reflector.timer

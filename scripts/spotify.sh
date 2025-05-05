@@ -10,7 +10,7 @@ fi
 sudo pacman -S --noconfirm --needed curl
 
 # install spotify
-paru -S spotify
+paru -S --noconfirm --needed spotify
 
 # check permissions
 sudo chmod a+wr /opt/spotify

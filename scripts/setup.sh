@@ -6,8 +6,8 @@ scripts=$1
 # update pacman settings and mirrorlist
 chmod +x "$scripts/pacman.sh"
 chmod +x "$scripts/reflector.sh"
-sudo $scripts/pacman.sh
-sudo $scripts/reflector.sh
+sudo $scripts/pacman.sh $scripts
+sudo $scripts/reflector.sh $scripts
 
 # Make sure paru is installed
 if ! command -v paru &>/dev/null; then
@@ -37,8 +37,8 @@ chmod +x "$scripts/tmux.sh"
 $scripts/tmux.sh
 
 # setup bash
-chmod +x "$scripts/bash.sh"
-$scripts/bash.sh
+chmod +x "$scripts/bashsetup.sh"
+$scripts/bashsetup.sh
 
 # install apps
 chmod +x "$scripts/install.sh"
@@ -47,10 +47,7 @@ $scripts/install.sh nvim $scripts
 $scripts/install.sh walker $scripts
 $scripts/install.sh waybar $scripts
 $scripts/install.sh yazi $scripts
-$scripts/install.sh mako $scriptscliphist
-
-chmod +x "$scripts/spotify.sh"
-$scripts/spotify.sh
+$scripts/install.sh mako $scripts
 
 # Enable SDDM service
 sudo systemctl enable sddm

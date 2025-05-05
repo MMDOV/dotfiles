@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 scripts=$2
+echo "scripts in install: $scripts"
 
 if ! command -v paru &>/dev/null; then
     chmod +x "$scripts/paru.sh"
