@@ -54,5 +54,4 @@ if ! $configonly; then
     copyandreplace "$HOME/personal/.local/bin" "$HOME/.local/bin"
     copyandreplace "$HOME/personal/dev" "$HOME/dev"
     copyandreplace "$HOME/personal/home" "$HOME"
-    git -C "$HOME/personal" push origin main
 fi

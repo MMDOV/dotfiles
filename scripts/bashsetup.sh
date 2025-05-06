@@ -23,6 +23,7 @@ mkenv() {
 alias dotmamad='~/personal/scripts/update-config.sh'
 alias y='yazi'
 alias yl='yazi .'
+alias commitdot='~/personal/scripts/commitpush.sh "fixes"'
 EOF
 )
 
