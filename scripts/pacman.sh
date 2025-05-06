@@ -14,3 +14,5 @@ sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.ta
 sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 
 install -Dm644 $scripts/../system/pacman.conf /etc/pacman.conf
+
+sudo pacman -Syu
