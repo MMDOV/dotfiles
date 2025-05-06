@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sudo pacman -S --needed base-devel
+sudo pacman -S --noconfirm --needed base-devel
 mkdir $HOME/.cache/paru
 git clone https://aur.archlinux.org/paru.git $HOME/.cache/paru
 CURRENTDIR=$(pwd)
