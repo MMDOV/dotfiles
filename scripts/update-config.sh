@@ -32,9 +32,9 @@ copyandreplace() {
         fi
         if ! $debug; then
             if [ -d "$item" ]; then
-                cp -rfv "$item" "$destpath"
+                cp -rfvp "$item" "$destpath"
             else
-                cp -fv "$item" "$destpath"
+                cp -fvp "$item" "$destpath"
             fi
         else
             echo "copying $item to $destpath"
