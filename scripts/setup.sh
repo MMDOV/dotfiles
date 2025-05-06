@@ -20,7 +20,7 @@ chmod +x "$scripts/drivers.sh"
 $scripts/drivers.sh
 
 # install hyprland and dependencies
-paru -S --noconfirm --needed hyprland sddm grim polkit-gnome polkit hypridle dbus qt5-wayland qt6-wayland slurp xdg-desktop-portal-hyprland wl-clipboard noto-fonts swww fcitx5 easyeffects cliphist fzf unzip brightnessctl
+paru -S --noconfirm --needed hyprland sddm grim polkit-gnome polkit hypridle dbus qt5-wayland qt6-wayland slurp xdg-desktop-portal-hyprland wl-clipboard noto-fonts swww fcitx5 easyeffects cliphist fzf unzip brightnessctl swappy
 
 # update hyprland config
 chmod +x "$scripts/update-config.sh"
