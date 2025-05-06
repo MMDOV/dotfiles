@@ -3,8 +3,9 @@
 # Install tmux and dependencies
 sudo pacman -S --noconfirm --needed tmux git bash bc coreutils jq playerctl
 
-# Install tmux package manager
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-
 # Copy tmux config
 cp -f $HOME/personal/home/.tmux.conf $HOME/.tmux.conf
+cp -rf $HOME/personal/.tmux/ $HOME/.tmux/plugins/
+
+# Install tmux package manager
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
