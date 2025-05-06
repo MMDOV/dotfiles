@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-commitmsg=$1
+if [ $# -eq 1 ]; then
+    commitmsg=$1
+elif [ $# -eq 0 ]; then
+    commitmsg="fixes"
+else
+    echo "invalid format"
+fi
 
 git -C "$HOME/personal" add .
 git -C "$HOME/personal" commit -m "$commitmsg"
