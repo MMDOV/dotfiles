@@ -30,6 +30,7 @@ copyandreplace() {
                 echo "removing $destpath"
             fi
         fi
+        mkdir -p "$(dirname "$destpath")"
         if ! $debug; then
             if [ -d "$item" ]; then
                 cp -rfvp "$item" "$destpath"
