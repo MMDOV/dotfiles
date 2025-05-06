@@ -125,7 +125,7 @@
         "format-muted": " {format_source}",
         "format-source": "{volume}% ",
         "format-source-muted": "",
-        "on-click": "pavucontrol"
+        "on-click": "pwvucontrol"
     },
     "custom/power": {
         "format" : "⏻ ",

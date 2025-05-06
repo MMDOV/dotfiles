@@ -8,4 +8,4 @@ cp -f $HOME/personal/home/.tmux.conf $HOME/.tmux.conf
 cp -rf $HOME/personal/.tmux/ $HOME/.tmux/plugins/
 
 # Install tmux package manager
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+[ -d ~/.tmux/plugins/tpm ] || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm

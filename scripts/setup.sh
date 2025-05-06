@@ -15,13 +15,29 @@ if ! command -v paru &>/dev/null; then
     $scripts/paru.sh
 fi
 
+# setup NetworkManager
+chmod +x "$scripts/networkmanager.sh"
+$scripts/networkmanager.sh
+
+# setup pipewire
+chmod +x "$scripts/pipewire.sh"
+$scripts/pipewire.sh
+
+# setup bluetooth
+chmod +x "$scripts/bluetooth.sh"
+$scripts/bluetooth.sh
+
 # install drivers
 chmod +x "$scripts/drivers.sh"
 $scripts/drivers.sh
 
 # install hyprland and dependencies
-paru -S --noconfirm --needed hyprland sddm grim polkit-gnome polkit hypridle dbus qt5-wayland qt6-wayland slurp xdg-desktop-portal-hyprland uwsm
-paru -S --noconfirm --needed wl-clipboard noto-fonts swww fcitx5 easyeffects cliphist fzf unzip brightnessctl swappy tokyonight-gtk-theme-git fastfetch ttf-fira-code
+paru -S --noconfirm --needed hyprland xdg-desktop-portal-hyprland uwsm qt5-wayland qt6-wayland hyprlock hyprpicker hypridle
+paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
+paru -S --noconfirm --needed playerctl easyeffects brightnessctl
+paru -S --noconfirm --needed fuzzel wlogout sddm
+paru -S --noconfirm --needed noto-fonts ttf-fira-code tokyonight-gtk-theme-git swww
+paru -S --noconfirm --needed polkit polkit-gnome dbus fcitx5 bc unzip fzf fastfetch
 
 # update hyprland config
 chmod +x "$scripts/update-config.sh"
