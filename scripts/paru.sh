@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-sudo pacman -S --noconfirm --needed base-devel
-mkdir $HOME/.cache/paru
-git clone https://aur.archlinux.org/paru.git $HOME/.cache/paru
-CURRENTDIR=$(pwd)
-cd $HOME/.cache/paru
-makepkg -si
-cd "$CURRENTDIR"
+if ! command -v paru &>/dev/null; then
+    sudo pacman -S --noconfirm --needed base-devel
+    mkdir -p $HOME/.parupack
+    git clone https://aur.archlinux.org/paru.git $HOME/.parupack
+    CURRENTDIR=$(pwd)
+    cd $HOME/.parupack
+    makepkg -si
+    cd "$CURRENTDIR"
+fi
