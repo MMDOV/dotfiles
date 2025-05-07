@@ -44,14 +44,14 @@ copyandreplace() {
 }
 
 if [ -z "$subconf" ]; then
-    copyandreplace "$HOME/personal/.config" "$HOME/.config"
+    copyandreplace "$HOME/personal/config" "$HOME/.config"
     hyprctl reload
 else
-    mkdir -p "$HOME/.config/$subconf"
-    copyandreplace "$HOME/personal/.config/$subconf" "$HOME/.config/$subconf"
+    mkdir -p "$HOME/config/$subconf"
+    copyandreplace "$HOME/personal/config/$subconf" "$HOME/.config/$subconf"
 fi
 if ! $configonly; then
-    copyandreplace "$HOME/personal/.local/bin" "$HOME/.local/bin"
+    copyandreplace "$HOME/personal/local/bin" "$HOME/.local/bin"
     copyandreplace "$HOME/personal/dev" "$HOME/dev"
     copyandreplace "$HOME/personal/home" "$HOME"
 fi
