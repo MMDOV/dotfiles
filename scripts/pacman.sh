@@ -2,6 +2,10 @@
 
 set -e
 scripts=$1
+systemupdate=true
+if [ $# -eq 2 ]; then
+    systemupdate=$2
+fi
 
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root (e.g. with sudo)"
@@ -15,4 +19,6 @@ sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg
 
 install -Dm644 $scripts/../system/pacman.conf /etc/pacman.conf
 
-sudo pacman -Syu --noconfirm --needed
+if $systemupdate; then
+    sudo pacman -Syu --noconfirm --needed
+fi
