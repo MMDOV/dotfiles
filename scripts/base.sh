@@ -10,5 +10,3 @@ hwclock --systohc
 locale-gen
 passwd
 bootctl install
-useradd -m mamadv
-passwd mamadv
