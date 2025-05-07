@@ -39,6 +39,10 @@ paru -S --noconfirm --needed fuzzel wlogout sddm
 paru -S --noconfirm --needed noto-fonts ttf-fira-code tokyonight-gtk-theme-git swww
 paru -S --noconfirm --needed polkit polkit-gnome dbus fcitx5 bc unzip fzf fastfetch
 
+# setup sdddm theme
+chmod +x "$scripts/sddm.sh"
+$scripts/sddm.sh $scripts
+
 # update hyprland config
 chmod +x "$scripts/update-config.sh"
 $scripts/update-config.sh config hypr
@@ -66,7 +70,7 @@ $scripts/install.sh waybar $scripts
 $scripts/install.sh yazi $scripts
 $scripts/install.sh mako $scripts
 
-# Enable SDDM service
+#sudo systemctl restart sddm Enable SDDM service
 sudo systemctl enable sddm
 
 # Verify NetworkManager is enabled
