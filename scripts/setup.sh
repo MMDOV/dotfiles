@@ -78,5 +78,5 @@ sudo systemctl enable sddm
 sudo systemctl enable NetworkManager
 
 # setup bash
-chmod +x "$scripts/bashsetup.sh"
-$scripts/bashsetup.sh
+chmod +x "$scripts/zshsetup.sh"
+$scripts/zshsetup.sh
