@@ -3,13 +3,19 @@
 BASHRC="$HOME/.bashrc"
 
 if [ ! -d "$HOME/.oh-my-bash" ]; then
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+    echo "Installing Oh My Bash..."
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)" --unattended
 else
     echo "Oh My Bash already installed, skipping..."
 fi
 
+# Set the theme
 theme="robbyrussell"
-sed -i "s/^OSH_THEME=\".*\"/OSH_THEME=\"$theme\"/" "$HOME/.bashrc"
+if grep -q "^OSH_THEME=" "$BASHRC"; then
+    sed -i "s/^OSH_THEME=\".*\"/OSH_THEME=\"$theme\"/" "$BASHRC"
+else
+    echo "OSH_THEME=\"$theme\"" >>"$BASHRC"
+fi
 
 CUSTOM_CONFIG=$(
     cat <<'EOF'
@@ -35,3 +41,5 @@ fi
 echo "Adding custom configurations to .bashrc..."
 echo "" >>"$BASHRC"
 echo "$CUSTOM_CONFIG" >>"$BASHRC"
+
+echo "Setup complete! Please run 'source ~/.bashrc' to apply changes."

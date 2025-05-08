@@ -59,10 +59,6 @@ $scripts/update-config.sh config xsettingsd
 chmod +x "$scripts/tmux.sh"
 $scripts/tmux.sh
 
-# setup bash
-chmod +x "$scripts/bashsetup.sh"
-$scripts/bashsetup.sh
-
 # install apps
 chmod +x "$scripts/install.sh"
 $scripts/install.sh ghostty $scripts
@@ -80,3 +76,7 @@ sudo systemctl enable sddm
 
 # Verify NetworkManager is enabled
 sudo systemctl enable NetworkManager
+
+# setup bash
+chmod +x "$scripts/bashsetup.sh"
+$scripts/bashsetup.sh
