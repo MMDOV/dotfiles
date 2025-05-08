@@ -6,6 +6,6 @@ sudo systemctl enable NetworkManager.service
 sudo pacman -S --noconfirm --needed modemmanager usb_modeswitch
 sudo systemctl enable ModemManager.service
 
-sudo pacman -S --noconfirm --needed ppp
+sudo pacman -S --noconfirm --needed ppp bind
 
-sudo pacman -S --noconfirm --needed networkmanager-openvpn networkmanager-openconnect
+sudo pacman -S --noconfirm --needed networkmanager-openvpn networkmanager-openconnect openconnect openvpn
