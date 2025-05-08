@@ -39,6 +39,7 @@ paru -S --noconfirm --needed fuzzel wlogout sddm which
 paru -S --noconfirm --needed noto-fonts ttf-fira-code tokyonight-gtk-theme-git swww bicon-git breeze
 paru -S --noconfirm --needed polkit polkit-gnome dbus fcitx5 bc unzip fzf fastfetch
 paru -S --noconfirm --needed zen-browser-bin vesktop-bin thunderbird btop chatterino2-git espeakup gimp libreoffice-still remmina telegram-desktop tldr virt-manager zathura zathura-pdf-mupdf
+paru -S curl wget
 
 # setup sdddm theme
 chmod +x "$scripts/sddm.sh"
