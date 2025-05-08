@@ -32,14 +32,14 @@ chmod +x "$scripts/drivers.sh"
 $scripts/drivers.sh
 
 # install hyprland and dependencies
-paru -S --noconfirm --needed hyprland xdg-desktop-portal-hyprland xdg-utils uwsm qt5-wayland qt6-wayland hyprlock hyprpicker hypridle walker-bin
+paru -S --noconfirm --needed hyprland xdg-desktop-portal-hyprland xdg-utils uwsm qt5-wayland qt6-wayland hyprlock hyprpicker hypridle
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
 paru -S --noconfirm --needed playerctl easyeffects brightnessctl
-paru -S --noconfirm --needed fuzzel wlogout sddm which
+paru -S --noconfirm --needed fuzzel wlogout sddm walker-bin
 paru -S --noconfirm --needed noto-fonts ttf-fira-code tokyonight-gtk-theme-git swww bicon-git breeze
-paru -S --noconfirm --needed polkit polkit-gnome dbus fcitx5 bc unzip fzf fastfetch
-paru -S --noconfirm --needed zen-browser-bin vesktop-bin thunderbird btop chatterino2-git espeakup gimp libreoffice-still remmina telegram-desktop tldr virt-manager zathura zathura-pdf-mupdf
-paru -S --noconfirm --needed curl wget
+paru -S --noconfirm --needed polkit polkit-gnome dbus fcitx5 bc unzip fzf fastfetch curl wget tldr
+paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop vesktop-bin
+paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina virt-manager zathura zathura-pdf-mupdf
 
 # setup sdddm theme
 chmod +x "$scripts/sddm.sh"
@@ -71,12 +71,12 @@ $scripts/install.sh mako $scripts
 chmod +x "$scripts/update-config.sh"
 $scripts/update-config.sh config walker
 
-#sudo systemctl restart sddm Enable SDDM service
+# Enable SDDM service
 sudo systemctl enable sddm
 
 # Verify NetworkManager is enabled
 sudo systemctl enable NetworkManager
 
-# setup bash
+# setup zsh
 chmod +x "$scripts/zshsetup.sh"
 $scripts/zshsetup.sh
