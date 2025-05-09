@@ -19,14 +19,12 @@ CUSTOM_CONFIG=$(
     cat <<'EOF'
 # Custom aliases and functions
 alias vim='nvim'
-alias update='sudo pacman -Syu'
+alias update='paru -Syu --noconfirm'
 alias btc='~/personal/scripts/pair_connect.sh 9C:19:C2:1B:CD:0D'
 mkenv() {
 	~/personal/scripts/mkdir.sh "$@"
 }
 alias dotmamad='~/personal/scripts/update-config.sh'
-alias y='yazi'
-alias yl='yazi .'
 alias pdot='~/personal/scripts/commitpush.sh "fixes"'
 EOF
 )
