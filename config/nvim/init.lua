@@ -427,6 +427,7 @@ require("lazy").setup({
 	},
 
 	-- LSP Plugins
+	{ "simrat39/rust-tools.nvim" },
 	{
 		-- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
 		-- used for completion, annotations and signatures of Neovim apis
@@ -830,6 +831,8 @@ require("lazy").setup({
 		-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
 		opts = {
 			ensure_installed = {
+				"rust",
+				"toml",
 				"python",
 				"bash",
 				"c",

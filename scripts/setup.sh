@@ -9,6 +9,10 @@ chmod +x "$scripts/reflector.sh"
 sudo $scripts/pacman.sh $scripts
 sudo $scripts/reflector.sh $scripts
 
+# Make sure rust is installed
+chmod +x "$scripts/rustup.sh"
+$scripts/rustup.sh
+
 # Make sure paru is installed
 if ! command -v paru &>/dev/null; then
     chmod +x "$scripts/paru.sh"

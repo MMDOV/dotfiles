@@ -31,7 +31,7 @@ else
         "$HOME/dev/personal"
         "$HOME/dev/personal/aoc"
         "$HOME/dev/pyprojects"
-        "$HOME/dev/bash"
+        "$HOME/dev/rustprojects/"
         "$HOME/dev/kotlin-projects"
     )
     selected=$(find "${dirs[@]}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | fzf)

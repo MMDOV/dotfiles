@@ -25,7 +25,9 @@ mkenv() {
 	~/personal/scripts/mkdir.sh "$@"
 }
 alias dotmamad='~/personal/scripts/update-config.sh'
-alias pdot='~/personal/scripts/commitpush.sh "fixes"'
+pdot() {
+    ~/personal/scripts/commitpush.sh "$@"
+}
 EOF
 )
 
