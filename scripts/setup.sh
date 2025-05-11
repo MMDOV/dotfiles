@@ -60,8 +60,7 @@ print_msg "installing hyprland and dependencies"
 paru -S --noconfirm --needed hyprland xdg-desktop-portal-hyprland xdg-utils uwsm qt5-wayland qt6-wayland hyprlock hyprpicker hypridle || print_error "Failed to install hyprland"
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist || print_error "Failed"
 paru -S --noconfirm --needed playerctl easyeffects brightnessctl || print_error "Failed"
-paru -S --noconfirm --needed fuzzel wlogout sddm walker-bin || print_error "Failed"
-paru -S --noconfirm --needed noto-fonts ttf-fira-code swww bicon-git breeze || print_error "Failed"
+paru -S --noconfirm --needed wlogout sddm noto-fonts ttf-fira-code swww bicon-git breeze || print_error "Failed"
 paru -S --noconfirm --needed polkit polkit-gnome dbus fcitx5 bc unzip fzf fastfetch curl wget tldr || print_error "Failed"
 paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop vesktop-bin torguard || print_error "Failed"
 paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina virt-manager zathura zathura-pdf-mupdf || print_error "Failed"
@@ -94,10 +93,7 @@ $scripts/install.sh nvim $scripts
 $scripts/install.sh waybar $scripts
 $scripts/install.sh yazi $scripts
 $scripts/install.sh mako $scripts
-
-# setup walker config
-chmod +x "$scripts/update-config.sh"
-$scripts/update-config.sh config walker
+$scripts/install.sh fuzzel $scripts
 
 # Enable SDDM service
 sudo systemctl enable sddm
