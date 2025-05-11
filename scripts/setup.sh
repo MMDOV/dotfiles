@@ -65,6 +65,7 @@ paru -S --noconfirm --needed noto-fonts ttf-fira-code swww bicon-git breeze || p
 paru -S --noconfirm --needed polkit polkit-gnome dbus fcitx5 bc unzip fzf fastfetch curl wget tldr || print_error "Failed"
 paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop vesktop-bin torguard || print_error "Failed"
 paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina virt-manager zathura zathura-pdf-mupdf || print_error "Failed"
+paru -S --noconfirm --needed go python npm
 
 # setup theme
 print_msg "Setting up gtk/qt theme"
