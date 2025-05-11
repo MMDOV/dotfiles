@@ -18,5 +18,15 @@ use = "pirafrank/what-size"
 rev = "f1c6b69"
 hash = "6e789212eb41d937bab04877ca361099"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:mount"
+rev = "55bf699"
+hash = "dd97eede8e20e59cd2604e8006e470e2"
+
+[[plugin.deps]]
+use = "dedukun/bookmarks"
+rev = "fbb7c00"
+hash = "1d231a808d3344546380df33daf43e91"
+
 [flavor]
 deps = []
