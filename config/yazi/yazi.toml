@@ -105,10 +105,10 @@ fetchers = [
 
 preloaders = [
 	# Image
-	{ mime = "image/{avif,hei?,jxl,svg+xml}", run = "magick" },
-	{ mime = "image/*", run = "image" },
+	{ mime = "image/{avif,hei?,jxl,svg+xml}", run = "mediainfo" },
+	{ mime = "image/*", run = "mediainfo" },
 	# Video
-	{ mime = "video/*", run = "video" },
+	{ mime = "video/*", run = "mediainfo" },
 	# PDF
 	{ mime = "application/pdf", run = "pdf" },
 	# Font
@@ -123,10 +123,10 @@ previewers = [
 	# JSON
 	{ mime = "application/{json,x-ndjson}", run = "json" },
 	# Image
-	{ mime = "image/{avif,hei?,jxl,svg+xml}", run = "magick" },
-	{ mime = "image/*", run = "image" },
+	{ mime = "image/{avif,hei?,jxl,svg+xml}", run = "mediainfo" },
+	{ mime = "image/*", run = "mediainfo" },
 	# Video
-	{ mime = "video/*", run = "video" },
+	{ mime = "video/*", run = "mediainfo" },
 	# PDF
 	{ mime = "application/pdf", run = "pdf" },
 	# Archive
