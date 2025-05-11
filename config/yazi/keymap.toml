@@ -5,6 +5,7 @@
 [manager]
 
 keymap = [
+	{ on   = [ ".", "s" ], run  = "plugin what-size", desc = "Calc size of selection or cwd" },
 	{ on = "<Esc>", run = "escape",             desc = "Exit visual mode, clear selected, or cancel search" },
 	{ on = "<C-[>", run = "escape",             desc = "Exit visual mode, clear selected, or cancel search" },
 	{ on = "q",     run = "quit",               desc = "Exit the process" },
