@@ -42,7 +42,7 @@ paru -S --noconfirm --needed playerctl easyeffects brightnessctl
 paru -S --noconfirm --needed fuzzel wlogout sddm walker-bin
 paru -S --noconfirm --needed noto-fonts ttf-fira-code tokyonight-gtk-theme-git swww bicon-git breeze
 paru -S --noconfirm --needed polkit polkit-gnome dbus fcitx5 bc unzip fzf fastfetch curl wget tldr
-paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop vesktop-bin
+paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop vesktop-bin torguard
 paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina virt-manager zathura zathura-pdf-mupdf
 
 # setup sdddm theme
