@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Intel UHD Graphics 620 (integrated) - handled by mesa
-sudo pacman -S --noconfirm --needed mesa libva-mesa-driver mesa-vdpau
+sudo pacman -S --noconfirm --needed mesa libva-mesa-driver mesa-vdpau libva-intel-driver mesa-demos
 
 # NVIDIA GeForce GTX 1050 Mobile (discrete)
 sudo pacman -S --noconfirm --needed nvidia nvidia-utils libva-nvidia-driver nvidia-prime

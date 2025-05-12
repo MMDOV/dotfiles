@@ -64,7 +64,7 @@ paru -S --noconfirm --needed wlogout sddm noto-fonts ttf-fira-code bicon-git bre
 paru -S --noconfirm --needed polkit polkit-gnome dbus fcitx5 bc unzip fzf fastfetch curl wget tldr
 paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop vesktop-bin torguard
 paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina virt-manager zathura zathura-pdf-mupdf
-paru -S --noconfirm --needed go python pyenv npm luarocks
+paru -S --noconfirm --needed go python python-pip pyenv npm luarocks ripgrep lua51
 
 # setup theme
 print_msg "Setting up theme"
