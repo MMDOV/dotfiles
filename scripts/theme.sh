@@ -35,8 +35,16 @@ if ! qt5ct &>/dev/null; then
 fi
 
 print_msg "Setting up configuration directories..."
-mkdir -p ~/.config/{gtk-2.0,gtk-3.0,gtk-4.0,qt5ct,qt6ct}
-mkdir -p ~/.local/share/{themes,icons,fonts}
+mkdir -p $HOME/.config/{gtk-2.0,gtk-3.0,gtk-4.0,qt5ct,qt6ct}
+mkdir -p $HOME/.local/share/{themes,icons,fonts}
+mkdir -p $HOME/wallpaper/
+
+WALLPAPER_PATH="$HOME/wallpaper/Kath.png"
+if [ ! -f $WALLPAPER_PATH ]; then
+    print_msg "Downloading wallpaper..."
+    WALLPAPER_URL="https://hyprland.org/imgs/blog/contestWinners/Kath.png"
+    sudo wget "${WALLPAPER_URL}" -O "${WALLPAPER_PATH}"
+fi
 
 print_msg "Configuring GTK2..."
 cat >~/.gtkrc-2.0 <<EOF

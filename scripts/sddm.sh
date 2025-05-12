@@ -16,8 +16,10 @@ paru -S --noconfirm --needed sddm-sugar-candy-git
 
 sudo mkdir -p "${THEME_DIR}/Backgrounds"
 
-echo "Downloading wallpaper..."
-sudo wget "${WALLPAPER_URL}" -O "${WALLPAPER_PATH}"
+if [ ! -f $WALLPAPER_PATH ]; then
+    echo "Downloading wallpaper..."
+    sudo wget "${WALLPAPER_URL}" -O "${WALLPAPER_PATH}"
+fi
 
 echo "Writing Sugar Candy theme.conf..."
 sudo cp -rf $scripts/../sddm/sugar-candy/theme.conf $THEME_CONF
