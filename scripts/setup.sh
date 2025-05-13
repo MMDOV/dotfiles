@@ -23,10 +23,6 @@ chmod +x "$scripts/reflector.sh"
 sudo $scripts/pacman.sh $scripts
 sudo $scripts/reflector.sh $scripts
 
-# Make sure rust is installed
-print_msg "Making sure rust is installed"
-chmod +x "$scripts/rustup.sh"
-$scripts/rustup.sh
 
 # Make sure paru is installed
 if ! command -v paru &>/dev/null; then
@@ -34,6 +30,13 @@ if ! command -v paru &>/dev/null; then
     chmod +x "$scripts/paru.sh"
     $scripts/paru.sh
 fi
+
+# Install rust
+print_msg "removing the pacman version if it exists"
+sudo pacman -Rns rust
+print_msg "Installing rust with rustup"
+chmod +x "$scripts/rustup.sh"
+$scripts/rustup.sh
 
 # setup NetworkManager
 print_msg "Setting up NetworkManager"
