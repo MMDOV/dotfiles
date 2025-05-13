@@ -24,7 +24,7 @@ else
 fi
 
 activate() {
-    $ACTIVATE "$1"
+    eval "$ACTIVATE \"$1\""
     pip install ipykernel
     python -m ipykernel install --user --name=$1 --display-name="Python ($1)"
     tmux send-keys -t scratch "$ACTIVATE $1" C-m
@@ -43,7 +43,7 @@ elif [[ -f "$dir/environment.yml" || -f "$dir/environment.yaml" ]]; then
 
     env_name=$(grep -E '^name:' "$yaml_file" | head -n1 | awk '{print $2}')
     if [[ -n "$env_name" ]]; then
-        if $ACTIVATE "$env_name" >/dev/null 2>&1; then
+        if eval "$ACTIVATE \"$env_name\"" >/dev/null 2>&1; then
             activate "$env_name"
         else
             prefix_path="$HOME/anaconda3/envs/$env_name"
@@ -62,14 +62,14 @@ elif [[ -d "$dir/conda-meta" ]]; then
 else
     env_name=$(basename "$dir")
 
-    if $LIST_ENVS | awk '{print $1}' | grep -xq "$env_name"; then
-        activate "$env_name"
+    if eval "$LIST_ENVS" | awk '{print $1}' | grep -xq "$env_name"; then
+        eval "$ACTIVATE $env_name"
     else
         PREFIX_PATH="$HOME/anaconda3/envs/$env_name"
         if [[ -d "$PREFIX_PATH" ]]; then
-            activate "$PREFIX_PATH"
+            eval "$ACTIVATE $PREFIX_PATH"
         else
-            $ACTIVATE base
+            eval "$ACTIVATE base"
             tmux send-keys -t scratch "$ACTIVATE base" C-m
         fi
     fi
