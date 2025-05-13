@@ -24,7 +24,7 @@ alias btc='~/personal/scripts/pair_connect.sh 9C:19:C2:1B:CD:0D'
 mkenv() {
 	~/personal/scripts/mkenv.sh "$@"
 }
-alias dotmamad='~/personal/scripts/update-config.sh'
+alias dotmmd='~/personal/scripts/update-config.sh'
 pdot() {
     ~/personal/scripts/commitpush.sh "$@"
 }
