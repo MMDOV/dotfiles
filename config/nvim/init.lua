@@ -241,6 +241,7 @@ require("lazy").setup({
 		opts_extend = { "sources.default" },
 	},
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
+	"ThePrimeagen/vim-be-good",
 	"brenoprata10/nvim-highlight-colors",
 	{
 		"lewis6991/gitsigns.nvim",
