@@ -63,7 +63,7 @@ print_msg "installing hyprland and dependencies"
 paru -S --noconfirm --needed hyprland xdg-desktop-portal-hyprland xdg-utils uwsm qt5-wayland qt6-wayland hyprlock hyprpicker hypridle hyprpaper || print_error "Failed to install hyprland"
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
 paru -S --noconfirm --needed playerctl easyeffects brightnessctl
-paru -S --noconfirm --needed wlogout sddm noto-fonts ttf-fira-code bicon-git breeze
+paru -S --noconfirm --needed wlogout sddm noto-fonts ttf-fira-code bicon-git breeze ttf-material-symbols-variable-git
 paru -S --noconfirm --needed polkit polkit-gnome dbus fcitx5 bc unzip fzf fastfetch curl wget tldr
 paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop vesktop-bin torguard
 paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina virt-manager zathura zathura-pdf-mupdf
