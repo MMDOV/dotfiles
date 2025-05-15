@@ -2,7 +2,6 @@
 
 tmux new-window -dn dev
 tmux send-keys -t dev "cd $HOME/dev/ && clear" C-m
-tmux new-window -dn ping "ping 8.8.8.8"
 tmux new-window -dn yazi "yazi"
 clear
 fastfetch
