@@ -4,80 +4,80 @@ vim.g.maplocalleader = " "
 
 vim.g.have_nerd_font = true
 
-vim.opt.number = true
-vim.opt.mouse = "a"
+vim.o.number = true
+vim.o.mouse = "a"
 
-vim.opt.showmode = false
+vim.o.showmode = false
 
-vim.opt.relativenumber = true
+vim.o.relativenumber = true
 
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
+vim.o.tabstop = 4
+vim.o.softtabstop = 4
+vim.o.shiftwidth = 4
+vim.o.expandtab = true
 
-vim.opt.smartindent = true
+vim.o.smartindent = true
 
-vim.opt.wrap = false
+vim.o.wrap = false
 
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
-vim.opt.undofile = true
+vim.o.swapfile = false
+vim.o.backup = false
+vim.o.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.o.undofile = true
 
-vim.opt.hlsearch = false
-vim.opt.incsearch = true
+vim.o.hlsearch = false
+vim.o.incsearch = true
 
-vim.opt.termguicolors = true
+vim.o.termguicolors = true
 
-vim.opt.scrolloff = 8
-vim.opt.signcolumn = "yes"
+vim.o.scrolloff = 8
+vim.o.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
-vim.opt.updatetime = 50
+vim.o.updatetime = 50
 
-vim.opt.colorcolumn = "80"
+vim.o.colorcolumn = "80"
 
 vim.schedule(function()
-	vim.opt.clipboard = "unnamedplus"
+	vim.o.clipboard = "unnamedplus"
 end)
 
 -- Enable break indent
-vim.opt.breakindent = true
+vim.o.breakindent = true
 
 -- Save undo history
-vim.opt.undofile = true
+vim.o.undofile = true
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
 
 -- Keep signcolumn on by default
-vim.opt.signcolumn = "yes"
+vim.o.signcolumn = "yes"
 
 -- Decrease update time
-vim.opt.updatetime = 250
+vim.o.updatetime = 250
 
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
-vim.opt.timeoutlen = 300
+vim.o.timeoutlen = 300
 
 -- Configure how new splits should be opened
-vim.opt.splitright = true
-vim.opt.splitbelow = true
+vim.o.splitright = true
+vim.o.splitbelow = true
 
 -- Sets how neovim will display certain whitespace characters in the editor.
-vim.opt.list = true
+vim.o.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
 -- Preview substitutions live, as you type!
-vim.opt.inccommand = "split"
+vim.o.inccommand = "split"
 
 -- Show which line your cursor is on
-vim.opt.cursorline = true
+vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
+vim.o.scrolloff = 10
 
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
@@ -203,6 +203,12 @@ vim.opt.rtp:prepend(lazypath)
 -- [[ Configure and install plugins ]] To check the current status of your plugins, run :Lazy You can press `?` in this menu for help. Use `:q` to close the window To update plugins you can run :Lazy update
 require("lazy").setup({
 	{
+		"rcarriga/nvim-notify",
+		config = function()
+			require("notify").setup({ timeout = 2000 })
+		end,
+	},
+	{
 		"mbbill/undotree",
 		config = function()
 			vim.g.undotree_WindowLayout = 2
@@ -263,6 +269,10 @@ require("lazy").setup({
 	{
 		"m4xshen/hardtime.nvim",
 		dependencies = { "MunifTanjim/nui.nvim" },
+		opts = {},
+	},
+	{
+		"tris203/precognition.nvim",
 		opts = {},
 	},
 	{
@@ -854,12 +864,6 @@ require("lazy").setup({
 			},
 		},
 	},
-	{
-		"rcarriga/nvim-notify",
-		config = function()
-			require("notify").setup({ timeout = 2000 })
-		end,
-	},
 
 	-- 4. Aerial for code outline
 	{
@@ -1010,7 +1014,7 @@ require("lazy").setup({
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 require("lspconfig").ruff.setup({})
-vim.opt.termguicolors = true
+vim.o.termguicolors = true
 require("nvim-highlight-colors").setup({})
 require("jupynium").setup({
 	use_default_keybindings = false, -- disable all default keymaps
