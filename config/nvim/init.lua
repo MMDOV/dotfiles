@@ -272,10 +272,6 @@ require("lazy").setup({
 		opts = {},
 	},
 	{
-		"tris203/precognition.nvim",
-		opts = {},
-	},
-	{
 		"kiyoon/jupynium.nvim",
 		build = "pip install jupyter",
 		config = function()

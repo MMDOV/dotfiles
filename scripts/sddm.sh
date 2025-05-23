@@ -5,6 +5,8 @@ set -e
 
 scripts=$1
 
+sudo pacman -S sddm --noconfirm --needed
+
 # Variables
 THEME_DIR="/usr/share/sddm/themes/sugar-candy"
 THEME_CONF="${THEME_DIR}/theme.conf"

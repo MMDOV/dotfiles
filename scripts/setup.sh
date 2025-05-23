@@ -58,46 +58,32 @@ print_msg "Installing drivers"
 chmod +x "$scripts/drivers.sh"
 $scripts/drivers.sh
 
-# install hyprland and dependencies
-print_msg "installing hyprland and dependencies"
-paru -S --noconfirm --needed hyprland xdg-desktop-portal-hyprland xdg-utils uwsm qt5-wayland qt6-wayland hyprlock hyprpicker hypridle hyprpaper || print_error "Failed to install hyprland"
-paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
-paru -S --noconfirm --needed playerctl easyeffects brightnessctl
-paru -S --noconfirm --needed wlogout sddm noto-fonts ttf-fira-code bicon-git breeze ttf-material-symbols-variable-git
-paru -S --noconfirm --needed polkit polkit-gnome dbus bc unzip fzf fastfetch curl wget tldr
-paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop discord torguard
-paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina virt-manager zathura zathura-pdf-mupdf
-paru -S --noconfirm --needed go python python-pip pyenv npm luarocks ripgrep lua51 mpv
+# setup hyprland 
+print_msg "Setting up hyprland"
+chmod +x "$scripts/hyprland.sh"
+$scripts/hyprland.sh $scripts 
 
-# setup theme
-print_msg "Setting up theme"
-chmod +x "$scripts/theme.sh"
-$scripts/theme.sh
-
-# setup sddm theme
+# setup sddm
 print_msg "Setting up sddm"
 chmod +x "$scripts/sddm.sh"
 $scripts/sddm.sh $scripts
 
-# update hyprland config
-print_msg "Setting up hyprland config"
-chmod +x "$scripts/update-config.sh"
-$scripts/update-config.sh config hypr
+# setup nvim
+print_msg "Setting up nvim"
+chmod +x "$scripts/nvim.sh"
+$scripts/nvim.sh
 
 # setup tmux
 print_msg "Setting up tmux"
 chmod +x "$scripts/tmux.sh"
 $scripts/tmux.sh
 
-# install apps
+# install extra apps
 chmod +x "$scripts/install.sh"
-$scripts/install.sh ghostty $scripts
-$scripts/install.sh nvim $scripts
-$scripts/install.sh waybar $scripts
 $scripts/install.sh yazi $scripts
-$scripts/install.sh mako $scripts
-$scripts/install.sh fuzzel $scripts
-$scripts/install.sh fcitx5 $scripts
+
+paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop discord torguard
+paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina virt-manager zathura zathura-pdf-mupdf mpv
 
 # Enable SDDM service
 sudo systemctl enable sddm
