@@ -21,6 +21,7 @@ CUSTOM_CONFIG=$(
 alias vim='nvim'
 alias update='paru -Syu --noconfirm'
 alias btc='~/personal/scripts/pair_connect.sh 9C:19:C2:1B:CD:0D'
+alias claer='clear'
 mkenv() {
 	~/personal/scripts/mkenv.sh "$@"
 }
