@@ -22,6 +22,7 @@ alias vim='nvim'
 alias update='paru -Syu --noconfirm'
 alias btc='~/personal/scripts/pair_connect.sh 9C:19:C2:1B:CD:0D'
 alias claer='clear'
+
 mkenv() {
 	~/personal/scripts/mkenv.sh "$@"
 }
@@ -29,6 +30,8 @@ alias dotmmd='~/personal/scripts/update-config.sh'
 pdot() {
     ~/personal/scripts/commitpush.sh "$@"
 }
+
+bindkey -v
 EOF
 )
 
