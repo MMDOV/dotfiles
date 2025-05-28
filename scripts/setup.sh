@@ -82,7 +82,7 @@ $scripts/tmux.sh
 chmod +x "$scripts/install.sh"
 $scripts/install.sh yazi $scripts
 
-paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop discord torguard
+paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop discord torguard aria2
 paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina virt-manager zathura zathura-pdf-mupdf mpv
 
 # Enable SDDM service
