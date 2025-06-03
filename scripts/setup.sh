@@ -78,10 +78,12 @@ print_msg "Setting up tmux"
 chmod +x "$scripts/tmux.sh"
 $scripts/tmux.sh
 
-# install extra apps
-chmod +x "$scripts/install.sh"
-$scripts/install.sh yazi $scripts
+# install yazi
+print_msg "Installing yazi"
+chmod +x "$scripts/yazi.sh"
+$scripts/yazi.sh
 
+# install extra apps
 paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop discord torguard aria2
 paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina virt-manager zathura zathura-pdf-mupdf mpv
 
