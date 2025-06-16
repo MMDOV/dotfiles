@@ -132,6 +132,7 @@
         "format": "{volume}% {icon}",
         "format-muted": "",
         "on-click": "pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
         "max-volume": 150,
         "format-icons": ["", "", ""]
     },
