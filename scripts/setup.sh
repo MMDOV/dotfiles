@@ -88,7 +88,7 @@ print_msg "Installing thunar"
 paru -S --noconfirm --needed thunar thunar-volman gvfs gvfs-mtp
 
 # install extra apps
-paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop discord torguard aria2
+paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop discord torguard aria2 yt-dlp
 paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina virt-manager zathura zathura-pdf-mupdf mpv
 
 # Enable SDDM service
