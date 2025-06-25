@@ -9,7 +9,7 @@ fi
 
 # reinstall spotify
 sudo pacman -R spotify --noconfirm
-sudo pacman -S spotify --noconfirm
+paru -S spotify --noconfirm
 
 # check permissions
 sudo chmod a+wr /opt/spotify
