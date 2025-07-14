@@ -84,7 +84,8 @@ $scripts/yazi.sh
 
 # Install thunar
 print_msg "Installing thunar"
-paru -S --noconfirm --needed thunar thunar-volman gvfs gvfs-mtp
+chmod +x "$scripts/thunar.sh"
+$scripts/thunar.sh
 
 # install extra apps
 paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop discord teamspeak torguard aria2 yt-dlp
