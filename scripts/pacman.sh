@@ -13,6 +13,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 install -Dm644 $scripts/../system/pacman.conf /etc/pacman.conf
+
 sudo reflector \
   --protocol https \
   --age 6 \
@@ -20,6 +21,7 @@ sudo reflector \
   --latest 10 \
   --save /etc/pacman.d/mirrorlist \
   --threads 5
+
 if $systemupdate; then
     sudo pacman -Syu --noconfirm --needed
 fi
