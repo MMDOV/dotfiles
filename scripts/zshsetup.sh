@@ -30,6 +30,12 @@ alias dotmmd='~/personal/scripts/update-config.sh'
 pdot() {
     ~/personal/scripts/commitpush.sh "$@"
 }
+# Pyenv setup
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
 
 bindkey -v
 EOF
