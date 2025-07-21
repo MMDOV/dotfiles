@@ -76,6 +76,7 @@ $scripts/nvim.sh
 print_msg "Setting up tmux"
 chmod +x "$scripts/tmux.sh"
 $scripts/tmux.sh
+mkdir -p $HOME/dev/
 
 # install yazi
 print_msg "Installing yazi"
