@@ -38,9 +38,9 @@ vim.o.updatetime = 50
 
 vim.o.colorcolumn = "80"
 
-vim.schedule(function()
-	vim.o.clipboard = "unnamedplus"
-end)
+--vim.schedule(function()
+--	vim.o.clipboard = "unnamedplus"
+--end)
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -93,6 +93,11 @@ vim.keymap.set("n", "<leader>zig", "<cmd>LspRestart<cr>")
 
 -- greatest remap ever
 vim.keymap.set("x", "<leader>p", [["_dP]])
+
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
+vim.keymap.set("n", "<leader>Y", [["+Y]])
+
+vim.keymap.set({ "n", "v" }, "<leader>d", '"_d')
 
 vim.keymap.set("n", "Q", "<nop>")
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww ~/.local/bin/tmux-sessionizer<CR>")
