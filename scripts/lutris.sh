@@ -27,4 +27,5 @@ wine \
 wine-mono \
 wine-gecko \
 winetricks \
-xorg-xgamma
+xorg-xgamma \
+umu-launcher
