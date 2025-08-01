@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# re_pair_connect.sh — lightweight version for reconnecting Bluetooth device
-# Removes device if paired, rescans, pairs, trusts, and connects
-# Usage: ./re_pair_connect.sh AA:BB:CC:DD:EE:FF
 
 set -euo pipefail
 

@@ -55,3 +55,4 @@ if ! $configonly; then
     copyandreplace "$HOME/personal/dev" "$HOME/dev"
     copyandreplace "$HOME/personal/home" "$HOME"
 fi
+hyprctl reload
