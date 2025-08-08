@@ -7,22 +7,22 @@
     "spacing": 4, // Gaps between modules (4px)
 
     "modules-left": [
-        "wireplumber",
-        "bluetooth",
+        "hyprland/workspaces",
     ],
 
     "modules-center": [
         "cpu",
         "memory",
         "temperature",
-        "hyprland/workspaces",
         "clock",
+        "wireplumber",
+        "backlight",
+        "bluetooth",
     ],
 
     "modules-right": [
         "custom/ping",
         "battery",
-        "backlight",
         "hyprland/language",
         "tray",
     ],
@@ -96,7 +96,8 @@
     "backlight": {
         // "device": "acpi_video1",
         "format": "{percent}% {icon}",
-        "format-icons": ["", "", "", "", "", "", "", "", ""]
+        "format-icons": ["", "", "", "", "", "", "", "", ""],
+        "on-click": "~/personal/scripts/switch_backlight.sh"
     },
 
     "battery": {
