@@ -64,7 +64,7 @@ button:hover {
 }
 
 #workspaces button {
-    padding: 0 4px; /* Minimal vertical padding */
+    padding: 3px 6px;
     background: transparent;
     color: #ffffff;
     border: none;
@@ -72,9 +72,9 @@ button:hover {
 
 #workspaces button.active {
     border: none;
-    background: #285577; /* Light blue background */
+    background: #285577;
     color: #ffffff;
-    border-radius: 3px; /* Subtler radius */
+    border-radius: 3px;
 }
 
 #workspaces button:hover {
