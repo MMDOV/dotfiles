@@ -272,11 +272,6 @@ require("lazy").setup({
 		cmd = "Glow",
 	},
 	{
-		"m4xshen/hardtime.nvim",
-		dependencies = { "MunifTanjim/nui.nvim" },
-		opts = {},
-	},
-	{
 		"kiyoon/jupynium.nvim",
 		build = "pip install jupyter",
 		config = function()
