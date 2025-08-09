@@ -57,7 +57,7 @@ button:hover {
     box-shadow: inset 0 -3px #ffffff;
 }
 
-#pulseaudio:hover {
+#wireplumber:hover {
     background: inherit;
     box-shadow: inset 0 -3px #ffffff;
 }
@@ -82,8 +82,7 @@ button:hover {
 }
 
 #workspaces button:hover {
-    background: #333333;
-    box-shadow: none;
+    box-shadow: inset 0 -3px #ffffff;
 }
 
 
@@ -101,7 +100,7 @@ button:hover {
 #temperature,
 #backlight,
 #network,
-#pulseaudio,
+#wireplumber,
 #wireplumber,
 #custom-media,
 #tray,
@@ -193,12 +192,12 @@ label:focus {
     background-color: #161A2D;
 }
 
-#pulseaudio {
+#wireplumber {
     background-color: #161A2D;
     color: #ffffff;
 }
 
-#pulseaudio.muted {
+#wireplumber.muted {
     background-color: #161A2D;
     color: #2a5c45;
 }
