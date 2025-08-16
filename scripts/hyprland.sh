@@ -16,7 +16,15 @@ paru -S --noconfirm --needed qt5-wayland qt6-wayland
 paru -S --noconfirm --needed xdg-desktop-portal-hyprland xdg-utils uwsm 
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
 paru -S --noconfirm --needed playerctl easyeffects brightnessctl wlogout 
-paru -S --noconfirm --needed noto-fonts ttf-fira-code ttf-material-symbols-variable-git
+paru -S --noconfirm --needed \
+    noto-fonts \
+    noto-fonts-cjk \
+    noto-fonts-emoji \
+    noto-fonts-extra \
+    ttf-fira-code \
+    ttf-material-symbols-variable-git \
+    ttf-dejavu \
+    ttf-liberation
 paru -S --noconfirm --needed polkit polkit-gnome bicon-git breeze
 paru -S --noconfirm --needed dbus bc unzip fzf fastfetch curl wget tldr
 
