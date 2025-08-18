@@ -43,9 +43,24 @@ copyandreplace() {
     done
 }
 
+function add_yazi_pkg() {
+    local pkg=$1
+    if ! ya pkg list | grep -i "$pkg"; then
+        ya pkg add "$pkg"
+    else
+        echo "Package $pkg already installed. Skipping..."
+    fi
+}
+
 if [ -z "$subconf" ]; then
     copyandreplace "$HOME/personal/config" "$HOME/.config"
     hyprctl reload
+    add_yazi_pkg boydaihungst/mediainfo
+    add_yazi_pkg Reledia/miller
+    add_yazi_pkg pirafrank/what-size
+    add_yazi_pkg yazi-rs/plugins:mount
+    add_yazi_pkg dedukun/bookmarks
+
 else
     mkdir -p "$HOME/config/$subconf"
     copyandreplace "$HOME/personal/config/$subconf" "$HOME/.config/$subconf"
