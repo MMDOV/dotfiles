@@ -1,3 +1,10 @@
 #!/bin/bash
-/usr/bin/steam -silent "$@" &
-/usr/sbin/thd --triggers ~/.config/triggerhappy/triggers.d/ --deviceglob /dev/input/event*
+while true; do
+    while [ ! -e /dev/input/event26 ]; do
+        sleep 1
+    done
+
+    /usr/sbin/thd --triggers ~/.config/triggerhappy/triggers.d/ --deviceglob /dev/input/event26
+
+    sleep 1
+done
