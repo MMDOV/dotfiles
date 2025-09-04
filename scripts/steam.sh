@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 
 paru -S --noconfirm --needed steam protontricks protonplus ttf-liberation lib32-pipewire
@@ -9,6 +10,7 @@ sudo systemctl disable triggerhappy || true
 
 mkdir -p ~/.config/triggerhappy/triggers.d
 cat > ~/.config/triggerhappy/triggers.d/xbox.conf <<'EOF'
+BTN_MODE 1 sh -c "uwsm app -- steam -tenfoot"
 BTN_MODE 1 sh -c "sleep 0.25; hyprctl dispatch workspace 1"
 EOF
 
