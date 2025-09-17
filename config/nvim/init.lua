@@ -61,6 +61,9 @@ vim.o.updatetime = 250
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
 vim.o.timeoutlen = 300
+vim.o.ttimeoutlen = 10
+
+vim.o.completeopt = "menuone,noselect"
 
 -- Configure how new splits should be opened
 vim.o.splitright = true
@@ -985,6 +988,82 @@ require("lazy").setup({
 			vim.g.molten_output_show_exec_time = false
 		end,
 	},
+	-- Windsurf (autocomplete)
+	{
+		"Exafunction/windsurf.vim",
+		event = "VeryLazy",
+		config = function()
+			vim.g.windsurf_enabled = 1
+			vim.keymap.set("i", "<C-g>", function()
+				return vim.fn["codeium#Accept"]()
+			end, { expr = true, silent = true })
+			vim.keymap.set("i", "<c-;>", function()
+				return vim.fn["codeium#CycleCompletions"](1)
+			end, { expr = true, silent = true })
+			vim.keymap.set("i", "<c-,>", function()
+				return vim.fn["codeium#CycleCompletions"](-1)
+			end, { expr = true, silent = true })
+			vim.keymap.set("i", "<c-x>", function()
+				return vim.fn["codeium#Clear"]()
+			end, { expr = true, silent = true })
+		end,
+	},
+
+	-- CodeCompanion (chat with project context)
+	{
+		"olimorris/codecompanion.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-treesitter/nvim-treesitter",
+		},
+		event = "VeryLazy",
+		config = function()
+			require("codecompanion").setup({
+				adapters = {
+					http = {
+						openrouter_claude = require("codecompanion.adapters").extend("openai_compatible", {
+							env = {
+								url = "https://openrouter.ai/api",
+								api_key = "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",
+								chat_url = "/v1/chat/completions",
+							},
+							schema = {
+								model = {
+									default = "deepseek/deepseek-chat-v3.1:free",
+								},
+							},
+						}),
+					},
+				},
+				strategies = {
+					chat = { adapter = "openrouter_claude" },
+				},
+			}) -- Keymaps
+			vim.keymap.set("n", "<leader>ac", function()
+				require("codecompanion").chat({
+					window_opts = {
+						layout = "float",
+						width = 0.6,
+						height = 0.6,
+						border = "rounded",
+						position = "center",
+						filetype = "markdown",
+					},
+				})
+			end, { desc = "AI Chat Popup" })
+			vim.keymap.set("v", "<leader>ac", function()
+				require("codecompanion").chat({
+					window_opts = {
+						layout = "float",
+						width = 0.6,
+						height = 0.6,
+						border = "rounded",
+						position = "center",
+					},
+				})
+			end, { desc = "AI Chat (Visual)" })
+		end,
+	},
 }, {
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -1035,13 +1114,3 @@ vim.api.nvim_create_autocmd({ "bufread", "bufnewfile" }, {
 })
 
 vim.g.magma_image_provider = "kitty"
-if vim.g.started_by_firenvim then
-	vim.api.nvim_create_autocmd("BufEnter", {
-		pattern = "www.kaggle.com_*.txt",
-		command = "set filetype=markdown",
-	})
-	vim.api.nvim_create_autocmd("BufEnter", {
-		pattern = "kkb-production.jupyter-proxy.kaggle.net_*.txt",
-		command = "set filetype=python",
-	})
-end

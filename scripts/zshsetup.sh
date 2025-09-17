@@ -19,7 +19,14 @@ CUSTOM_CONFIG=$(
     cat <<'EOF'
 # Custom aliases and functions
 alias vim='nvim'
-alias update='paru -Syu --noconfirm'
+alias update='sudo reflector \
+  --protocol https \
+  --age 6 \
+  --sort rate \
+  --latest 10 \
+  --save /etc/pacman.d/mirrorlist \
+  --threads 5;
+paru -Syu --noconfirm'
 alias btc='~/personal/scripts/pair_connect.sh 9C:19:C2:1B:CD:0D'
 alias claer='clear'
 
