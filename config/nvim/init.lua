@@ -1024,7 +1024,7 @@ require("lazy").setup({
 						openrouter_claude = require("codecompanion.adapters").extend("openai_compatible", {
 							env = {
 								url = "https://openrouter.ai/api",
-								api_key = "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",
+								api_key = os.getenv("OPENROUTER_API_KEY"),
 								chat_url = "/v1/chat/completions",
 							},
 							schema = {
