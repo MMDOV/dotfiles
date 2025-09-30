@@ -140,28 +140,6 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 
 local map = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true }
--- Start and attach to Jupyter server
-map("n", "<leader>js", "<Cmd>JupyniumStartAndAttachToServer<CR>", opts)
-
--- Execute selected cells (Normal + Visual mode)
-map("n", "<leader>je", "<Cmd>JupyniumExecuteSelectedCells<CR>", opts)
-map("v", "<leader>je", "<Cmd>JupyniumExecuteSelectedCells<CR>", opts)
-
--- Execute all cells
-map("n", "<leader>ja", "<Cmd>JupyniumExecuteAllCells<CR>", opts)
-
--- Start syncing between .ipynb ↔ .ju.py
-map("n", "<leader>jy", "<Cmd>JupyniumStartSync<CR>", opts)
-
--- Show output window (if hidden)
-map("n", "<leader>jo", "<Cmd>JupyniumShowCellOutput<CR>", opts)
-
--- Restart Jupyter server
-map("n", "<leader>jr", "<Cmd>JupyniumRestartJupyterServer<CR>", opts)
-
--- Check Jupyter kernel status
-map("n", "<leader>jk", "<Cmd>JupyniumKernelStatus<CR>", opts)
-
 vim.keymap.set("n", "<leader>mi", function()
 	local prefix = os.getenv("CONDA_PREFIX") or os.getenv("VIRTUAL_ENV")
 	local env_name = nil
@@ -172,17 +150,6 @@ vim.keymap.set("n", "<leader>mi", function()
 		vim.cmd("MoltenInit python3")
 	end
 end, { noremap = true, silent = true, desc = "MoltenInit with current env" })
-map("n", "<leader>ml", "<cmd>MoltenEvaluateLine<CR>", { noremap = true, silent = true })
-map("v", "<leader>mv", ":<C-u>MoltenEvaluateVisual<CR>", { noremap = true, silent = true })
-map("n", "<leader>mo", "<cmd>MoltenShowOutput<CR>", { noremap = true, silent = true })
-map("n", "<leader>ms", "<cmd>MoltenSave<CR>", { noremap = true, silent = true })
-map("n", "<leader>md", "<cmd>MoltenLoad<CR>", { noremap = true, silent = true })
-map("n", "<leader>rr", "<cmd>MoltenReevaluateCell<CR><cmd>MoltenNext<CR>", { noremap = true, silent = true })
-map("n", "<leader>mr", "<cmd>MoltenReevaluateCell<CR>", { noremap = true, silent = true })
-map("n", "<leader>mn", "<cmd>MoltenNext<CR>", { noremap = true, silent = true })
-
-map("n", "<leader>ts", "<cmd>Speedtyper<CR>", { noremap = true, silent = true })
-
 map("n", "<leader>u", ":UndotreeToggle<CR>", { noremap = true, silent = true })
 
 -- [[ Basic Autocommands ]]
@@ -248,20 +215,6 @@ require("lazy").setup({
 		"ellisonleao/glow.nvim",
 		config = true,
 		cmd = "Glow",
-	},
-	{
-		"kiyoon/jupynium.nvim",
-		build = "pip install jupyter",
-		config = function()
-			vim.g.jupynium_auto_start_server = true
-			vim.g.jupynium_format_output = true
-			vim.g.jupynium_disable_default_keybindings = true
-		end,
-	},
-	{
-		"NStefan002/speedtyper.nvim",
-		branch = "v2",
-		lazy = false,
 	},
 	{
 		"3rd/image.nvim",
