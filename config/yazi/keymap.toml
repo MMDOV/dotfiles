@@ -5,6 +5,13 @@
 [manager]
 
 keymap = [
+	# Mount
+	{ on = [ "M", "m" ], run = "plugin gvfs -- select-then-mount --jump", desc = "Select device to mount and jump to its mount point" },
+	{ on = [ "M", "R" ], run = "plugin gvfs -- remount-current-cwd-device", desc = "Remount device under cwd" },
+	{ on = [ "M", "u" ], run = "plugin gvfs -- select-then-unmount --eject", desc = "Select device then eject" },
+	{ on = [ "g", "m" ], run = "plugin gvfs -- jump-to-device", desc = "Select device then jump to its mount point" },
+	{ on = [ "`", "`" ], run = "plugin gvfs -- jump-back-prev-cwd", desc = "Jump back to the position before jumped to device" },
+
 	{ on   = [ ".", "s" ], run  = "plugin what-size", desc = "Calc size of selection or cwd" },
 	{ on = "<Esc>", run = "escape",             desc = "Exit visual mode, clear selected, or cancel search" },
 	{ on = "<C-[>", run = "escape",             desc = "Exit visual mode, clear selected, or cancel search" },
@@ -120,9 +127,11 @@ keymap = [
 	{ on = [ ",", "r" ], run = "sort random --reverse=no",                         desc = "Sort randomly" },
 
 	# Goto
-	{ on = [ "g", "h" ],       run = "cd ~",             desc = "Go to the home directory" },
-	{ on = [ "g", "c" ],       run = "cd ~/.config",     desc = "Go to the config directory" },
+	{ on = [ "g", "s" ],       run = "cd ~",             desc = "Go to the home directory" },
 	{ on = [ "g", "d" ],       run = "cd ~/Downloads",   desc = "Go to the downloads directory" },
+	{ on = [ "g", "D" ],       run = "cd /mnt/HDD/Downloads", desc = "Go to the HDD downloads directory" },
+	{ on = [ "g", "p" ],       run = "cd ~/dev",         desc = "Go to the dev directory" },
+	{ on = [ "g", "h" ],       run = "cd /mnt/HDD",      desc = "Go to the HDD directory" },
 	{ on = [ "g", "<Space>" ], run = "cd --interactive", desc = "Go to a directory interactively" },
 
 	# Tabs
@@ -250,9 +259,6 @@ keymap = [
 	{ on = "c", run = "delete --cut --insert",                     desc = "Cut the selected characters, and enter insert mode" },
 	{ on = "C", run = [ "delete --cut --insert", "move 999" ],     desc = "Cut until the EOL, and enter insert mode" },
 	{ on = "x", run = [ "delete --cut", "move 1 --in-operating" ], desc = "Cut the current character" },
-	{ on = "y", run = "yank",           desc = "Copy the selected characters" },
-	{ on = "p", run = "paste",          desc = "Paste the copied characters after the cursor" },
-	{ on = "P", run = "paste --before", desc = "Paste the copied characters before the cursor" },
 
 	# Undo/Redo
 	{ on = "u",     run = "undo", desc = "Undo the last operation" },
@@ -324,35 +330,6 @@ keymap = [
 	{ on = "f", run = "filter", desc = "Apply a filter for the help items" },
 ]
 
-
-[[manager.prepend_keymap]]
-on   = [ "g", "h" ]
-run  = "cd /mnt/HDD"
-desc = "Cd to HDD"
-
-[[manager.prepend_keymap]]
-on   = [ "g", "s" ]
-run  = "cd ~"
-desc = "Cd to ~"
-
-[[manager.prepend_keymap]]
-on   = [ "g", "d" ]
-run  = "cd ~/Downloads"
-desc = "Cd to Downloads"
-
-[[manager.prepend_keymap]]
-on   = [ "g", "D" ]
-run  = "cd /mnt/HDD/Downloads"
-desc = "Cd to HDD Downloads"
-
-[[manager.prepend_keymap]]
-on   = [ "g", "p" ]
-run  = "cd ~/dev"
-desc = "Cd to Projects"
-
-[[manager.prepend_keymap]]
-on  = "M"
-run = "plugin mount"
 
 [[manager.prepend_keymap]]
 on = [ "m" ]

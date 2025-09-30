@@ -1,23 +1,32 @@
 #!/usr/bin/env bash
-
 set -e
 
-sudo pacman -S --noconfirm --needed yazi git mediainfo
+# Ensure dependencies
+sudo pacman -S --noconfirm --needed yazi git mediainfo gvfs gvfs-mtp
+rm -rf "$HOME/.config/yazi/"*
+mkdir -p "$HOME/.config/yazi/plugins"
+
+
 
 function add_yazi_pkg() {
     local pkg=$1
-    if ! ya pkg list | grep -i "$pkg"; then
+    if ! ya pkg list | grep -i "$pkg" > /dev/null; then
         ya pkg add "$pkg"
     else
         echo "Package $pkg already installed. Skipping..."
     fi
 }
 
+# Install plugins
+add_yazi_pkg boydaihungst/gvfs
 add_yazi_pkg boydaihungst/mediainfo
-add_yazi_pkg Reledia/miller
 add_yazi_pkg pirafrank/what-size
-add_yazi_pkg yazi-rs/plugins:mount
 add_yazi_pkg dedukun/bookmarks
 
-cp -rfvp $HOME/personal/config/yazi/* $HOME/.config/yazi/
+# Upgrade all plugins (no args!)
+ya pkg upgrade || true
+
+# Copy configs
+cp -rf "$HOME/personal/config/yazi/"*.toml "$HOME/.config/yazi/"
+cp -rf "$HOME/personal/config/yazi/"*.lua "$HOME/.config/yazi/"
 
