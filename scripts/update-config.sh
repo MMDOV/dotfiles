@@ -55,9 +55,9 @@ function add_yazi_pkg() {
 if [ -z "$subconf" ]; then
     copyandreplace "$HOME/personal/config" "$HOME/.config"
     hyprctl reload
+    add_yazi_pkg boydaihungst/gvfs
     add_yazi_pkg boydaihungst/mediainfo
     add_yazi_pkg pirafrank/what-size
-    add_yazi_pkg yazi-rs/plugins:mount
     add_yazi_pkg dedukun/bookmarks
 
 else

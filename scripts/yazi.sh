@@ -2,7 +2,7 @@
 set -e
 
 # Ensure dependencies
-sudo pacman -S --noconfirm --needed yazi git mediainfo gvfs gvfs-mtp
+sudo pacman -S --noconfirm --needed yazi git mediainfo gvfs gvfs-mtp rsync
 rm -rf "$HOME/.config/yazi/"*
 mkdir -p "$HOME/.config/yazi/plugins"
 
