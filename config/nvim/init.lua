@@ -177,6 +177,7 @@ vim.opt.rtp:prepend(lazypath)
 -- [[ Configure and install plugins ]] To check the current status of your plugins, run :Lazy You can press `?` in this menu for help. Use `:q` to close the window To update plugins you can run :Lazy update
 require("lazy").setup({
 	"NMAC427/guess-indent.nvim",
+
 	{
 		"rcarriga/nvim-notify",
 		config = function()
@@ -502,6 +503,10 @@ require("lazy").setup({
 					--
 					-- When you move your cursor, the highlights will be cleared (the second autocommand).
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
+					if client and client.server_capabilities.documentSymbolProvider then
+						local navic = require("nvim-navic")
+						navic.attach(client, event.buf)
+					end
 					if
 						client
 						and client_supports_method(
@@ -595,15 +600,17 @@ require("lazy").setup({
 			local servers = {
 				-- clangd = {},
 				-- gopls = {},
-				-- pyright = {},
-				-- rust_analyzer = {},
+				pyright = {},
+				rust_analyzer = {},
+				bashls = {},
+				hyprls = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
 				--
 				-- Some languages (like typescript) have entire language plugins that can be useful:
 				--    https://github.com/pmizio/typescript-tools.nvim
 				--
 				-- But for many setups, the LSP (`ts_ls`) will work just fine
-				-- ts_ls = {},
+				ts_ls = {},
 				--
 
 				lua_ls = {
@@ -637,7 +644,8 @@ require("lazy").setup({
 			-- for you, so that they are available from within Neovim.
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
-				"stylua", -- Used to format Lua code
+				"stylua",
+				"ruff",
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
@@ -1007,6 +1015,17 @@ require("lazy").setup({
 			vim.keymap.set("v", "<leader>ac", "<cmd>CodeCompanionChat<cr>", { desc = "AI Chat (Visual)" })
 		end,
 	},
+	{
+		"VidocqH/lsp-lens.nvim",
+		event = "LspAttach", -- load it only when an LSP attaches
+		config = function()
+			require("lsp-lens").setup({})
+		end,
+	},
+	{
+		"SmiteshP/nvim-navic",
+		dependencies = { "neovim/nvim-lspconfig" },
+	},
 }, {
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -1030,3 +1049,4 @@ require("lazy").setup({
 })
 
 vim.o.termguicolors = true
+vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"

@@ -7,7 +7,7 @@
 keymap = [
 
 	# Yank: save selected files into clipboard
-	{ on = "y", run = 'shell "~/personal/scripts/yazi-clipboard.sh yank $@"', desc = "Yank selected files" },
+	{ on = "y", run = 'shell "~/personal/scripts/yazi-clipboard.sh yank \"$@\""', desc = "Yank selected files" },
 
 	# Paste: copy/move from clipboard into current directory with kitty + rsync
 	{ on = "p", run = "shell 'kitty --title yazi-transfer sh -c \"\\\"$HOME\\\"/personal/scripts/yazi-clipboard.sh paste \\$(pwd)\"'", desc = "Paste yanked files into cwd with rsync" },
