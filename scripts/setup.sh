@@ -89,7 +89,7 @@ chmod +x "$scripts/thunar.sh"
 $scripts/thunar.sh
 
 # install extra apps
-paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop discord teamspeak torguard aria2 yt-dlp
+paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop teamspeak torguard aria2 yt-dlp
 paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina freerdp virt-manager zathura zathura-pdf-mupdf mpv
 
 # Enable SDDM service
