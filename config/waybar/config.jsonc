@@ -25,6 +25,7 @@
         "battery",
         "hyprland/language",
         "tray",
+        "group/group-power",
     ],
 
     "hyprland/workspaces": {
@@ -135,4 +136,33 @@
         "max-volume": 150,
         "format-icons": ["", "", ""]
     },
+    "group/group-power": {
+    "orientation": "horizontal",
+    "drawer": {
+        "transition-duration": 500,
+        "children-class": "not-power",
+        "transition-left-to-right": false,
+    },
+    "modules": [
+        "custom/power", // First element is the "group leader" and won't ever be hidden
+        "custom/quit",
+        "custom/reboot",
+    ]
+},
+"custom/quit": {
+    "format": "󰗼",
+    "tooltip": false,
+    "on-click": "hyprctl dispatch exit"
+},
+"custom/reboot": {
+    "format": "󰜉",
+    "tooltip": false,
+    "on-click": "reboot"
+},
+"custom/power": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "poweroff"
+}
+
 }
