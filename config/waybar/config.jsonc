@@ -12,17 +12,18 @@
 
     "modules-center": [
         "cpu",
+        "custom/gpu",
         "memory",
         "temperature",
         "clock",
         "wireplumber",
         "backlight",
+        "battery",
         "bluetooth",
     ],
 
     "modules-right": [
         "custom/ping",
-        "battery",
         "hyprland/language",
         "tray",
         "group/group-power",
@@ -79,6 +80,13 @@
     "cpu": {
         "format": "{usage}% ",
         "tooltip": true
+    },
+    "custom/gpu": {
+        "format": "{}% ",
+        "tooltip-format": "{}% used",
+        "interval": 5,
+        "tooltip": true,
+        "exec": "nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits"
     },
 
     "memory": {
