@@ -965,6 +965,9 @@ require("lazy").setup({
 		"Exafunction/windsurf.vim",
 		event = "VeryLazy",
 		config = function()
+			vim.g.codeium_filetypes = {
+				rust = false,
+			}
 			vim.g.windsurf_enabled = 1
 			vim.keymap.set("i", "<C-g>", function()
 				return vim.fn["codeium#Accept"]()
