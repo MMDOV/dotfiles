@@ -8,7 +8,11 @@ if [[ $(dirname "$dir") != "$HOME/dev/pyprojects" ]]; then
     exit 0
 fi
 
-source "$dir/.venv/bin/activate"
+if [[ -d "$dir/.venv" ]]; then
+    source "$dir/.venv/bin/activate"
+elif [[ -d "$dir/venv" ]]; then
+    source "$dir/venv/bin/activate"
+fi
 tmux send-keys -t scratch "source $dir/venv/bin/activate" C-m
 
 tmux send-keys -t scratch "clear" C-m
