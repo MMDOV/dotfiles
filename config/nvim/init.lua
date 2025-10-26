@@ -600,7 +600,23 @@ require("lazy").setup({
 			local servers = {
 				-- clangd = {},
 				-- gopls = {},
-				pyright = {},
+				basedpyright = {
+					settings = {
+						basedpyright = {
+							analysis = {
+								useLibraryCodeForTypes = true,
+								typeCheckingMode = "standard",
+								diagnosticMode = "workspace",
+								autoSearchPath = true,
+								inlayHints = {
+									callArgumentNames = true,
+								},
+								extraPaths = {},
+							},
+							python = {},
+						},
+					},
+				},
 				rust_analyzer = {},
 				bashls = {},
 				hyprls = {},
