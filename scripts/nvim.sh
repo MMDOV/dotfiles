@@ -11,7 +11,7 @@ if ! command -v paru &>/dev/null; then
   $scripts/paru.sh
 fi
 
-paru -S --noconfirm --needed nvim go python python-pip pyenv npm luarocks ripgrep lua51 lazygit
+paru -S --noconfirm --needed nvim go python python-pip pyenv npm luarocks ripgrep lua51 lazygit fd
 git clone https://github.com/LazyVim/starter ~/.config/nvim
 rm -rf ~/.config/nvim/.git
 
