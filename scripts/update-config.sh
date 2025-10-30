@@ -18,7 +18,7 @@ copyandreplace() {
   shopt -s dotglob
   for item in "$1"/*; do
     itemname=$(basename "$item")
-    destpath="$2/$itemname"
+    destpath="$2"
     mkdir -p "$(dirname "$destpath")"
     if ! $debug; then
       if [ -d "$item" ]; then
