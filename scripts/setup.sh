@@ -7,12 +7,12 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 print_msg() {
-    echo -e "${GREEN}[*] $1${NC}"
+  echo -e "${GREEN}[*] $1${NC}"
 }
 
 print_error() {
-    echo -e "${RED}[!] $1${NC}"
-    exit 1
+  echo -e "${RED}[!] $1${NC}"
+  exit 1
 }
 
 scripts=$1
@@ -22,12 +22,11 @@ chmod +x "$scripts/pacman.sh"
 sudo pacman -S --noconfirm --needed reflector
 sudo $scripts/pacman.sh $scripts
 
-
 # Make sure paru is installed
 if ! command -v paru &>/dev/null; then
-    print_msg "Installing Paru"
-    chmod +x "$scripts/paru.sh"
-    $scripts/paru.sh
+  print_msg "Installing Paru"
+  chmod +x "$scripts/paru.sh"
+  $scripts/paru.sh
 fi
 
 # Install rust
@@ -57,10 +56,10 @@ print_msg "Installing drivers"
 chmod +x "$scripts/drivers.sh"
 $scripts/drivers.sh
 
-# setup hyprland 
+# setup hyprland
 print_msg "Setting up hyprland"
 chmod +x "$scripts/hyprland.sh"
-$scripts/hyprland.sh $scripts 
+$scripts/hyprland.sh $scripts
 
 # setup sddm
 print_msg "Setting up sddm"
@@ -90,7 +89,7 @@ $scripts/thunar.sh
 
 # install extra apps
 paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop teamspeak torguard aria2 yt-dlp
-paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina freerdp virt-manager zathura zathura-pdf-mupdf mpv
+paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina freerdp virt-manager zathura zathura-pdf-mupdf mpv debtap
 
 # Enable SDDM service
 sudo systemctl enable sddm
