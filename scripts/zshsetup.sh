@@ -7,28 +7,28 @@ sudo pacman -S --noconfirm --needed zsh
 chsh -s $(which zsh)
 
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    echo "Installing Oh My Zsh..."
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended
+  echo "Installing Oh My Zsh..."
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended
 else
-    echo "Oh My Zsh already installed, skipping..."
+  echo "Oh My Zsh already installed, skipping..."
 fi
 
 ZSHRC="$HOME/.zshrc"
 
 CUSTOM_CONFIG=$(
-    cat <<'EOF'
+  cat <<'EOF'
 # Custom aliases and functions
 alias vim='nvim'
-alias update='sudo reflector \
+alias umirrors='sudo reflector \
   --protocol https \
   --age 6 \
   --sort rate \
   --latest 10 \
   --save /etc/pacman.d/mirrorlist \
-  --threads 5;
-paru -Syu --noconfirm'
+  --threads 5'
 alias btc='~/personal/scripts/pair_connect.sh 9C:19:C2:1B:CD:0D'
 alias claer='clear'
+
 
 alias dotmmd='~/personal/scripts/update-config.sh'
 pdot() {
@@ -46,8 +46,8 @@ EOF
 )
 
 if grep -Fx "$CUSTOM_CONFIG" "$ZSHRC" >/dev/null; then
-    echo "Custom configurations already present in .bashrc, skipping..."
-    exit 0
+  echo "Custom configurations already present in .bashrc, skipping..."
+  exit 0
 fi
 
 echo "Adding custom configurations to .bashrc..."
