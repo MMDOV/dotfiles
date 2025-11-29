@@ -8,10 +8,13 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 -- chmod
 vim.keymap.set("n", "<leader>cx", "<cmd>!chmod +x %<CR>", { silent = true })
 
--- rihgt to left text
+-- right to left text (NEOVIM add bidi support and my life is yours)
 vim.keymap.set("n", "<leader>rl", function()
 	vim.cmd("set rl")
 end)
 vim.keymap.set("n", "<leader>nrl", function()
 	vim.cmd("set norl")
 end)
+
+-- I kept pressing the wrong keybind for line find so here we are
+vim.keymap.set("n", "<leader>/", "/", { noremap = true, silent = false })
