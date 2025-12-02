@@ -19,7 +19,6 @@ scripts=$1
 # update pacman settings and mirrorlist
 print_msg "updating pacman settings and mirrorlist"
 chmod +x "$scripts/pacman.sh"
-sudo pacman -S --noconfirm --needed reflector
 sudo $scripts/pacman.sh $scripts
 
 # Make sure paru is installed
