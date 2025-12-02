@@ -2,7 +2,7 @@
 
 set -e
 
-sudo pacman -S --noconfirm --needed zsh
+sudo pacman -S --noconfirm --needed zsh eza
 
 chsh -s $(which zsh)
 
@@ -19,15 +19,9 @@ CUSTOM_CONFIG=$(
   cat <<'EOF'
 # Custom aliases and functions
 alias vim='nvim'
-alias umirrors='sudo reflector \
-  --protocol https \
-  --age 6 \
-  --sort rate \
-  --latest 10 \
-  --save /etc/pacman.d/mirrorlist \
-  --threads 5'
-alias btc='~/personal/scripts/pair_connect.sh 9C:19:C2:1B:CD:0D'
+# im dumb dont judge me
 alias claer='clear'
+alias ls='eza -lh --group-directories-first --icons=auto'
 
 
 alias dotmmd='~/personal/scripts/update-config.sh'
