@@ -1,5 +1,3 @@
-vim.g.snacks_animate = false
-
 vim.o.updatetime = 50
 
 vim.g.have_nerd_font = true
