@@ -89,7 +89,8 @@ $scripts/thunar.sh
 
 # install extra apps
 paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop teamspeak torguard aria2 yt-dlp
-paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina freerdp virt-manager zathura zathura-pdf-mupdf mpv debtap
+paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina freerdp zathura zathura-pdf-mupdf mpv debtap
+paru -S --nonfirm --needed libvirt virt-manager qemu-full dnsmasq dmidecode
 
 # Enable SDDM service
 sudo systemctl enable sddm
