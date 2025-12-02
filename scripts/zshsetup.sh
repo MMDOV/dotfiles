@@ -22,6 +22,10 @@ alias vim='nvim'
 # im dumb dont judge me
 alias claer='clear'
 alias ls='eza -lh --group-directories-first --icons=auto'
+# Directories
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 
 
 alias dotmmd='~/personal/scripts/update-config.sh'
