@@ -8,23 +8,20 @@ scripts=$1
 sudo pacman -S sddm --noconfirm --needed
 
 # Variables
-THEME_DIR="/usr/share/sddm/themes/sugar-candy"
+THEME_DIR="/usr/share/sddm/themes/where_is_my_sddm_theme"
 THEME_CONF="${THEME_DIR}/theme.conf"
 SDDM_CONF="/etc/sddm.conf"
-WALLPAPER_URL="https://hyprland.org/imgs/blog/contestWinners/corndog.png"
-WALLPAPER_PATH="${THEME_DIR}/Backgrounds/corndog.png"
+WALLPAPER_PATH="${THEME_DIR}/mima-1080.png"
 
-paru -S --noconfirm --needed sddm-sugar-candy-git
-
-sudo mkdir -p "${THEME_DIR}/Backgrounds"
+sudo bash <(curl -sSL https://raw.githubusercontent.com/stepanzubkov/where-is-my-sddm-theme/main/install.sh)
 
 if [ ! -f $WALLPAPER_PATH ]; then
-    echo "Downloading wallpaper..."
-    sudo wget "${WALLPAPER_URL}" -O "${WALLPAPER_PATH}"
+  echo "Copying wallpaper..."
+  install -Dm644 $scripts/../home/wallpaper/mima-1080.png ${WALLPAPER_PATH}
 fi
 
 echo "Writing Sugar Candy theme.conf..."
-sudo cp -rf $scripts/../sddm/sugar-candy/theme.conf $THEME_CONF
+install -Dm644 $scripts/../sddm/where_is_my_sddm_theme/theme.conf $THEME_CONF
 
 echo "Configuring SDDM to use Sugar Candy theme..."
-sudo cp -rf $scripts/../sddm/sddm.conf $SDDM_CONF
+install -Dm644 $scripts/../sddm/sddm.conf $SDDM_CONF
