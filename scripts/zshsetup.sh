@@ -22,6 +22,13 @@ alias vim='nvim'
 # im dumb dont judge me
 alias claer='clear'
 alias ls='eza -lh --group-directories-first --icons=auto'
+alias umirrors='sudo reflector \
+  --protocol https \
+  --age 6 \
+  --sort rate \
+  --latest 10 \
+  --save /etc/pacman.d/mirrorlist \
+  --threads 5'
 # Directories
 alias ..='cd ..'
 alias ...='cd ../..'
