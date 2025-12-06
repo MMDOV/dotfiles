@@ -13,6 +13,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 install -Dm644 $scripts/../system/pacman.conf /etc/pacman.conf
+sudo pacman -S --noconfirm --needed reflector
 
 sudo reflector \
   --protocol https \

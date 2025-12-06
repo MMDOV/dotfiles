@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-set -e
-
+# Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+BLUE='\033[0;34m'
 NC='\033[0m'
 
 print_msg() {
   echo -e "${GREEN}[*] $1${NC}"
+}
+
+print_action() {
+  echo -e "${BLUE}[DRY] $1${NC}"
 }
 
 print_error() {
@@ -15,89 +20,122 @@ print_error() {
   exit 1
 }
 
-scripts=$1
-# update pacman settings and mirrorlist
-print_msg "updating pacman settings and mirrorlist"
-chmod +x "$scripts/pacman.sh"
-sudo pacman -S --noconfirm --needed reflector
-sudo $scripts/pacman.sh $scripts
+DRY_RUN=false
+skip_list=()
+only_list=()
 
-# Make sure paru is installed
-if ! command -v paru &>/dev/null; then
-  print_msg "Installing Paru"
-  chmod +x "$scripts/paru.sh"
-  $scripts/paru.sh
+# Determine default scripts directory (same folder as this script)
+BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
+scripts="$BASE_DIR"
+
+# Parse flags
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  --dry-run | -n)
+    DRY_RUN=true
+    shift
+    ;;
+  --skip)
+    IFS=',' read -ra skip_list <<<"$2"
+    shift 2
+    ;;
+  --only)
+    IFS=',' read -ra only_list <<<"$2"
+    shift 2
+    ;;
+  --scripts)
+    scripts="$2"
+    shift 2
+    ;;
+  *)
+    print_error "Unknown argument: $1"
+    ;;
+  esac
+done
+
+[[ -d "$scripts" ]] || print_error "Scripts directory not found: $scripts"
+
+should_run() {
+  local mod="$1"
+
+  if [[ ${#only_list[@]} -gt 0 ]]; then
+    for o in "${only_list[@]}"; do
+      [[ "$o" == "$mod" ]] && return 0
+    done
+    return 1
+  fi
+
+  for s in "${skip_list[@]}"; do
+    [[ "$s" == "$mod" ]] && return 1
+  done
+
+  return 0
+}
+
+run_script() {
+  local name="$1"
+  shift
+  local path="$scripts/$name.sh"
+
+  print_msg "Running: $name"
+  [[ -f "$path" ]] || print_error "Script not found: $path"
+
+  if $DRY_RUN; then
+    print_action "Would chmod +x $path"
+    print_action "Would run: $path $*"
+    return
+  fi
+
+  chmod +x "$path"
+  "$path" "$@" || print_error "$name failed"
+}
+
+# List of modules
+declare -a modules=(
+  "pacman"
+  "paru"
+  "rustup"
+  "networkmanager"
+  "pipewire"
+  "bluetooth"
+  "drivers"
+  "hyprland"
+  "sddm"
+  "browsers"
+  "nvim"
+  "tmux"
+  "yazi"
+  "thunar"
+  "virt-manager"
+  "extras"
+  "zshsetup"
+)
+
+# Main loop
+for mod in "${modules[@]}"; do
+  if ! should_run "$mod"; then
+    print_msg "Skipping: $mod"
+    continue
+  fi
+
+  # These two require scripts path
+  if [[ "$mod" == "hyprland" || "$mod" == "sddm" ]]; then
+    run_script "$mod" "$scripts"
+  else
+    run_script "$mod"
+  fi
+done
+
+# Post tasks
+if $DRY_RUN; then
+  print_action "Would enable sddm"
+  print_action "Would enable NetworkManager"
+  print_action "Would create directory: $HOME/dev/"
+else
+  print_msg "Enabling services"
+  sudo systemctl enable sddm
+  sudo systemctl enable NetworkManager
+  mkdir -p "$HOME/dev/"
 fi
 
-# Install rust
-print_msg "removing the pacman version if it exists"
-sudo pacman -Rns rust
-print_msg "Installing rust with rustup"
-chmod +x "$scripts/rustup.sh"
-$scripts/rustup.sh
-
-# setup NetworkManager
-print_msg "Setting up NetworkManager"
-chmod +x "$scripts/networkmanager.sh"
-$scripts/networkmanager.sh
-
-# setup pipewire
-print_msg "Setting up pipewire"
-chmod +x "$scripts/pipewire.sh"
-$scripts/pipewire.sh
-
-# setup bluetooth
-print_msg "Setting up bluetooth"
-chmod +x "$scripts/bluetooth.sh"
-$scripts/bluetooth.sh
-
-# install drivers
-print_msg "Installing drivers"
-chmod +x "$scripts/drivers.sh"
-$scripts/drivers.sh
-
-# setup hyprland
-print_msg "Setting up hyprland"
-chmod +x "$scripts/hyprland.sh"
-$scripts/hyprland.sh $scripts
-
-# setup sddm
-print_msg "Setting up sddm"
-chmod +x "$scripts/sddm.sh"
-$scripts/sddm.sh $scripts
-
-# setup nvim
-print_msg "Setting up nvim"
-chmod +x "$scripts/nvim.sh"
-$scripts/nvim.sh
-
-# setup tmux
-print_msg "Setting up tmux"
-chmod +x "$scripts/tmux.sh"
-$scripts/tmux.sh
-mkdir -p $HOME/dev/
-
-# install yazi
-print_msg "Installing yazi"
-chmod +x "$scripts/yazi.sh"
-$scripts/yazi.sh
-
-# Install thunar
-print_msg "Installing thunar"
-chmod +x "$scripts/thunar.sh"
-$scripts/thunar.sh
-
-# install extra apps
-paru -S --noconfirm --needed zen-browser-bin firefox thunderbird chatterino2-git telegram-desktop teamspeak torguard aria2 yt-dlp
-paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina freerdp zathura zathura-pdf-mupdf mpv debtap
-paru -S --nonfirm --needed libvirt virt-manager qemu-full dnsmasq dmidecode
-
-# Enable SDDM service
-sudo systemctl enable sddm
-
-# Verify NetworkManager is enabled
-sudo systemctl enable NetworkManager
-
-# setup zsh
-chmod +x "$scripts/zshsetup.sh"
-$scripts/zshsetup.sh
+print_msg "Done."
