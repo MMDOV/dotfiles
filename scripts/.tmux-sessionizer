@@ -4,20 +4,21 @@ tmux new-window -dn dev
 FIRST=1
 
 for dir in $HOME/dev/*; do
-    echo "$dir"
-    dir="${dir%/}"
+  echo "$dir"
+  dir="${dir%/}"
 
-    if [ $FIRST -eq 1 ]; then
-        tmux send-keys -t dev "cd $dir" C-m
-        tmux send-keys -t dev "clear" C-m
-        FIRST=0
-    else
-        tmux split-window -h -t dev
-        tmux send-keys -t dev "cd $dir" C-m
-        tmux send-keys -t dev "clear" C-m
-    fi
+  if [ $FIRST -eq 1 ]; then
+    tmux send-keys -t dev "cd $dir" C-m
+    tmux send-keys -t dev "clear" C-m
+    FIRST=0
+  else
+    tmux split-window -h -t dev
+    tmux send-keys -t dev "cd $dir" C-m
+    tmux send-keys -t dev "clear" C-m
+  fi
 done
 
+tmux select-layout -t dev tiled
 tmux new-window -dn yazi "yazi"
 clear
 fastfetch

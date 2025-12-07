@@ -28,7 +28,8 @@ alias umirrors='sudo reflector \
   --sort rate \
   --latest 10 \
   --save /etc/pacman.d/mirrorlist \
-  --threads 5'
+  --threads 5 \
+  --country Iran,Germany,'
 # Directories
 alias ..='cd ..'
 alias ...='cd ../..'
