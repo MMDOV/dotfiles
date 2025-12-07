@@ -10,3 +10,5 @@ if ! command -v paru &>/dev/null; then
 fi
 
 paru -S --noconfirm --needed zen-browser-bin firefox chromium
+
+install -Dm644 $HOME/personal/local/share/chromium.desktop /usr/share/applications/chromium.desktop
