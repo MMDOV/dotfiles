@@ -104,7 +104,6 @@ declare -a modules=(
   "browsers"
   "nvim"
   "tmux"
-  "yazi"
   "thunar"
   "virt-manager"
   "extras"

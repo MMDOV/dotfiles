@@ -19,6 +19,5 @@ for dir in $HOME/dev/*; do
 done
 
 tmux select-layout -t dev tiled
-tmux new-window -dn yazi "yazi"
 clear
 fastfetch
