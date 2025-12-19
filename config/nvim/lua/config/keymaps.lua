@@ -5,8 +5,12 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 -- center scrolling
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
+
 -- chmod
 vim.keymap.set("n", "<leader>cx", "<cmd>!chmod +x %<CR>", { silent = true })
+
+-- lsp restart
+vim.keymap.set("n", "<leader>ct", "<cmd>LspRestart<CR>", { silent = true })
 
 -- right to left text (NEOVIM add bidi support and my life is yours)
 vim.keymap.set("n", "<leader>rl", function()
