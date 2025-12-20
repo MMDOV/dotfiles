@@ -24,13 +24,11 @@ alias claer='clear'
 alias ls='eza -lh --group-directories-first --icons=auto'
 alias umirrors='sudo reflector \
   --protocol https \
-  --latest 200 \
+  --latest 100 \
   --sort rate \
   --fastest 15 \
   --delay 2 \
-  --connection-timeout 5 \
-  --verbose
-  --save /etc/pacman.d/mirrorlist \
+  --save "/etc/pacman.d/mirrorlist" \
   --threads 5'
 # Directories
 alias ..='cd ..'
