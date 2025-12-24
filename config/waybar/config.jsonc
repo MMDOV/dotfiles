@@ -17,16 +17,36 @@
         "custom/ping",
         "group/group-stats",
         "wireplumber",
+        "backlight",
         "battery",
         "tray",
         "group/group-power",
     ],
+
+    "custom/walker": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "walker"
+    },
+
+    "clock": {
+        "format": "{:%H:%M:%S. %a}",
+        "format-alt": "{:%Y/%m/%d}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "interval": 1,
+    },
 
     "hyprland/workspaces": {
         "active-only": false,
         "format": "{name}",
         "on-scroll-up": "hyprctl dispatch workspace -1",
         "on-scroll-down": "hyprctl dispatch workspace +1",
+    },
+
+    "backlight": {
+        "format": "{percent}% {icon}",
+        "format-icons": ["", "", "", "", "", "", "", "", ""],
+        "on-click": "~/personal/scripts/switch_backlight.sh"
     },
 
     "custom/ping": {
@@ -40,12 +60,6 @@
         "spacing": 10
     },
 
-    "clock": {
-        "format": "{:%H:%M:%S. %a}",
-        "format-alt": "{:%Y/%m/%d}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "interval": 1,
-    },
 
   "group/group-stats": {
     "orientation": "horizontal",
@@ -131,11 +145,6 @@
     "tooltip": false,
     "on-click": "poweroff"
 },
-"custom/walker": {
-    "format": "",
-    "tooltip": false,
-    "on-click": "walker"
-}
 
 }
 
