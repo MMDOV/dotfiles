@@ -7,10 +7,10 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
 -- chmod
-vim.keymap.set("n", "<leader>cx", "<cmd>!chmod +x %<CR>", { silent = true })
+vim.keymap.set("n", "<leader>cx", "<cmd>!chmod +x %<CR>", { silent = false })
 
 -- lsp restart
-vim.keymap.set("n", "<leader>ct", "<cmd>LspRestart<CR>", { silent = true })
+vim.keymap.set("n", "<leader>ct", "<cmd>LspRestart<CR>", { silent = false })
 
 -- right to left text (NEOVIM add bidi support and my life is yours)
 vim.keymap.set("n", "<leader>rl", function()
