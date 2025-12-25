@@ -15,7 +15,7 @@ paru -S --noconfirm --needed hyprland hyprlock hyprpicker hypridle hyprpaper
 paru -S --noconfirm --needed qt5-wayland qt6-wayland
 paru -S --noconfirm --needed xdg-desktop-portal-hyprland xdg-utils uwsm
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
-paru -S --noconfirm --needed playerctl easyeffects brightnessctl wlogout
+paru -S --noconfirm --needed playerctl easyeffects calf brightnessctl wlogout
 paru -S --noconfirm --needed \
   noto-fonts \
   noto-fonts-cjk \
