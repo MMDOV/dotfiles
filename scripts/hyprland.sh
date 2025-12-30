@@ -32,6 +32,8 @@ paru -S --noconfirm --needed dbus bc unzip fzf fastfetch curl wget tldr
 echo "Setting up hyprland config"
 chmod +x "$scripts/update-config.sh"
 $scripts/update-config.sh config hypr
+# Enable hyprpaer as a service
+systemctl --user enable --now hyprpaper.service
 
 # setup theme
 echo "Setting up theme"
