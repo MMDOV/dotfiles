@@ -15,6 +15,7 @@
 
     "modules-right": [
         "custom/ping",
+        "custom/vpn",
         "group/group-stats",
         "wireplumber",
         "backlight",
@@ -41,6 +42,13 @@
         "format": "{name}",
         "on-scroll-up": "hyprctl dispatch workspace -1",
         "on-scroll-down": "hyprctl dispatch workspace +1",
+    },
+    "custom/vpn": {
+      "format": "VPN: {}",
+      "on-click": "hyprctl dispatch togglespecialworkspace vpn",
+      "exec": "~/personal/scripts/vpn_status.sh tun0",
+      "return-type": "json",
+      "interval": 5
     },
 
     "backlight": {

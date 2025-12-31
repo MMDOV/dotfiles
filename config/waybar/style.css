@@ -2,6 +2,25 @@
     /* `otf-font-awesome` is required to be installed for icons */
     font-family: FontAwesome, Roboto, Helvetica, Arial, sans-serif;
     font-size: 13px;
+
+}
+#custom-vpn {
+    padding: 0 10px;
+    background: transparent;
+    color: #ffffff;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+#custom-vpn.connected {
+    color: #ffffff;
+}
+
+#custom-vpn.disconnected {
+    color: #7f849c;
+    box-shadow: none;
 }
 
 window#waybar {
@@ -81,9 +100,13 @@ button:hover {
     margin: 2px 0;
     color: #ffffff;
 }
-
 #workspaces button:hover {
     box-shadow: inset 0 -3px #33CCFF;
+    border-radius: 0;
+}
+
+#workspaces button.active:hover {
+    box-shadow: 0 0 0 2px #33CCFF, inset 0 -3px #33CCFF;
     border-radius: 0;
 }
 
