@@ -25,7 +25,7 @@ paru -S --noconfirm --needed \
   ttf-material-symbols-variable-git \
   ttf-dejavu \
   ttf-liberation
-paru -S --noconfirm --needed polkit polkit-gnome bicon-git breeze
+paru -S --noconfirm --needed polkit polkit-gnome bicon-git breeze yad
 paru -S --noconfirm --needed dbus bc unzip fzf fastfetch curl wget tldr
 
 # update hyprland config
