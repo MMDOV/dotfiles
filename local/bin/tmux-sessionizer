@@ -30,7 +30,7 @@ else
     "$HOME/.config"
   )
 
-  for d in "$HOME/dev"/*/; do
+  for d in "$HOME/dev"*/; do
     dirs+=("$d")
   done
   selected=$(find "${dirs[@]}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | fzf)
