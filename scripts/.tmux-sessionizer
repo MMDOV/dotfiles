@@ -1,23 +1,8 @@
 #!/usr/bin/env bash
 
 tmux new-window -dn dev
-FIRST=1
 
-for dir in $HOME/dev/*; do
-  echo "$dir"
-  dir="${dir%/}"
-
-  if [ $FIRST -eq 1 ]; then
-    tmux send-keys -t dev "cd $dir" C-m
-    tmux send-keys -t dev "clear" C-m
-    FIRST=0
-  else
-    tmux split-window -h -t dev
-    tmux send-keys -t dev "cd $dir" C-m
-    tmux send-keys -t dev "clear" C-m
-  fi
-done
-
-tmux select-layout -t dev tiled
+tmux send-keys -t dev "cd dev" C-m
+tmux send-keys -t dev "clear" C-m
 clear
 fastfetch
