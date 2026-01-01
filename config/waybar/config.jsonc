@@ -32,7 +32,7 @@
 
     "clock": {
         "format": "{:%H:%M:%S. %a}",
-        "format-alt": "{:%Y/%m/%d}",
+        "format-alt": "{:%B %m/%d}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "interval": 1,
     },
