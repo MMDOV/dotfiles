@@ -13,7 +13,7 @@ fi
 
 paru -S --noconfirm --needed hyprland hyprlock hyprpicker hypridle hyprpaper
 paru -S --noconfirm --needed qt5-wayland qt6-wayland
-paru -S --noconfirm --needed xdg-desktop-portal-hyprland xdg-utils uwsm
+paru -S --noconfirm --needed xdg-desktop-portal-hyprland xdg-utils xdg-desktop-portal-gtk uwsm
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
 paru -S --noconfirm --needed playerctl easyeffects calf brightnessctl wlogout
 paru -S --noconfirm --needed \
@@ -47,7 +47,7 @@ $scripts/walker.sh
 
 # setting up apps
 chmod +x "$scripts/install.sh"
-$scripts/install.sh kitty $scripts
+$scripts/install.sh foot $scripts
 $scripts/install.sh waybar $scripts
 $scripts/install.sh mako $scripts
 $scripts/install.sh fuzzel $scripts
