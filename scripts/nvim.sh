@@ -15,5 +15,9 @@ paru -S --noconfirm --needed nvim go python python-pip pyenv npm luarocks ripgre
 git clone https://github.com/LazyVim/starter ~/.config/nvim
 rm -rf ~/.config/nvim/.git
 
+chmod +x "$scripts/sync_brain.sh"
+chmod +x "$scripts/obsidian_git.sh"
+$scripts/obsidian_git.sh config nvim
+
 chmod +x "$scripts/update-config.sh"
 $scripts/update-config.sh config nvim
