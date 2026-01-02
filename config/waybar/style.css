@@ -29,7 +29,6 @@ button {
     background: transparent;
     color: #ffffff;
     margin: 0; 
-    transition: all 0.3s ease;
 }
 
 #workspaces button.active {
@@ -72,11 +71,6 @@ button {
     color: #ffffff;
 }
 
-#custom-vpn {
-    background: transparent;
-    transition: all 0.3s ease;
-}
-
 #custom-vpn.disconnected,
 #wireplumber.muted {
     color: #7f849c;
@@ -97,11 +91,6 @@ button {
 #battery.critical:not(.charging) {
     background-color: #f53c3c;
     color: #ffffff;
-    animation-name: blink;
-    animation-duration: 0.5s;
-    animation-timing-function: steps(12);
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
 }
 
 #tray > .passive {
