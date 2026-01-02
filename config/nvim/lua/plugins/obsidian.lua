@@ -43,6 +43,7 @@ return {
 					if not input or input == "" then
 						return
 					end
+					-- The plugin will now use 'input' exactly as the filename
 					vim.cmd("ObsidianNew projects/" .. input)
 				end)
 			end,
@@ -81,6 +82,11 @@ return {
 		picker = {
 			name = "fzf-lua",
 		},
+
+		-- FIX: Force the filename to match the input title exactly
+		note_id_func = function(title)
+			return title or tostring(os.time())
+		end,
 
 		workspaces = {
 			{
