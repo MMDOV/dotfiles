@@ -133,7 +133,7 @@
         "transition-left-to-right": false,
     },
     "modules": [
-        "custom/power", // First element is the "group leader" and won't ever be hidden
+        "custom/power",
         "custom/quit",
         "custom/reboot",
     ]
