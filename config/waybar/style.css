@@ -14,14 +14,45 @@ window#waybar.hidden {
     opacity: 0.2;
 }
 
-/* ######## Base button reset ######## */
+/* --- BUTTON RESET --- */
 button {
     box-shadow: inset 0 -3px transparent;
     border: none;
     border-radius: 0;
 }
 
-/* ######## Shared Padding & Color ######## */
+/* --- WORKSPACES --- */
+
+#workspaces button {
+    min-width: 35px;
+    padding: 0;
+    background: transparent;
+    color: #ffffff;
+    margin: 0; 
+    transition: all 0.3s ease;
+}
+
+#workspaces button.active {
+    box-shadow: inset 0 0 0 2px #33CCFF;
+    color: #ffffff;
+}
+
+#workspaces button.active:hover {
+    box-shadow: inset 0 0 0 2px #33CCFF, inset 0 -3px #33CCFF;
+}
+
+/* --- UNIFIED HOVER EFFECTS --- */
+#custom-walker:hover,
+#custom-vpn:hover,
+#wireplumber:hover,
+#backlight:hover,
+#workspaces button:hover,
+#group-power label.module:hover {
+    background: inherit;
+    box-shadow: inset 0 -3px #33CCFF;
+}
+
+/* --- MODULE STYLING --- */
 #clock,
 #battery,
 #backlight,
@@ -41,44 +72,13 @@ button {
     color: #ffffff;
 }
 
-/* ######## Unified Hover Effect ######## */
-button:hover,
-#custom-walker:hover,
-#custom-vpn:hover,
-#wireplumber:hover,
-#backlight:hover,
-#workspaces button:hover,
-#group-power label.module:hover {
-    background: inherit;
-    box-shadow: inset 0 -3px #33CCFF;
-    border-radius: 0;
-}
-
-/* ######## Module Specifics ######## */
-#workspaces button {
-    padding: 1px 6px;
-    background: transparent;
-    color: #ffffff;
-    border: none;
-    margin: 0 4px;
-}
-
-#workspaces button.active {
-    box-shadow: 0 0 0 2px #33CCFF;
-    margin: 2px 4px;
-    color: #ffffff;
-}
-
-#workspaces button.active:hover {
-    box-shadow: 0 0 0 2px #33CCFF, inset 0 -3px #33CCFF;
-}
-
 #custom-vpn {
     background: transparent;
     transition: all 0.3s ease;
 }
 
-#custom-vpn.disconnected {
+#custom-vpn.disconnected,
+#wireplumber.muted {
     color: #7f849c;
 }
 
@@ -102,10 +102,6 @@ button:hover,
     animation-timing-function: steps(12);
     animation-iteration-count: infinite;
     animation-direction: alternate;
-}
-
-#wireplumber.muted {
-    color: #7f849c;
 }
 
 #tray > .passive {
