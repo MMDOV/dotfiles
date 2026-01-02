@@ -51,6 +51,7 @@ button:hover,
 #group-power label.module:hover {
     background: inherit;
     box-shadow: inset 0 -3px #33CCFF;
+    border-radius: 0;
 }
 
 /* ######## Module Specifics ######## */
