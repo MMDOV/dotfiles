@@ -141,18 +141,18 @@
 "custom/quit": {
     "format": "󰗼",
     "tooltip": false,
-    "on-click": "hyprctl dispatch exit"
+    "on-click": "$HOME/personal/scripts/confirmation_menu.sh \"Exit Hyprland? \" \"hyprctl dispatch exit\""
 },
 "custom/reboot": {
     "format": "󰜉",
     "tooltip": false,
-    "on-click": "reboot"
+    "on-click": "$HOME/personal/scripts/confirmation_menu.sh \"Reboot? \" reboot"
 },
 "custom/power": {
     "format": "",
     "tooltip": false,
-    "on-click": "poweroff"
-},
+    "on-click": " $HOME/personal/scripts/confirmation_menu.sh \"Are you sure you wanna TURN YOUR FUCKING PC OFF? \" poweroff"
+}
 
 }
 
