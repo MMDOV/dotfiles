@@ -16,6 +16,7 @@ if [[ $selected_monitor == "Both" ]]; then
   exit 0
 fi
 
+sleep .1
 resolution=$(printf "$selected_monitor" | grep -Eo "[0-9]*x[0-9]*@" | grep -Eo "[0-9]*x[0-9]*")
 positions=$(printf "$selected_monitor" | grep -Eo "\s[0-9]*x[0-9]*" | grep -Eo "[0-9]*x[0-9]*")
 positions_1=$(printf "$positions" | grep -Eo "[0-9]*x" | grep -Eo "[0-9]*")
