@@ -54,7 +54,8 @@
     "backlight": {
         "format": "{percent}% {icon}",
         "format-icons": ["", "", "", "", "", "", "", "", ""],
-        "on-click": "~/personal/scripts/switch_backlight.sh"
+        "on-click": "~/personal/scripts/switch_backlight.sh",
+        "on-click-right": "~/personal/scripts/montior_toggle.sh"
     },
 
     "custom/ping": {
