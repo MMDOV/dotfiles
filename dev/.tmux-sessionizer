@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
 tmux new-window -dn scratch
+tmux new-window -dn opencode
 
+tmux send-keys -t scratch "clear" C-m
+
+tmux send-keys -t scratch "opencode ." C-m
 tmux send-keys -t scratch "clear" C-m
 
 clear
