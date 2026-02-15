@@ -1,0 +1,38 @@
+return {
+	--	"folke/snacks.nvim",
+	--	opts = {
+	--		picker = {
+	--			actions = {
+	--				-- This allows you to select files in Snacks and hit 'o'
+	--				-- to send them straight to Opencode Context.
+	--				opencode_send = function(picker)
+	--					local selected = picker:selected({ fallback = true })
+	--					if selected and #selected > 0 then
+	--						local files = {}
+	--						for _, item in ipairs(selected) do
+	--							if item.file then
+	--								table.insert(files, item.file)
+	--							end
+	--						end
+	--						picker:close()
+	--
+	--						-- Open Opencode and add files
+	--						require("opencode.core").open({ focus = "input", start_insert = true })
+	--						local context = require("opencode.context")
+	--						for _, file in ipairs(files) do
+	--							context.add_file(file)
+	--						end
+	--					end
+	--				end,
+	--			},
+	--			win = {
+	--				input = {
+	--					keys = {
+	--						-- Map 'o' inside the picker to send to Opencode
+	--						["o"] = { "opencode_send", mode = { "n", "i" } },
+	--					},
+	--				},
+	--			},
+	--		},
+	--	},
+}
