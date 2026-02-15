@@ -5,8 +5,8 @@ tmux new-window -dn opencode
 
 tmux send-keys -t scratch "clear" C-m
 
-tmux send-keys -t scratch "opencode ." C-m
-tmux send-keys -t scratch "clear" C-m
+tmux send-keys -t opencode "opencode ." C-m
+tmux send-keys -t opencode "clear" C-m
 
 clear
 vim .
