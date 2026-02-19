@@ -41,7 +41,6 @@
     "hyprland/workspaces": {
         "active-only": false,
         "format": "{name}",
-        "on-click-right": "hyprctl dispatch movecurrentworkspacetomonitor +1",
         "on-scroll-up": "hyprctl dispatch workspace -1",
         "on-scroll-down": "hyprctl dispatch workspace +1",
     },
