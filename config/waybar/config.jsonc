@@ -7,6 +7,7 @@
     "modules-left": [
         "custom/walker",
         "hyprland/workspaces",
+        "custom/move_workspace",
     ],
 
     "modules-center": [
@@ -40,8 +41,14 @@
     "hyprland/workspaces": {
         "active-only": false,
         "format": "{name}",
+        "on-click-right": "hyprctl dispatch movecurrentworkspacetomonitor +1",
         "on-scroll-up": "hyprctl dispatch workspace -1",
         "on-scroll-down": "hyprctl dispatch workspace +1",
+    },
+    "custom/move_workspace": {
+      "format": "->",
+      "on-click": "hyprctl dispatch movecurrentworkspacetomonitor +1",
+      "tooltip": false
     },
     "custom/vpn": {
       "format": "VPN: {}",
