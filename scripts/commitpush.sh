@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 if [ $# -eq 1 ]; then
-    commitmsg=$1
+  commitmsg=$1
 elif [ $# -eq 0 ]; then
-    commitmsg="fixes"
+  commitmsg="Automated Commit - $(date '+%Y-%m-%d %H:%M:%S')"
 else
-    echo "invalid format"
-    exit 1
+  echo "invalid format"
+  exit 1
 fi
 
 git -C "$HOME/personal" add .
