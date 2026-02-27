@@ -11,7 +11,7 @@ if ! command -v paru &>/dev/null; then
   $scripts/paru.sh
 fi
 
-paru -S --noconfirm --needed zen-browser-bin firefox chromium
+paru -S --noconfirm --needed firefox chromium vivaldi-snapshot vivaldi-snapshot-ffmpeg-codecs
 
 install -Dm644 $BASE_DIR/../local/share/chromium.desktop /usr/share/applications/chromium.desktop
 cp -f $BASE_DIR/../local/share/youtube-music.desktop $HOME/.local/share/applications/youtube-music.desktop
