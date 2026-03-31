@@ -1,0 +1,9 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Terminal=false
+Type=Application
+Name=Melodify
+Exec=/usr/bin/chromium --profile-directory=Default --app=https://desktop.melodify.app/ --disable-features=ExtensionManifestV2Unsupported
+Icon=spotify
+StartupWMClass=crx_cinhimbnkkaeohfgghhklpknlkffjgod

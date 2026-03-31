@@ -42,6 +42,7 @@ else
 fi
 if ! $configonly; then
   copyandreplace "$HOME/personal/local/bin" "$HOME/.local/bin"
+  copyandreplace "$HOME/personal/local/share" "$HOME/.local/share/applications/"
   copyandreplace "$HOME/personal/dev" "$HOME/dev"
   copyandreplace "$HOME/personal/home" "$HOME"
 fi
