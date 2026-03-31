@@ -6,4 +6,3 @@ Type=Application
 Name=Melodify
 Exec=/usr/bin/chromium --profile-directory=Default --app=https://desktop.melodify.app/ --disable-features=ExtensionManifestV2Unsupported
 Icon=spotify
-StartupWMClass=crx_cinhimbnkkaeohfgghhklpknlkffjgod
