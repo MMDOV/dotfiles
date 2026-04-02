@@ -104,7 +104,7 @@ declare -a modules=(
   "browsers"
   "nvim"
   "tmux"
-  "nemo"
+  "dolphin"
   "virt-manager"
   "extras"
   "zshsetup"
