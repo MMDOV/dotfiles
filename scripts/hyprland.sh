@@ -38,7 +38,7 @@ systemctl --user enable --now hyprpaper.service
 # setup theme
 echo "Setting up theme"
 chmod +x "$scripts/theme.sh"
-$scripts/theme.sh
+$scripts/theme.sh $scripts
 
 # setup walker
 echo "Setting up walker"
