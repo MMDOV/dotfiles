@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Configuration
+OUTPUT_DIR="$(dirname "$0")/twitch_data" # Defines the unified path (default: twitch_data folder next to this script)
 VOD_COUNT=10
 PROXY_SETTINGS="--proxy socks5h://127.0.0.1:1080"
 # To disable proxy, comment the line above and uncomment the one below:
@@ -17,8 +18,12 @@ if [ -z "$CHANNEL" ]; then
   exit 1
 fi
 
-OUTPUT_FILE="_vods_${CHANNEL}.json"
-CACHE_FILE="_last_id_${CHANNEL}.txt"
+# Ensure the output directory exists
+mkdir -p "$OUTPUT_DIR"
+
+# Set file paths using the unified directory
+OUTPUT_FILE="${OUTPUT_DIR}/_vods_${CHANNEL}.json"
+CACHE_FILE="${OUTPUT_DIR}/_last_id_${CHANNEL}.txt"
 TWITCH_URL="https://www.twitch.tv/${CHANNEL}/videos"
 
 # 2. Setup yt-dlp arguments
@@ -85,5 +90,5 @@ done <<<"$VOD_DATA"
 
 # 6. Save Output
 echo "$JSON_ARRAY" >"$OUTPUT_FILE"
-echo "Successfully generated $OUTPUT_FILE:"
+echo "Successfully generated files in $OUTPUT_DIR:"
 cat "$OUTPUT_FILE"
