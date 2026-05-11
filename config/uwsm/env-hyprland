@@ -1,0 +1,2 @@
+# Tell Hyprland which GPUs to use
+export AQ_DRM_DEVICES="/dev/dri/card1:/dev/dri/card0"

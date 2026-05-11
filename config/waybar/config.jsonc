@@ -41,17 +41,17 @@
     "hyprland/workspaces": {
         "active-only": false,
         "format": "{name}",
-        "on-scroll-up": "hyprctl dispatch workspace -1",
-        "on-scroll-down": "hyprctl dispatch workspace +1",
-    },
+        "on-scroll-up": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"-1\" })'",
+        "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"+1\" })'",
+  },
     "custom/move_workspace": {
       "format": "->",
-      "on-click": "hyprctl dispatch movecurrentworkspacetomonitor +1",
+      "on-click": "hyprctl dispatch 'hl.dsp.workspace.move({ monitor = \"+1\" })'",
       "tooltip": false
     },
     "custom/vpn": {
       "format": "VPN: {}",
-      "on-click": "hyprctl dispatch togglespecialworkspace vpn",
+      "on-click": "hyprctl dispatch 'hl.dsp.workspace.toggle_special(\"vpn\")'",
       "exec": "~/personal/scripts/vpn_status.sh tun0",
       "return-type": "json",
       "interval": 5

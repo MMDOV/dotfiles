@@ -1,0 +1,31 @@
+# --- Graphics / Hardware ---
+export LIBVA_DRIVER_NAME=nvidia
+export __GLX_VENDOR_LIBRARY_NAME=nvidia
+export GBM_BACKEND=nvidia-drm
+export NVD_BACKEND=direct
+export __VK_LAYER_NV_optimus=NVIDIA_only
+# Tell Hyprland which GPUs to use
+export AQ_DRM_DEVICES="/dev/dri/card1:/dev/dri/card0"
+
+# --- Toolkits ---
+export GDK_BACKEND="wayland,x11,*"
+export QT_QPA_PLATFORM="wayland;xcb"
+export QT_QPA_PLATFORMTHEME=qt5ct
+export QT_STYLE_OVERRIDE=kvantum
+export SDL_VIDEODRIVER=wayland
+export MOZ_ENABLE_WAYLAND=1
+export ELECTRON_OZONE_PLATFORM_HINT=auto
+export _JAVA_AWT_WM_NONREPARENTING=1
+
+# --- Input Methods ---
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+export SDL_IM_MODULE=fcitx
+export GLFW_IM_MODULE=ibus
+export INPUT_METHOD=fcitx
+
+# --- Session ---
+export XDG_SESSION_TYPE=wayland
+export XDG_CURRENT_DESKTOP=Hyprland
+export XDG_SESSION_DESKTOP=Hyprland
+export XCOMPOSEFILE="$HOME/.XCompose"
