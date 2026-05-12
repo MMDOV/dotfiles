@@ -26,7 +26,7 @@ hl.bind(
 hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("uwsm app -- hyprpicker -a"))
 
 -- Session
-hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("pkill waybar ; waybar &"))
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("systemctl --user restart --now waybar.service"))
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("$HOME/personal/scripts/montior_toggle.sh"))
 
