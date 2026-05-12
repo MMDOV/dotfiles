@@ -1,6 +1,5 @@
 hl.on("hyprland.start", function()
-	-- Bar, wallpaper, App launcher
-	hl.exec_cmd("uwsm app -- waybar &")
+	-- App launcher
 	hl.exec_cmd("elephant")
 	hl.exec_cmd("walker --gapplication-service")
 	-- Input method
