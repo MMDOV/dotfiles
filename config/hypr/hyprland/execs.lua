@@ -24,7 +24,7 @@ hl.on("hyprland.start", function()
 	-- Custom execs
 	hl.exec_cmd("uwsm app -- vivaldi")
 	hl.exec_cmd(
-		"uwsm app -- foot -e tmux new-session -d \\; run-shell '/home/mmdov/.local/bin/tmux-sessionizer $HOME' \\; attach",
+		"uwsm app -- kitty -e tmux new-session -d \\; run-shell '/home/mmdov/.local/bin/tmux-sessionizer $HOME' \\; attach",
 		{ workspace = "3" }
 	)
 	-- hl.exec_cmd("uwsm app -- Telegram", {workspace = "4 silent"})
@@ -33,8 +33,8 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("uwsm app -- teamspeak3", { workspace = "5 silent" })
 	hl.exec_cmd("uwsm app -- gio launch /home/mmdov/.local/share/applications/youtube-music.desktop")
 	-- hl.exec_cmd("uwsm app -- vesktop", { workspace = "5 silent" })
-	-- hl.exec_cmd("uwsm app -- foot -e '$HOME/dev/pyprojects/ponisha-automated/run_main.sh'", {workspace = "6 silent"})
-	hl.exec_cmd("uwsm app -- foot -e '/home/mmdov/clones/mhr-cfw/run.sh'", { workspace = "special:vpn silent" })
+	-- hl.exec_cmd("uwsm app -- kitty -e '$HOME/dev/pyprojects/ponisha-automated/run_main.sh'", {workspace = "6 silent"})
+	hl.exec_cmd("uwsm app -- kitty -e '/home/mmdov/clones/mhr-cfw/run.sh'", { workspace = "special:vpn silent" })
 	-- hl.exec_cmd("sudo torguard")
 	-- hl.exec_cmd("uwsm app -- hiddify")
 	-- hl.exec_cmd("uwsm app -- /opt/v2rayn-bin/v2rayN")
