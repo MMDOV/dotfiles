@@ -3,7 +3,7 @@ hl.window_rule({
 	opacity = "1 override 0.97 override",
 	tile = true,
 	workspace = "2 silent",
-	match = { class = "(Vivaldi-stable|chromium|zen|Vivaldi-snapshot)" },
+	match = { class = "(chromium|zen|([Vv]ivaldi)(.*))" },
 })
 
 -- music is on 6 dont question it
