@@ -3,7 +3,7 @@ local height = 268
 -- gap = 20
 
 hl.window_rule({
-	{ match = { title = "^(.*)(Copying|Moving|Creating)(.*)$", class = "org.kde.dolphin" } },
+	{ match = { title = "^(.*)([Cc]opying|[Mm]oving|[Cc]reating)(.*)$", class = "org.kde.dolphin" } },
 	float = true,
 	center = true,
 	size = { width, height },
