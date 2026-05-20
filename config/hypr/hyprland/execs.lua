@@ -39,7 +39,7 @@ hl.on("hyprland.start", function()
 		{ workspace = "special:vpn silent" }
 	)
 	hl.exec_cmd(
-		"uwsm app -- kitty -e '/home/mmdov/personal/scripts/sni_spoof.sh'",
+		"uwsm app -- kitty -e 'sudo /home/mmdov/personal/scripts/sni_spoof.sh'",
 		{ workspace = "special:vpn silent" }
 	)
 	-- hl.exec_cmd("sudo torguard")
