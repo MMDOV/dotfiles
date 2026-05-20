@@ -1,9 +1,9 @@
 local mainMod = "SUPER"
 
 -- Youtube music
-hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("playerctl next -p vivaldi"), { locked = true })
-hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("playerctl play-pause -p vivaldi"), { locked = true })
-hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("playerctl previous -p vivaldi"), { locked = true })
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("playerctl next -p chromium"), { locked = true })
+hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("playerctl play-pause -p chromium"), { locked = true })
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("playerctl previous -p chromium"), { locked = true })
 
 -- Spotify
 -- hl.bind(mainMod .. " + N",  hl.dsp.exec_cmd("playerctl next -p spotify"),       { locked = true })
