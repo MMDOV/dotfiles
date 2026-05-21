@@ -34,17 +34,18 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("uwsm app -- gio launch /home/mmdov/.local/share/applications/youtube-music.desktop")
 	-- hl.exec_cmd("uwsm app -- vesktop", { workspace = "5 silent" })
 	-- hl.exec_cmd("uwsm app -- kitty -e '$HOME/dev/pyprojects/ponisha-automated/run_main.sh'", {workspace = "6 silent"})
+	hl.exec_cmd("uwsm app -- kitty -e '/home/mmdov/clones/mhr-cfw/run.sh'", { workspace = "special:vpn silent" })
 	hl.exec_cmd(
 		"uwsm app -- kitty -e '/home/mmdov/clones/MasterHttpRelayVPN/start.sh'",
 		{ workspace = "special:vpn silent" }
 	)
-	hl.exec_cmd(
-		"uwsm app -- kitty -e 'sudo /home/mmdov/personal/scripts/sni_spoof.sh'",
-		{ workspace = "special:vpn silent" }
-	)
+	--hl.exec_cmd(
+	--	"uwsm app -- kitty -e sudo /home/mmdov/personal/scripts/sni_spoof.sh",
+	--	{ workspace = "special:vpn silent" }
+	--)
 	-- hl.exec_cmd("sudo torguard")
 	-- hl.exec_cmd("uwsm app -- hiddify")
-	hl.exec_cmd("uwsm app -- /opt/v2rayn-bin/v2rayN", { workspace = "special:vpn silent" })
+	-- hl.exec_cmd("uwsm app -- /opt/v2rayn-bin/v2rayN", { workspace = "special:vpn silent" })
 	-- hl.exec_cmd("uwsm app -- /usr/bin/happ")
 	-- hl.exec_cmd("uwsm app -- steam")
 end)

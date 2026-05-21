@@ -11,7 +11,7 @@ if ! command -v paru &>/dev/null; then
   $scripts/paru.sh
 fi
 
-paru -S --noconfirm --needed hyprland hyprlock hyprpicker hypridle hyprpaper
+paru -S --noconfirm --needed hyprland hyprlock hyprpicker hypridle hyprpaper hyprshutdown
 paru -S --noconfirm --needed qt5-wayland qt6-wayland
 paru -S --noconfirm --needed xdg-desktop-portal-hyprland xdg-utils xdg-desktop-portal-gtk uwsm
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist

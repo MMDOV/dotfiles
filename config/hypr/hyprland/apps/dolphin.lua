@@ -3,8 +3,8 @@ local height = 268
 -- gap = 20
 
 hl.window_rule({
-	{ match = { title = "^(.*)([Cc]opying|[Mm]oving|[Cc]reating)(.*)$", class = "org.kde.dolphin" } },
-	float = true,
+	{ match = { title = "^(.*)([Cc]opying|[Mm]oving|[Cc]reating)(.*)$" } },
+	tile = true,
 	center = true,
 	size = { width, height },
 	pin = true,

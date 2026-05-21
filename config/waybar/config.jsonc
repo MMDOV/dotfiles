@@ -148,7 +148,7 @@
 "custom/quit": {
     "format": "󰗼",
     "tooltip": false,
-    "on-click": "$HOME/personal/scripts/confirmation_menu.sh \"Exit Hyprland? \" \"hyprctl dispatch exit\""
+    "on-click": "$HOME/personal/scripts/confirmation_menu.sh \"Exit Hyprland? \" \"hyprshutdown\""
 },
 "custom/reboot": {
     "format": "󰜉",
