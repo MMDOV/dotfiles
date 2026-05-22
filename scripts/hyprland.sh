@@ -47,7 +47,7 @@ $scripts/walker.sh
 
 # setting up apps
 chmod +x "$scripts/install.sh"
-$scripts/install.sh foot $scripts
+$scripts/install.sh alacritty $scripts
 $scripts/install.sh waybar $scripts
 $scripts/install.sh mako $scripts
 $scripts/install.sh fuzzel $scripts
