@@ -10,32 +10,30 @@ bold_italic = { style = "Bold Italic" }
 size = 12.0
 
 [colors.primary]
-foreground = "#c0caf5"
-background = "#1a1b26"
+background = '#1a1b26'
+foreground = '#c0caf5'
 
-[colors.selection]
-text = "#c0caf5"
-background = "#33467C"
-
+# Normal colors
 [colors.normal]
-black = "#15161E"
-red = "#f7768e"
-green = "#9ece6a"
-yellow = "#e0af68"
-blue = "#7aa2f7"
-magenta = "#bb9af7"
-cyan = "#7dcfff"
-white = "#a9b1d6"
+black = '#15161e'
+red = '#f7768e'
+green = '#9ece6a'
+yellow = '#e0af68'
+blue = '#7aa2f7'
+magenta = '#bb9af7'
+cyan = '#7dcfff'
+white = '#a9b1d6'
 
+# Bright colors
 [colors.bright]
-black = "#414868"
-red = "#f7768e"
-green = "#9ece6a"
-yellow = "#e0af68"
-blue = "#7aa2f7"
-magenta = "#bb9af7"
-cyan = "#7dcfff"
-white = "#c0caf5"
+black = '#414868'
+red = '#ff899d'
+green = '#9fe044'
+yellow = '#faba4a'
+blue = '#8db0ff'
+magenta = '#c7a9ff'
+cyan = '#a4daff'
+white = '#c0caf5'
 
 [bell]
 duration = 0
