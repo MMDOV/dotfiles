@@ -1,7 +1,7 @@
 local mainMod = "SUPER"
 -- Terminal
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("uwsm app -- kitty"))
-hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("uwsm app -- kitty"))
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("uwsm app -- alacritty -e tmux a"))
+hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("uwsm app -- alacritty"))
 
 -- App launcher
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("walker"))
