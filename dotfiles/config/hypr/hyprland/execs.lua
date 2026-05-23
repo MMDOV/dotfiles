@@ -1,6 +1,6 @@
-local dotfilesRoot = os.getenv("DOTFILES_ROOT")
 local homeDir = os.getenv("HOME")
 hl.on("hyprland.start", function()
+	local dotfilesRoot = os.getenv("DOTFILES_ROOT")
 	-- App launcher
 	hl.exec_cmd("elephant")
 	hl.exec_cmd("walker --gapplication-service")

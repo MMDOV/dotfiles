@@ -46,6 +46,16 @@ echo "Setting up walker"
 chmod +x "$REPO_ROOT/scripts/helpers/walker.sh"
 "$REPO_ROOT/scripts/helpers/walker.sh"
 
+# setup DOTFILES_ROOT env variable
+echo setting up .profile
+PROFILE="$HOME/.profile"
+CUSTOM_CONFIG=$(
+  cat <<EOF
+export DOTFILES_ROOT=$REPO_ROOT
+EOF
+)
+echo "$CUSTOM_CONFIG" >>"$PROFILE"
+
 # setting up apps
 chmod +x "$REPO_ROOT/scripts/utils/install.sh"
 "$REPO_ROOT/scripts/utils/install.sh" alacritty
