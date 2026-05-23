@@ -5,7 +5,7 @@
 
 این یک مخزن شخصی برای راه‌اندازی Arch Linux و یک محیط دسکتاپ بر پایه Hyprland است.
 
-این مخزن شامل تنظیمات Hyprland، Waybar، Neovim، tmux، Yazi، Kitty/Foot، SDDM، تم‌های GTK/Qt و چندین اسکریپت برای نصب برنامه‌ها و کپی کردن کانفیگ‌ها در مسیرهای مناسب است.
+این مخزن شامل تنظیمات Hyprland، Waybar، Neovim، tmux، Yazi، Kitty/Foot/Alacritty، SDDM، تم‌های GTK/Qt و چندین اسکریپت برای نصب برنامه‌ها و کپی کردن کانفیگ‌ها در مسیرهای مناسب است.
 
 ## تصویر محیط
 

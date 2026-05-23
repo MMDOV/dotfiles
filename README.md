@@ -5,7 +5,7 @@
 
 A personal Arch Linux setup repository with configuration files and helper scripts for a Hyprland-based desktop environment.
 
-This repo contains dotfiles for Hyprland, Waybar, Neovim, tmux, Yazi, Kitty/Foot, SDDM, GTK/Qt theming, and a collection of scripts to install packages and copy configs into the right places.
+This repo contains dotfiles for Hyprland, Waybar, Neovim, tmux, Yazi, Kitty/Foot/Alacritty, SDDM, GTK/Qt theming, and a collection of scripts to install packages and copy configs into the right places.
 
 ## Screenshot
 
