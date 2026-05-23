@@ -9,7 +9,10 @@
 
 ## تصویر محیط
 
-![تصویر محیط دسکتاپ Hyprland](assets/screenshots/swappy-20260523_011221.png)
+![تصویر محیط دسکتاپ Hyprland](assets/screenshots/Hyprland_Desktop.png)
+![تصویر محیط دسکتاپ Hyprland 2](assets/screenshots/Nvim_btop.png)
+![تصویر محیط ادیتور نیوویم](assets/screenshots/Nvim_Editor.png)
+![تصویر محیط ِDolphin](assets/screenshots/Dolphin.png)
 
 ## محتویات
 
