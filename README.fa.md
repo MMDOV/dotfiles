@@ -9,9 +9,20 @@
 
 ## تصویر محیط
 
+### تصویر محیط دسکتاپ
+
 ![تصویر محیط دسکتاپ Hyprland](assets/screenshots/Hyprland_Desktop.png)
+
+### تصویر محیط دسکتاپ 2
+
 ![تصویر محیط دسکتاپ Hyprland 2](assets/screenshots/Nvim_btop.png)
+
+### تصویر محیط ادیتور نیوویم
+
 ![تصویر محیط ادیتور نیوویم](assets/screenshots/Nvim_Editor.png)
+
+### Dolphin
+
 ![تصویر محیط ِDolphin](assets/screenshots/Dolphin.png)
 
 ## محتویات

@@ -9,9 +9,20 @@ This repo contains dotfiles for Hyprland, Waybar, Neovim, tmux, Yazi, Kitty/Foot
 
 ## Screenshot
 
+### Hyprland desktop
+
 ![Hyprland desktop screenshot](assets/screenshots/Hyprland_Desktop.png)
+
+### Hyprland desktop 2
+
 ![Hyprland desktop screenshot 2](assets/screenshots/Nvim_btop.png)
+
+### Neovim Editor
+
 ![Neovim Editor screenshot](assets/screenshots/Nvim_Editor.png)
+
+### Dolphin
+
 ![Dolphin screenshot](assets/screenshots/Dolphin.png)
 
 ## Persian README
