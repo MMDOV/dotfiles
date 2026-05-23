@@ -44,9 +44,11 @@ pdot() {
     $REPO_ROOT/scripts/utils/commitpush.sh "\$@"
 }
 
-export TERMINAL=foot
+export TERMINAL=alacritty
 export SUDO_EDITOR=nvim
 export EDITOR=nvim
+export DOTFILES_ROOT=$REPO_ROOT
+
 
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 

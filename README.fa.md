@@ -42,10 +42,10 @@
 
 ## روش استفاده
 
-مخزن را در مسیر `~/personal` کلون کنید:
+مخزن را در مسیر `~/personal` کلون کنید(و یا هر مسیری که دوست دارید این مسیر رو من خودم استفاده میکنم):
 
 ```bash
-git clone <repo-url> ~/personal
+git clone https://github.com/MMDOV/dotfiles.git ~/personal
 cd ~/personal
 ```
 

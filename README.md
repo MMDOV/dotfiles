@@ -46,10 +46,10 @@ A Persian version is available at [`README.fa.md`](README.fa.md).
 
 ## Usage
 
-Clone the repo into `~/personal`:
+Clone the repo into `~/personal` (or any place you want this is what I use usually):
 
 ```bash
-git clone <repo-url> ~/personal
+git clone https://github.com/MMDOV/dotfiles.git ~/personal
 cd ~/personal
 ```
 
