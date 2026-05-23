@@ -60,8 +60,8 @@
     "backlight": {
         "format": "{percent}% {icon}",
         "format-icons": ["", "", "", "", "", "", "", "", ""],
-        "on-click": "~/personal/scripts/switch_backlight.sh",
-        "on-click-right": "~/.config/hypr/hyprland/scripts/montior_toggle.sh"
+        "on-click": "~/.config/waybar/scripts/switch_backlight.sh",
+        "on-click-right": "~/.config/waybar/scripts/montior_toggle.sh"
     },
 
     "custom/ping": {
@@ -148,17 +148,17 @@
 "custom/quit": {
     "format": "󰗼",
     "tooltip": false,
-    "on-click": "$HOME/personal/scripts/confirmation_menu.sh \"Exit Hyprland? \" \"hyprshutdown\""
+    "on-click": "$HOME/.config/waybar/scripts/confirmation_menu.sh \"Exit Hyprland? \" \"hyprshutdown\""
 },
 "custom/reboot": {
     "format": "󰜉",
     "tooltip": false,
-    "on-click": "$HOME/personal/scripts/confirmation_menu.sh \"Reboot? \" reboot"
+    "on-click": "$HOME/.config/waybar/scripts/confirmation_menu.sh \"Reboot? \" reboot"
 },
 "custom/power": {
     "format": "",
     "tooltip": false,
-    "on-click": " $HOME/personal/scripts/confirmation_menu.sh \"Are you sure you wanna TURN YOUR FUCKING PC OFF? \" poweroff"
+    "on-click": " $HOME/.config/waybar/scripts/confirmation_menu.sh \"Are you sure you wanna TURN YOUR FUCKING PC OFF? \" poweroff"
 }
 
 }
