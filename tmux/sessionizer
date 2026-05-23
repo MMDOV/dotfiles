@@ -1,18 +1,5 @@
 #!/usr/bin/env bash
 
-# Detect if we're running from the repo or from installed location
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-if [[ -f "$SCRIPT_DIR/../tmux/sessions/home.sh" ]]; then
-  # Running from repo
-  REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-else
-  # Running from installed location (~/.local/bin)
-  # Use XDG_CONFIG_HOME or fallback to finding the repo
-  REPO_ROOT="${DOTFILES_ROOT:-$HOME/personal}"
-fi
-
-SESSIONS_DIR="$REPO_ROOT/tmux/sessions"
-
 switch_to() {
   if [[ -z $TMUX ]]; then
     tmux attach-session -t $1
@@ -27,11 +14,11 @@ has_session() {
 
 hydrate() {
   if [ $2 == "$HOME" ]; then
-    tmux send-keys -t $1 "source $SESSIONS_DIR/home.sh" c-M
+    tmux send-keys -t $1 "source $DOTFILES_ROOT/tmux/sessions/home.sh" c-M
   elif [ -f $2/.tmux-sessionizer ]; then
     tmux send-keys -t $1 "source $2/.tmux-sessionizer" c-M
   else
-    tmux send-keys -t $1 "source $SESSIONS_DIR/personal.sh" c-M
+    tmux send-keys -t $1 "source $DOTFILES_ROOT/tmux/sessions/personal.sh" c-M
   fi
 }
 
