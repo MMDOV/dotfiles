@@ -52,7 +52,7 @@
     "custom/vpn": {
       "format": "VPN: {}",
       "on-click": "hyprctl dispatch 'hl.dsp.workspace.toggle_special(\"vpn\")'",
-      "exec": "~/personal/scripts/vpn_status.sh tun0",
+      "exec": "~/.config/waybar/scripts/vpn_status.sh tun0",
       "return-type": "json",
       "interval": 5
     },
@@ -61,11 +61,11 @@
         "format": "{percent}% {icon}",
         "format-icons": ["", "", "", "", "", "", "", "", ""],
         "on-click": "~/personal/scripts/switch_backlight.sh",
-        "on-click-right": "~/personal/scripts/montior_toggle.sh"
+        "on-click-right": "~/.config/hypr/hyprland/scripts/montior_toggle.sh"
     },
 
     "custom/ping": {
-        "exec": "~/personal/scripts/ping-status.sh",
+        "exec": "~/.config/waybar/scripts/ping-status.sh",
         "interval": 1,
         "return-type": "json",
         "format": "{}",
