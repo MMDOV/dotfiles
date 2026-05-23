@@ -13,7 +13,7 @@ check_ping() {
   echo "$ping_output" | awk -F'time=' '{print $2}' | awk '{if ($1 > 0 && $1 < 1) exit 0; else exit 1}'
 }
 
-if ip link show "$IFACE" >/dev/null 2>&1 || check_ping; then
+if ip link show "$IFACE" >/dev/null 2>&1 || check_ping | ss -tuln | grep -q ":8085\|:8086\|:8087\|:1080 "; then
   printf '{"text": "", "class": "connected", "tooltip": "Connected"}\n'
 else
   printf '{"text": "", "class": "disconnected", "tooltip": "Disconnected"}\n'
