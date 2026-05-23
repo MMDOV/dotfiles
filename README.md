@@ -20,7 +20,6 @@ A Persian version is available at [`README.fa.md`](README.fa.md).
 - `assets/` - screenshots and wallpapers
 - `dotfiles/` - configuration files organized by target location
   - `config/` - application configs for `~/.config/`
-  - `home/` - home-directory files like `.tmux.conf`
   - `local/` - local binaries and desktop entries for `~/.local/`
   - `system/` - system-level Arch config files like `pacman.conf` and `makepkg.conf`
 - `install/` - installation scripts organized by category
