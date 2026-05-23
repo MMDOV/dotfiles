@@ -43,7 +43,7 @@ else
     "$HOME/.config"
   )
 
-  for d in "$HOME/dev"*/; do
+  for d in "$HOME/Projects"*/; do
     dirs+=("$d")
   done
   for d in "$HOME/clones"*/; do

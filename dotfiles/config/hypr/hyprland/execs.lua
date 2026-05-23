@@ -33,7 +33,7 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("uwsm app -- teamspeak3", { workspace = "5 silent" })
 	hl.exec_cmd("uwsm app -- gio launch /home/mmdov/.local/share/applications/youtube-music.desktop")
 	-- hl.exec_cmd("uwsm app -- vesktop", { workspace = "5 silent" })
-	-- hl.exec_cmd("uwsm app -- alacritty -e '$HOME/dev/pyprojects/ponisha-automated/run_main.sh'", {workspace = "6 silent"})
+	-- hl.exec_cmd("uwsm app -- alacritty -e '$HOME/Projects/ponisha-automated/run_main.sh'", {workspace = "6 silent"})
 	hl.exec_cmd("uwsm app -- alacritty -e '/home/mmdov/clones/mhr-cfw/run.sh'", { workspace = "special:vpn silent" })
 	hl.exec_cmd(
 		"uwsm app -- alacritty -e '/home/mmdov/clones/MasterHttpRelayVPN/start.sh'",

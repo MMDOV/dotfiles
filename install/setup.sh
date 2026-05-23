@@ -133,12 +133,12 @@ done
 if $DRY_RUN; then
   print_action "Would enable sddm"
   print_action "Would enable NetworkManager"
-  print_action "Would create directory: $HOME/dev/"
+  print_action "Would create directory: $HOME/Projects/"
 else
   print_msg "Enabling services"
   sudo systemctl enable sddm
   sudo systemctl enable NetworkManager
-  mkdir -p "$HOME/dev/"
+  mkdir -p "$HOME/Projects/"
 fi
 
 print_msg "Done."

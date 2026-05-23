@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-OUTPUT_DIR="$HOME/dev/twitch_data" # Defines the unified path (default: twitch_data folder next to this script)
+OUTPUT_DIR="$HOME/twitch_data"
 VOD_COUNT=10
 PROXY_SETTINGS="--proxy socks5h://127.0.0.1:1080"
 # To disable proxy, comment the line above and uncomment the one below:
