@@ -7,27 +7,43 @@ A personal Arch Linux setup repository with configuration files and helper scrip
 
 This repo contains dotfiles for Hyprland, Waybar, Neovim, tmux, Yazi, Kitty/Foot, SDDM, GTK/Qt theming, and a collection of scripts to install packages and copy configs into the right places.
 
+## Screenshot
+
+![Hyprland desktop screenshot](assets/screenshots/swappy-20260523_011221.png)
+
 ## Persian README
 
 A Persian version is available at [`README.fa.md`](README.fa.md).
 
 ## What's inside
 
-- `config/` - application configs, mostly intended for `~/.config/`
-- `home/` - home-directory files such as `.tmux.conf`
-- `local/` - local binaries and desktop entries for `~/.local/`
-- `scripts/` - setup, install, update, and utility scripts
-- `sddm/` - SDDM configuration and theme files
-- `system/` - system-level Arch config files like `pacman.conf` and `makepkg.conf`
-- `tmux/` - tmux plugins/themes
-- `tokyonight-qt/` - Qt/Kvantum Tokyonight theme files
+- `assets/` - screenshots and wallpapers
+- `dotfiles/` - configuration files organized by target location
+  - `config/` - application configs for `~/.config/`
+  - `home/` - home-directory files like `.tmux.conf`
+  - `local/` - local binaries and desktop entries for `~/.local/`
+  - `system/` - system-level Arch config files like `pacman.conf` and `makepkg.conf`
+- `install/` - installation scripts organized by category
+  - `core/` - core system installers (pacman, paru, hyprland, nvim, tmux, etc.)
+  - `desktop/` - desktop environment installers (sddm, theme)
+  - `setup.sh` - main orchestrator script
+- `scripts/` - utility and helper scripts
+  - `utils/` - daily utilities (update-config, install, commitpush, sync_brain, etc.)
+  - `helpers/` - standalone helper scripts (vpn-bypass, ping-status, etc.)
+- `themes/` - theme files
+  - `tokyonight-qt/` - Qt/Kvantum Tokyonight theme files
+  - `sddm/` - SDDM configuration and theme files
+- `tmux/` - tmux configuration and session management
+  - `.tmux.conf` - tmux configuration
+  - `sessionizer` - tmux session manager script
+  - `sessions/` - session initialization scripts
 
 ## Main scripts
 
-- `scripts/setup.sh` - runs the main setup modules for a fresh system
-- `scripts/update-config.sh` - copies repo configs into the matching local locations
-- `scripts/install.sh` - installs a package with `paru` and copies its matching config
-- Individual scripts like `hyprland.sh`, `nvim.sh`, `tmux.sh`, `browsers.sh`, `pipewire.sh`, and `bluetooth.sh` install/configure specific parts of the system
+- `install/setup.sh` - runs the main setup modules for a fresh system
+- `scripts/utils/update-config.sh` - copies repo configs into the matching local locations
+- `scripts/utils/install.sh` - installs a package with `paru` and copies its matching config
+- Individual installers in `install/core/` like `hyprland.sh`, `nvim.sh`, `tmux.sh`, `pipewire.sh`, and `bluetooth.sh` install/configure specific parts of the system
 
 ## Usage
 
@@ -41,37 +57,37 @@ cd ~/personal
 Run a dry run first:
 
 ```bash
-./scripts/setup.sh --dry-run
+./install/setup.sh --dry-run
 ```
 
 Run the full setup:
 
 ```bash
-./scripts/setup.sh
+./install/setup.sh
 ```
 
 You can also run only specific modules:
 
 ```bash
-./scripts/setup.sh --only hyprland,nvim,tmux
+./install/setup.sh --only hyprland,nvim,tmux
 ```
 
 Or skip modules:
 
 ```bash
-./scripts/setup.sh --skip drivers,sddm
+./install/setup.sh --skip drivers,sddm
 ```
 
 To copy configs after editing them in the repo:
 
 ```bash
-./scripts/update-config.sh
+./scripts/utils/update-config.sh
 ```
 
 To copy only one config folder, for example Neovim:
 
 ```bash
-./scripts/update-config.sh config nvim
+./scripts/utils/update-config.sh config nvim
 ```
 
 ## Notes
@@ -79,4 +95,5 @@ To copy only one config folder, for example Neovim:
 - This setup is mainly for Arch Linux and uses `pacman` and `paru`.
 - Some scripts require `sudo` and may enable system services.
 - Some scripts overwrite existing config files in places like `~/.config`, `~/.local`, and `/etc`.
-- Review scripts before running them on a new machine, especially `scripts/setup.sh`, `scripts/pacman.sh`, `scripts/drivers.sh`, and `scripts/sddm.sh`.
+- Review scripts before running them on a new machine, especially `install/setup.sh`, `install/core/pacman.sh`, `install/core/drivers.sh`, and `install/desktop/sddm.sh`.
+- All scripts now use `REPO_ROOT` detection and work regardless of where the repo is cloned.

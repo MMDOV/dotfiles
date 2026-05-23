@@ -7,23 +7,39 @@
 
 این مخزن شامل تنظیمات Hyprland، Waybar، Neovim، tmux، Yazi، Kitty/Foot، SDDM، تم‌های GTK/Qt و چندین اسکریپت برای نصب برنامه‌ها و کپی کردن کانفیگ‌ها در مسیرهای مناسب است.
 
+## تصویر محیط
+
+![تصویر محیط دسکتاپ Hyprland](assets/screenshots/swappy-20260523_011221.png)
+
 ## محتویات
 
-- `config/` - تنظیمات برنامه‌ها، بیشتر برای مسیر `~/.config/`
-- `home/` - فایل‌های مربوط به پوشه home، مثل `.tmux.conf`
-- `local/` - فایل‌های محلی و desktop entry ها برای `~/.local/`
-- `scripts/` - اسکریپت‌های نصب، راه‌اندازی، آپدیت و ابزارهای کمکی
-- `sddm/` - تنظیمات و فایل‌های تم SDDM
-- `system/` - فایل‌های سیستمی Arch مثل `pacman.conf` و `makepkg.conf`
-- `tmux/` - پلاگین‌ها و تم‌های tmux
-- `tokyonight-qt/` - فایل‌های تم Tokyonight برای Qt/Kvantum
+- `assets/` - تصاویر و والپیپرها
+- `dotfiles/` - فایل‌های تنظیمات سازمان‌دهی شده بر اساس مقصد نصب
+  - `config/` - تنظیمات برنامه‌ها برای `~/.config/`
+  - `home/` - فایل‌های پوشه home مثل `.tmux.conf`
+  - `local/` - فایل‌های محلی و desktop entry ها برای `~/.local/`
+  - `system/` - فایل‌های سیستمی Arch مثل `pacman.conf` و `makepkg.conf`
+- `install/` - اسکریپت‌های نصب سازمان‌دهی شده بر اساس دسته‌بندی
+  - `core/` - نصب‌کننده‌های اصلی سیستم (pacman، paru، hyprland، nvim، tmux و غیره)
+  - `desktop/` - نصب‌کننده‌های محیط دسکتاپ (sddm، theme)
+  - `setup.sh` - اسکریپت اصلی هماهنگ‌کننده
+- `scripts/` - اسکریپت‌های کمکی و ابزاری
+  - `utils/` - ابزارهای روزمره (update-config، install، commitpush، sync_brain و غیره)
+  - `helpers/` - اسکریپت‌های کمکی مستقل (vpn-bypass، ping-status و غیره)
+- `themes/` - فایل‌های تم
+  - `tokyonight-qt/` - فایل‌های تم Tokyonight برای Qt/Kvantum
+  - `sddm/` - تنظیمات و فایل‌های تم SDDM
+- `tmux/` - تنظیمات tmux و مدیریت session
+  - `.tmux.conf` - فایل تنظیمات tmux
+  - `sessionizer` - اسکریپت مدیریت session های tmux
+  - `sessions/` - اسکریپت‌های راه‌اندازی session
 
 ## اسکریپت‌های اصلی
 
-- `scripts/setup.sh` - اجرای ماژول‌های اصلی برای راه‌اندازی سیستم
-- `scripts/update-config.sh` - کپی کردن کانفیگ‌های داخل مخزن به مسیرهای محلی
-- `scripts/install.sh` - نصب یک پکیج با `paru` و کپی کردن کانفیگ مربوط به آن
-- اسکریپت‌هایی مثل `hyprland.sh`، `nvim.sh`، `tmux.sh`، `browsers.sh`، `pipewire.sh` و `bluetooth.sh` برای نصب و تنظیم بخش‌های جداگانه سیستم هستند
+- `install/setup.sh` - اجرای ماژول‌های اصلی برای راه‌اندازی سیستم
+- `scripts/utils/update-config.sh` - کپی کردن کانفیگ‌های داخل مخزن به مسیرهای محلی
+- `scripts/utils/install.sh` - نصب یک پکیج با `paru` و کپی کردن کانفیگ مربوط به آن
+- نصب‌کننده‌های جداگانه در `install/core/` مثل `hyprland.sh`، `nvim.sh`، `tmux.sh`، `pipewire.sh` و `bluetooth.sh` برای نصب و تنظیم بخش‌های مختلف سیستم
 
 ## روش استفاده
 
@@ -37,37 +53,37 @@ cd ~/personal
 اول dry run اجرا کنید:
 
 ```bash
-./scripts/setup.sh --dry-run
+./install/setup.sh --dry-run
 ```
 
 برای اجرای کامل نصب:
 
 ```bash
-./scripts/setup.sh
+./install/setup.sh
 ```
 
 برای اجرای فقط چند ماژول مشخص:
 
 ```bash
-./scripts/setup.sh --only hyprland,nvim,tmux
+./install/setup.sh --only hyprland,nvim,tmux
 ```
 
 برای رد کردن چند ماژول:
 
 ```bash
-./scripts/setup.sh --skip drivers,sddm
+./install/setup.sh --skip drivers,sddm
 ```
 
 برای کپی کردن کانفیگ‌ها بعد از تغییر دادن آن‌ها در مخزن:
 
 ```bash
-./scripts/update-config.sh
+./scripts/utils/update-config.sh
 ```
 
 برای کپی کردن فقط یک پوشه کانفیگ، مثلا Neovim:
 
 ```bash
-./scripts/update-config.sh config nvim
+./scripts/utils/update-config.sh config nvim
 ```
 
 ## نکته‌ها
@@ -75,7 +91,8 @@ cd ~/personal
 - این setup بیشتر برای Arch Linux نوشته شده و از `pacman` و `paru` استفاده می‌کند.
 - بعضی اسکریپت‌ها به `sudo` نیاز دارند و ممکن است سرویس‌های سیستمی را فعال کنند.
 - بعضی اسکریپت‌ها فایل‌های کانفیگ موجود را در مسیرهایی مثل `~/.config`، `~/.local` و `/etc` بازنویسی می‌کنند.
-- قبل از اجرا روی یک سیستم جدید، بهتر است اسکریپت‌ها را بررسی کنید؛ مخصوصا `scripts/setup.sh`، `scripts/pacman.sh`، `scripts/drivers.sh` و `scripts/sddm.sh`.
+- قبل از اجرا روی یک سیستم جدید، بهتر است اسکریپت‌ها را بررسی کنید؛ مخصوصا `install/setup.sh`، `install/core/pacman.sh`، `install/core/drivers.sh` و `install/desktop/sddm.sh`.
+- تمام اسکریپت‌ها اکنون از تشخیص `REPO_ROOT` استفاده می‌کنند و صرف‌نظر از محل کلون مخزن کار می‌کنند.
 
 ## نسخه انگلیسی
 
