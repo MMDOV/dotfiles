@@ -9,7 +9,7 @@ else
   PROXYPORT=10808
 fi
 
-EXCLUDED_IPS=("104.19.229.21" "212.33.201.77")
+EXCLUDED_IPS=("172.67.139.236" "212.33.201.77")
 
 sudo ip tuntap add mode tun dev tun0
 sudo ip addr add 198.18.0.1/15 dev tun0

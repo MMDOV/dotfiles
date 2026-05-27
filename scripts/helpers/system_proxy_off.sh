@@ -2,7 +2,7 @@
 
 GATEWAY_IP=$(ip route show default | awk '/default/ {print $3}')
 INTERFACE_NAME=$(ip route show default | awk '/default/ {print $5}')
-EXCLUDED_IPS=("104.19.229.21" "212.33.201.77")
+EXCLUDED_IPS=("172.67.139.236" "212.33.201.77")
 
 sudo ip route del default dev tun0 metric 1
 

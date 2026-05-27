@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define an array of TeamSpeak server IPs
-TS_IPS=("45.81.17.138" "5.42.217.174")
+TS_IPS=("45.81.17.138" "5.42.217.174" "212.33.201.77")
 
 # Check for an optional argument to add an extra IP
 if [[ -n "$1" ]]; then
