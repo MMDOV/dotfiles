@@ -122,10 +122,10 @@ print_msg "Refreshing font cache..."
 fc-cache -fv >/dev/null || print_error "Failed to refresh font cache."
 
 print_msg "Applying GTK and Dark Mode settings..."
-gsettings set org.gnome.desktop.interface gtk-theme "Tokyonight-Dark" || true
-gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" || true
-gsettings set org.gnome.desktop.interface font-name "Rubik 9" || true
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' || true
+sudo -u "$SUDO_USER" gsettings set org.gnome.desktop.interface gtk-theme "Tokyonight-Dark" || true
+sudo -u "$SUDO_USER" gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" || true
+sudo -u "$SUDO_USER" gsettings set org.gnome.desktop.interface font-name "Rubik 9" || true
+sudo -u "$SUDO_USER" gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' || true
 
 print_msg "Theme setup complete! Restart your applications or log out and log back in to apply changes."
 print_msg "If themes/icons/fonts don't apply correctly, try running 'lxappearance' or 'qt5ct/qt6ct' manually."
