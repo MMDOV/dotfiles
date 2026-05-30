@@ -35,7 +35,7 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("uwsm app -- thunderbird", { workspace = "4 silent" })
 	hl.exec_cmd("uwsm app -- teamspeak3", { workspace = "5 silent" })
 	hl.exec_cmd("uwsm app -- discord", { workspace = "5 silent" })
-	hl.exec_cmd("uwsm app -- gio launch " .. homeDir .. "/.local/share/applications/youtube-music.desktop")
+	-- hl.exec_cmd("uwsm app -- gio launch " .. homeDir .. "/.local/share/applications/youtube-music.desktop")
 	hl.exec_cmd("uwsm app -- dolphin", { workspace = "7 silent" })
 	--hl.exec_cmd(
 	--	"uwsm app -- alacritty -e '" .. homeDir .. "/Projects/ponisha-automated/run_main.sh'",
