@@ -50,12 +50,12 @@ hl.on("hyprland.start", function()
 		"uwsm app -- alacritty -e '" .. homeDir .. "/clones/MasterHttpRelayVPN/start.sh'",
 		{ workspace = "special:vpn silent" }
 	)
+	hl.exec_cmd("uwsm app -- hiddify.desktop", { workspace = "special:vpn silent" })
 	-- hl.exec_cmd(
 	-- 	"uwsm app -- alacritty -e sudo " .. dotfilesRoot .. "/scripts/helpers/sni_spoof.sh",
 	-- 	{ workspace = "special:vpn silent" }
 	-- )
 	-- hl.exec_cmd("sudo torguard")
-	hl.exec_cmd("uwsm app -- sudo hiddify")
 	-- hl.exec_cmd("uwsm app -- /opt/v2rayn-bin/v2rayN", { workspace = "special:vpn silent" })
 	-- hl.exec_cmd("uwsm app -- /usr/bin/happ", { workspace = "special:vpn silent" })
 	-- hl.exec_cmd("uwsm app -- steam")
