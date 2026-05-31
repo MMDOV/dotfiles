@@ -1,1 +1,5 @@
-hl.window_rule({ match = { class = "(TorGuard|v2rayN|hiddify|Happ)" }, tag = "+vpn", workspace = "special:vpn silent" })
+hl.window_rule({
+	match = { class = "([Tt]or[Gg]uard|v2rayN|(.*)([Hh]iddify)(.*)|[Hh]app)" },
+	tag = "+vpn",
+	workspace = "special:vpn silent",
+})
