@@ -1,32 +1,50 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
+## Project Structure
 
-This repository is a personal Arch Linux dotfiles and automation setup. `dotfiles/` mirrors target install locations: `dotfiles/config/` maps to `~/.config`, `dotfiles/local/` maps to `~/.local`, and `dotfiles/system/` contains system-level files such as `pacman.conf` and `makepkg.conf`. `install/core/` contains focused setup scripts for major components such as Hyprland, Neovim, gaming, and `paru`. `scripts/utils/` holds daily maintenance commands, while `scripts/helpers/` contains standalone launchers and workflow helpers. `themes/`, `assets/`, and `tmux/` store visual assets, screenshots, themes, and tmux session tooling.
+- `dotfiles/config/` -> `~/.config/`
+- `dotfiles/local/` -> `~/.local/` (bin, share/applications)
+- `dotfiles/system/` -> `/etc/` (pacman.conf, makepkg.conf) - requires sudo
+- `install/core/` & `install/desktop/` - focused setup modules (hyprland, nvim, gaming, etc.)
+- `scripts/utils/` - daily maintenance (sync configs, install, update)
+- `scripts/helpers/` - standalone launchers and workflow tools
+- `tmux/` - tmux config and sessionizer script
+- `themes/`, `assets/` - visual assets and SDDM/Qt themes
 
-## Build, Test, and Development Commands
+> Check `dotfiles/config/hypr/AGENTS.md` before editing Hyprland configs. It overrides this file for that subtree.
 
-There is no compiled build step; most changes are shell scripts or config files. Useful commands:
+## Key Commands
 
-- `bash -n scripts/utils/update-config.sh` checks shell syntax for one script.
-- `find scripts install -name '*.sh' -print0 | xargs -0 bash -n` checks all shell scripts.
-- `./scripts/utils/update-config.sh` copies edited configs into their local target paths.
-- `./install/core/hyprland.sh` runs a focused installer; review before executing because it may install packages or modify system state.
+- Validate all shell scripts: `find scripts install -name '*.sh' -print0 | xargs -0 bash -n`
+- Validate single script: `bash -n <script>`
+- Preview setup without changes: `./install/setup.sh --dry-run`
+- Run only specific modules: `./install/setup.sh --only hyprland,nvim`
+- Skip modules: `./install/setup.sh --skip drivers,sddm`
+- Sync all tracked configs: `./scripts/utils/update-config.sh`
+- Sync one config only: `./scripts/utils/update-config.sh config nvim`
+- Reload Hyprland after config changes: `hyprctl reload`
 
-Run commands from the repository root unless a script documents another working directory.
+## Conventions
 
-## Coding Style & Naming Conventions
+- Bash scripts: `#!/usr/bin/env bash`, quoted variables, lowercase kebab-case filenames (e.g., `vpn-bypass.sh`), idempotent where possible.
+- Use `REPO_ROOT` derived from script location, never hardcode `~/personal`.
+- Preserve existing indentation and syntax for Hyprland, Neovim, Waybar, tmux, and theme files.
+- Lua configs: clear module boundaries under `dotfiles/config/hypr/hyprland/`; separate routing, rules, keybinds, and exec logic.
 
-Use Bash for automation scripts with `#!/usr/bin/env bash`, quoted variables, descriptive function names, and lowercase kebab-case filenames such as `vpn-bypass.sh`. Keep scripts idempotent where possible and prefer explicit paths derived from a detected repository root. For Lua configs, use clear module boundaries under `dotfiles/config/hypr/hyprland/` and keep routing, rules, keybinds, and exec logic separated. Preserve existing config syntax and indentation for Hyprland, Neovim, Waybar, tmux, and theme files.
+## Testing
 
-## Testing Guidelines
+No formal test suite. Shell scripts must pass `bash -n` before running.
+For desktop config changes: copy/symlink, reload the tool, and verify live behavior:
 
-No formal test framework is configured. Validate shell edits with `bash -n` before running them. For desktop config changes, copy or symlink the config, reload the affected tool, and test the behavior directly: `hyprctl reload` for Hyprland, open Neovim for Lua plugin changes, or restart Waybar for bar changes. Include manual verification notes for changes that affect monitors, startup services, keybinds, or package installation.
+- `hyprctl reload` for Hyprland changes
+- Restart Waybar for bar changes
+- Open Neovim for Lua plugin changes
+- Restart tmux server or source `.tmux.conf` for tmux changes
 
-## Commit & Pull Request Guidelines
+Verify scripts that use `sudo`, install packages, enable services, or overwrite `~/.config`, `~/.local`, or `/etc` before execution.
 
-Recent history contains automated commits like `Automated Commit - 2026-05-23 22:42:32`. For manual commits, prefer concise imperative messages such as `Update Hyprland workspace rules` or `Add tmux session helper`. Pull requests should explain the workflow impact, list validation commands, call out Arch/hardware assumptions, and include screenshots for visual changes.
+## Notes
 
-## Agent-Specific Instructions
-
-Check for nested `AGENTS.md` files before editing subdirectories. In particular, `dotfiles/config/hypr/AGENTS.md` contains Hyprland-specific guidance that overrides this root guide for files under that path.
+- Target is Arch Linux with `pacman`, `paru`, systemd, Wayland, Hyprland.
+- The opencode.nvim plugin in Neovim config is commented out; do not re-enable it.
+- Recent commit history may contain automated messages (`Automated Commit - YYYY-MM-DD ...`). For manual work, use concise imperative messages like `Update workspace rules` or `Add tmux helper`.
