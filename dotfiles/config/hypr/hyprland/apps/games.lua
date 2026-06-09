@@ -8,3 +8,5 @@ hl.window_rule({
 })
 hl.window_rule({ match = { class = "hearthstone deck tracker.exe" }, float = true, no_blur = true })
 hl.window_rule({ match = { class = "ArenaTracker" }, float = true })
+hl.window_rule({ match = { class = "[Bb]attle.net(.exe)?" }, float = true })
+hl.window_rule({ match = { title = "[Bb]attle.net(.exe)?" }, float = true })
