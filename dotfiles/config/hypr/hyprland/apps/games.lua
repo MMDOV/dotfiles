@@ -1,6 +1,6 @@
 hl.window_rule({
 	match = {
-		class = "([Oo]verwatch|(net.)?[Ll]utris(.[Ll]utris)?|[Bb]attle.net(.exe)?|[Hh]earthstone(.exe)?|[Bb]alatro(.exe)?|[Tt]he [Bb]azaar)",
+		class = "([Oo]verwatch|(net.)?[Ll]utris(.[Ll]utris)?|[Bb]attle.net(.exe)?|[Hh]earthstone(.exe)?|[Bb]alatro(.exe)?|[Tt]he [Bb]azaar|(com.usebottles.)?[Bb]ottles)",
 	},
 	workspace = "1 silent",
 	opacity = "1",
