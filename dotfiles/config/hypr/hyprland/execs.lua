@@ -24,7 +24,7 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("uwsm app -- hyprctl setcursor breeze_cursors 24")
 
 	-- Custom execs
-	hl.exec_cmd("uwsm app -- vivaldi")
+	hl.exec_cmd("uwsm app -- zen-browser")
 	hl.exec_cmd(
 		"uwsm app -- alacritty -e tmux new-session -d \\; run-shell '"
 			.. homeDir
@@ -56,7 +56,7 @@ hl.on("hyprland.start", function()
 	-- 	{ workspace = "special:vpn silent" }
 	-- )
 	hl.exec_cmd("sudo torguard")
-	-- hl.exec_cmd("uwsm app -- /opt/v2rayn-bin/v2rayN", { workspace = "special:vpn silent" })
+	hl.exec_cmd("uwsm app -- /opt/v2rayn-bin/v2rayN", { workspace = "special:vpn silent" })
 	-- hl.exec_cmd("uwsm app -- /usr/bin/happ", { workspace = "special:vpn silent" })
 	-- hl.exec_cmd("uwsm app -- steam")
 end)
