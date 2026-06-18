@@ -12,6 +12,7 @@ hl.on("hyprland.start", function()
 		"/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 || /usr/libexec/polkit-gnome-authentication-agent-1"
 	)
 	hl.exec_cmd("uwsm app -- hypridle")
+	hl.exec_cmd("uwsm app -- xembedsniproxy")
 	hl.exec_cmd("dbus-update-activation-environment --all")
 	hl.exec_cmd("sleep 1 && dbus-update-activation-environment --systemd")
 	hl.exec_cmd("uwsm app -- nm-applet")
