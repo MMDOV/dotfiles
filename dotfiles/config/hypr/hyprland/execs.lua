@@ -58,7 +58,7 @@ hl.on("hyprland.start", function()
 	-- 	{ workspace = "special:vpn silent" }
 	-- )
 	hl.exec_cmd("sudo torguard")
-	-- hl.exec_cmd("uwsm app -- /opt/v2rayn-bin/v2rayN", { workspace = "special:vpn silent" })
+	hl.exec_cmd("uwsm app -- /opt/v2rayn-bin/v2rayN", { workspace = "special:vpn silent" })
 	-- hl.exec_cmd("uwsm app -- /usr/bin/happ", { workspace = "special:vpn silent" })
 	-- hl.exec_cmd("uwsm app -- steam")
 end)
