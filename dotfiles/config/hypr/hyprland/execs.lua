@@ -51,7 +51,7 @@ hl.on("hyprland.start", function()
 	--	"uwsm app -- alacritty -e '" .. homeDir .. "/clones/MasterHttpRelayVPN/start.sh'",
 	--	{ workspace = "special:vpn silent" }
 	--)
-	hl.exec_cmd("uwsm app -- alacritty -e xvpn ui", { workspace = "special:vpn silent" })
+	-- hl.exec_cmd("uwsm app -- alacritty -e xvpn ui", { workspace = "special:vpn silent" })
 	-- hl.exec_cmd("uwsm app -- hiddify.desktop", { workspace = "special:vpn silent" })
 	-- hl.exec_cmd(
 	-- 	"uwsm app -- alacritty -e sudo " .. dotfilesRoot .. "/scripts/helpers/sni_spoof.sh",
