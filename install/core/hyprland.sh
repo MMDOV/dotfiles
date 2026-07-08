@@ -12,7 +12,7 @@ if ! command -v paru &>/dev/null; then
   "$REPO_ROOT/install/core/paru.sh"
 fi
 
-paru -S --noconfirm --needed hyprland hyprlock hyprpicker hypridle hyprpaper hyprshutdown
+paru -S --noconfirm --needed hyprland hyprlock hyprpicker hypridle hyprpaper hyprshutdown hyprshade
 paru -S --noconfirm --needed qt5-wayland qt6-wayland
 paru -S --noconfirm --needed xdg-desktop-portal-hyprland xdg-utils xdg-desktop-portal-gtk uwsm
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
@@ -35,6 +35,9 @@ chmod +x "$REPO_ROOT/scripts/utils/update-config.sh"
 "$REPO_ROOT/scripts/utils/update-config.sh" config hypr
 # Enable hyprpaper as a service
 systemctl --user enable --now hyprpaper.service
+# Enable hyprshade
+hyprshade install
+systemctl --user enable --now hyprshade.timer
 
 # setup theme
 echo "Setting up theme"

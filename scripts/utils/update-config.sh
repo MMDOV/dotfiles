@@ -38,6 +38,7 @@ copyandreplace() {
 if [ -z "$subconf" ]; then
   copyandreplace "$REPO_ROOT/dotfiles/config" "$HOME/.config"
   hyprctl reload
+  hyprshade auto
 
 else
   mkdir -p "$HOME/.config/$subconf"
@@ -55,3 +56,4 @@ if ! $configonly; then
 fi
 
 hyprctl reload 2>/dev/null || true
+hyprshade auto
