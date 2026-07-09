@@ -14,11 +14,9 @@ saved_sessions=""
 [ -s "$state_file" ] && saved_sessions="$(cat "$state_file")"
 
 tmux new-window -dn scratch
-tmux new-window -dn opencode
 
 tmux send-keys -t scratch "clear" C-m
 
-tmux send-keys -t opencode "opencode" C-m
 tmux send-keys -t opencode "clear" C-m
 
 restored_any=false
@@ -34,7 +32,7 @@ if [ -n "$saved_sessions" ]; then
     tmux send-keys -t "$win_id" \
       "$DOTFILES_ROOT/tmux/scripts/watch-ai-title.sh '$win_id' '$uuid' & exec claude --resume $uuid" C-m
     restored_any=true
-  done <<< "$saved_sessions"
+  done <<<"$saved_sessions"
 fi
 
 if $restored_any; then
