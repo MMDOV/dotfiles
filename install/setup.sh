@@ -99,6 +99,7 @@ declare -A modules=(
   ["extras"]="core"
   ["sddm"]="desktop"
   ["theme"]="desktop"
+  ["blackbox"]="desktop"
 )
 
 # Define execution order
@@ -113,6 +114,7 @@ module_order=(
   "hyprland"
   "sddm"
   "theme"
+  "blackbox"
   "nvim"
   "tmux"
   "gaming"

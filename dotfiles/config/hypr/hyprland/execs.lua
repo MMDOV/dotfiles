@@ -29,9 +29,7 @@ hl.on("hyprland.start", function()
 	-- Custom execs
 	hl.exec_cmd("uwsm app -- zen-browser")
 	hl.exec_cmd(
-		"uwsm app -- alacritty -e tmux new-session -d \\; run-shell '"
-			.. homeDir
-			.. "/.local/bin/tmux-sessionizer $HOME' \\; attach",
+		"uwsm app -- blackbox-terminal -c '" .. homeDir .. "/.config/hypr/hyprland/scripts/start_tmux_sessionizer.sh'",
 		{ workspace = "3" }
 	)
 	hl.exec_cmd("uwsm app -- Telegram", { workspace = "4 silent" })

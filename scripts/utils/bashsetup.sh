@@ -43,7 +43,7 @@ pdot() {
     $REPO_ROOT/scripts/utils/commitpush.sh "\$@"
 }
 
-export TERMINAL=foot
+export TERMINAL=blackbox-terminal
 export SUDO_EDITOR=nvim
 export EDITOR=nvim
 export DOTFILES_ROOT=$REPO_ROOT

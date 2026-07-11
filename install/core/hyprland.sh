@@ -44,6 +44,11 @@ echo "Setting up theme"
 chmod +x "$REPO_ROOT/install/desktop/theme.sh"
 "$REPO_ROOT/install/desktop/theme.sh"
 
+# setup default terminal
+echo "Setting up BlackBox terminal"
+chmod +x "$REPO_ROOT/install/desktop/blackbox.sh"
+"$REPO_ROOT/install/desktop/blackbox.sh"
+
 # setup walker
 echo "Setting up walker"
 chmod +x "$REPO_ROOT/scripts/helpers/walker.sh"
@@ -61,7 +66,6 @@ echo "$CUSTOM_CONFIG" >>"$PROFILE"
 
 # setting up apps
 chmod +x "$REPO_ROOT/scripts/utils/install.sh"
-"$REPO_ROOT/scripts/utils/install.sh" alacritty
 "$REPO_ROOT/scripts/utils/install.sh" waybar
 "$REPO_ROOT/scripts/utils/install.sh" mako
 "$REPO_ROOT/scripts/utils/install.sh" fuzzel

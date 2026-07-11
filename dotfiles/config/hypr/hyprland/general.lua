@@ -129,7 +129,7 @@ hl.config({
 		animate_manual_resizes = false,
 		animate_mouse_windowdragging = false,
 		enable_swallow = false,
-		swallow_regex = "(foot | kitty | allacritty | Alacritty | ghostty | Ghostty)",
+		swallow_regex = "(foot | kitty | allacritty | Alacritty | ghostty | Ghostty | com.raggesilver.BlackBox)",
 
 		disable_hyprland_logo = true,
 		force_default_wallpaper = 0,

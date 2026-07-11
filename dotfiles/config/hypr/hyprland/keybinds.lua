@@ -1,8 +1,8 @@
 local mainMod = "SUPER"
 local hyprlandPath = "$HOME/.config/hypr/hyprland/"
 -- Terminal
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("uwsm app -- alacritty -e tmux a"))
-hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("uwsm app -- alacritty"))
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("uwsm app -- blackbox-terminal -c 'tmux a'"))
+hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("uwsm app -- blackbox-terminal"))
 
 -- App launcher
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("walker"))
