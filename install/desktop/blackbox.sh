@@ -38,7 +38,7 @@ cp -f "$THEME_SOURCE_DIR/tokyo-night.json" "$HOME/.local/share/blackbox/schemes/
 
 print_msg "Applying BlackBox settings..."
 gsettings set com.raggesilver.BlackBox theme-dark 'Tokyo Night'
-gsettings set com.raggesilver.BlackBox font 'Fira Code 12'
+gsettings set com.raggesilver.BlackBox font 'JetBrains Mono 12'
 gsettings set com.raggesilver.BlackBox terminal-padding "(uint32 5, uint32 5, uint32 5, uint32 5)"
 gsettings set com.raggesilver.BlackBox opacity uint32 97
 gsettings set com.raggesilver.BlackBox floating-controls true
