@@ -17,8 +17,6 @@ tmux new-window -dn scratch
 
 tmux send-keys -t scratch "clear" C-m
 
-tmux send-keys -t opencode "clear" C-m
-
 restored_any=false
 if [ -n "$saved_sessions" ]; then
   while IFS=$'\t' read -r uuid dispname; do
@@ -37,8 +35,6 @@ fi
 
 if $restored_any; then
   "$DOTFILES_ROOT/tmux/scripts/sync-claude-windows.sh" "$session"
-else
-  "$DOTFILES_ROOT/tmux/scripts/new-claude-tab.sh"
 fi
 
 clear
