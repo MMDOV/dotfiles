@@ -30,13 +30,33 @@ ai_codex_transcript() {
 }
 
 ai_codex_title() {
-  local transcript="$1"
-  jq -r '
+  local transcript="$1" prompt
+  prompt="$(jq -r '
     select(.type == "response_item" and .payload.type == "message" and .payload.role == "user")
     | .payload.content[]?
     | select(.type == "input_text")
     | .text
     | select(startswith("# AGENTS.md instructions for ") | not)
     | select(startswith("<environment_context>") | not)
-  ' "$transcript" 2>/dev/null | sed -n '1p'
+  ' "$transcript" 2>/dev/null | sed -n '1p')"
+
+  # Codex prompts commonly put files and context first, with the actual task
+  # in the final sentence. Keep that stable initial intent as the tab label.
+  printf '%s' "$prompt" | tr '\n\r' ' ' | awk '
+    {
+      gsub(/[[:space:]]+/, " ")
+      sub(/^ /, "")
+      sub(/ $/, "")
+      count = split($0, parts, /[.!?]+[[:space:]]*/)
+      for (i = count; i >= 1; i--) {
+        candidate = parts[i]
+        sub(/^ /, "", candidate)
+        sub(/ $/, "", candidate)
+        if (length(candidate) > 0) {
+          print candidate
+          exit
+        }
+      }
+    }
+  '
 }
