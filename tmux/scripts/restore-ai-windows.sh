@@ -35,7 +35,7 @@ while IFS=$'\t' read -r provider session_id window_name saved_project; do
     codex)
       transcript="$(ai_codex_transcript "$session_id")"
       [ -n "$transcript" ] || continue
-      transcript_project="$(jq -r 'select(.type == "session_meta") | .payload.cwd // empty' "$transcript" 2>/dev/null | sed -n '1p')"
+      transcript_project="$(jq -r 'select(.type == "session_meta") | .payload.cwd // empty' "$transcript" 2>/dev/null | sed -n '1p')" || true
       [ -n "$transcript_project" ] && [ "$(ai_project_dir "$transcript_project")" = "$project_dir" ] || continue
       ;;
     *) continue ;;

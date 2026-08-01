@@ -12,8 +12,7 @@ window_name="$4"
 select_window="${5:-false}"
 session="$(tmux display-message -p '#S')"
 
-tmux new-window -d -c "$project_dir" -n "$window_name"
-window_id="$(tmux display-message -t "$window_name" -p '#{window_id}')"
+window_id="$(tmux new-window -d -P -F '#{window_id}' -c "$project_dir" -n "$window_name")"
 ai_set_window_metadata "$window_id" "$provider" "$session_id" "$project_dir"
 "$DOTFILES_ROOT/tmux/scripts/sync-ai-windows.sh" "$session"
 

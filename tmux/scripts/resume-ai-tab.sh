@@ -21,9 +21,9 @@ add_claude_candidates() {
   [ -d "$HOME/.claude/projects/$encoded_dir" ] || return
   while IFS= read -r -d '' transcript; do
     session_id="$(basename "${transcript%.jsonl}")"
-    title="$(jq -r 'select(.type == "ai-title") | .aiTitle // empty' "$transcript" 2>/dev/null | sed -n '1p')"
+    title="$(jq -r 'select(.type == "ai-title") | .aiTitle // empty' "$transcript" 2>/dev/null | sed -n '1p')" || true
     if [ -z "$title" ]; then
-      title="$(jq -r 'select(.type == "user" and .message.role == "user") | .message.content | if type == "string" then . else empty end' "$transcript" 2>/dev/null | sed -n '1p')"
+      title="$(jq -r 'select(.type == "user" and .message.role == "user") | .message.content | if type == "string" then . else empty end' "$transcript" 2>/dev/null | sed -n '1p')" || true
     fi
     [ -n "$title" ] || title="claude-${session_id:0:8}"
     epoch="$(stat -c %Y "$transcript")"
@@ -35,12 +35,12 @@ add_claude_candidates() {
 add_codex_candidates() {
   local transcript transcript_project session_id title modified epoch
   while IFS= read -r -d '' transcript; do
-    transcript_project="$(jq -r 'select(.type == "session_meta") | .payload.cwd // empty' "$transcript" 2>/dev/null | sed -n '1p')"
+    transcript_project="$(jq -r 'select(.type == "session_meta") | .payload.cwd // empty' "$transcript" 2>/dev/null | sed -n '1p')" || true
     [ -n "$transcript_project" ] || continue
     [ "$(ai_project_dir "$transcript_project")" = "$project_dir" ] || continue
-    session_id="$(jq -r 'select(.type == "session_meta") | .payload.session_id // empty' "$transcript" 2>/dev/null | sed -n '1p')"
+    session_id="$(jq -r 'select(.type == "session_meta") | .payload.session_id // empty' "$transcript" 2>/dev/null | sed -n '1p')" || true
     [ -n "$session_id" ] || continue
-    title="$(ai_codex_title "$transcript")"
+    title="$(ai_codex_title "$transcript")" || true
     [ -n "$title" ] || title="codex-${session_id:0:8}"
     epoch="$(stat -c %Y "$transcript")"
     modified="$(date -d "@$epoch" '+%Y-%m-%d %H:%M')"

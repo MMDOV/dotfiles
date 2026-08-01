@@ -38,7 +38,7 @@ ai_codex_title() {
     | .text
     | select(startswith("# AGENTS.md instructions for ") | not)
     | select(startswith("<environment_context>") | not)
-  ' "$transcript" 2>/dev/null | sed -n '1p')"
+  ' "$transcript" 2>/dev/null | sed -n '1p')" || true
 
   # Codex prompts commonly put files and context first, with the actual task
   # in the final sentence. Keep that stable initial intent as the tab label.
