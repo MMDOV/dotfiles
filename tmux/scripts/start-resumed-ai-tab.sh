@@ -30,4 +30,6 @@ case "$provider" in
     ;;
 esac
 
-[ "$select_window" = true ] && tmux select-window -t "$window_id"
+if [ "$select_window" = true ]; then
+  tmux select-window -t "$window_id"
+fi

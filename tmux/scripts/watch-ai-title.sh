@@ -18,7 +18,7 @@ if [ "$provider" = "claude" ]; then
   done
   [ -f "$transcript" ] || exit 0
 
-  tail -F -n0 "$transcript" 2>/dev/null | grep --line-buffered '"type":"ai-title"' | while IFS= read -r line; do
+  tail -F -n +1 "$transcript" 2>/dev/null | grep --line-buffered '"type":"ai-title"' | while IFS= read -r line; do
     title="$(printf '%s' "$line" | sed -n 's/.*"aiTitle":"\([^"]*\)".*/\1/p')"
     slug="$(ai_slug "$title")"
     [ -n "$slug" ] || continue

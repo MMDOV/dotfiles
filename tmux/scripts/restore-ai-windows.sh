@@ -46,4 +46,6 @@ while IFS=$'\t' read -r provider session_id window_name saved_project; do
   restored=true
 done <<< "$saved_sessions"
 
-$restored && "$DOTFILES_ROOT/tmux/scripts/sync-ai-windows.sh" "$session"
+if $restored; then
+  "$DOTFILES_ROOT/tmux/scripts/sync-ai-windows.sh" "$session"
+fi
