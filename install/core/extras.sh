@@ -12,5 +12,5 @@ if ! command -v paru &>/dev/null; then
   "$REPO_ROOT/install/core/paru.sh"
 fi
 
-paru -S --noconfirm --needed thunderbird telegram-desktop teamspeak torguard aria2
+paru -S --noconfirm --needed thunderbird telegram-desktop teamspeak3 torguard aria2
 paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina freerdp zathura zathura-pdf-mupdf mpv debtap
