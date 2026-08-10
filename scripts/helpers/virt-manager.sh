@@ -2,10 +2,12 @@
 
 set -e
 
+REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+
 # Make sure paru is installed
 if ! command -v paru &>/dev/null; then
-  print_msg "Installing Paru"
-  chmod +x "$scripts/paru.sh"
-  $scripts/paru.sh
+  echo "Installing Paru"
+  "$REPO_ROOT/install/core/paru.sh"
 fi
-paru -S --nonfirm --needed libvirt virt-manager qemu-full dnsmasq dmidecode
+
+paru -S --noconfirm --needed libvirt virt-manager qemu-full dnsmasq dmidecode

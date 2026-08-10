@@ -6,9 +6,8 @@ REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
 # Make sure paru is installed
 if ! command -v paru &>/dev/null; then
-  print_msg "Installing Paru"
-  chmod +x "$scripts/paru.sh"
-  $scripts/paru.sh
+  echo "Installing Paru"
+  "$REPO_ROOT/install/core/paru.sh"
 fi
 
 paru -S --noconfirm --needed firefox chromium vivaldi vivaldi-ffmpeg-codecs
