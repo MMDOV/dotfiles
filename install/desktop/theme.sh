@@ -9,6 +9,9 @@ NC='\033[0m'
 # Detect repository root
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
+# shellcheck source=/dev/null
+source "$REPO_ROOT/lib/pkg.sh"
+
 THEME_SOURCE_DIR="$REPO_ROOT/themes/tokyonight-qt"
 # -----------------------------------------------------
 
@@ -33,7 +36,7 @@ print_msg "Installing required packages..."
 sudo pacman -S --needed --noconfirm qt5-base qt6-base gtk3 gtk4 papirus-icon-theme ttf-dejavu lxappearance kvantum || print_error "Failed to install packages."
 
 print_msg "Installing Tokyonight GTK theme..."
-paru -S --needed --noconfirm tokyonight-gtk-theme-git || print_error "Failed to install Tokyonight GTK theme."
+aur_install tokyonight-gtk-theme-git || print_error "Failed to install Tokyonight GTK theme."
 
 print_msg "Checking for Qt config tools..."
 sudo pacman -S --needed --noconfirm qt5ct qt6ct || print_error "Failed to install qtct."

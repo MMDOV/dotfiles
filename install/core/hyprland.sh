@@ -12,12 +12,15 @@ if ! command -v paru &>/dev/null; then
   "$REPO_ROOT/install/core/paru.sh"
 fi
 
+# shellcheck source=/dev/null
+source "$REPO_ROOT/lib/pkg.sh"
+
 paru -S --noconfirm --needed hyprland hyprlock hyprpicker hypridle hyprpaper hyprshutdown hyprshade
 paru -S --noconfirm --needed qt5-wayland qt6-wayland
 paru -S --noconfirm --needed xdg-desktop-portal-hyprland xdg-utils xdg-desktop-portal-gtk uwsm
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
 paru -S --noconfirm --needed playerctl easyeffects calf brightnessctl wlogout
-paru -S --noconfirm --needed \
+aur_install \
   noto-fonts \
   noto-fonts-cjk \
   noto-fonts-emoji \
@@ -26,7 +29,7 @@ paru -S --noconfirm --needed \
   ttf-material-symbols-variable-git \
   ttf-dejavu \
   ttf-liberation
-paru -S --noconfirm --needed polkit polkit-gnome bicon-git breeze yad
+aur_install polkit polkit-gnome bicon-git breeze yad
 paru -S --noconfirm --needed dbus bc unzip fzf fastfetch curl wget tldr
 
 # update hyprland config

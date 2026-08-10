@@ -20,6 +20,8 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 # shellcheck source=/dev/null
 source "$REPO_ROOT/lib/facts.sh"
+# shellcheck source=/dev/null
+source "$REPO_ROOT/lib/pkg.sh"
 
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -30,7 +32,7 @@ print_skip() { echo -e "${BLUE}[=] $1${NC}"; }
 print_warn() { echo -e "${YELLOW}[!] $1${NC}"; }
 
 pac() { sudo pacman -S --noconfirm --needed "$@"; }
-aur() { paru -S --noconfirm --needed "$@"; }
+aur() { aur_install "$@"; }
 
 # --- core stack -------------------------------------------------------------
 

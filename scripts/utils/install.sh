@@ -11,6 +11,9 @@ set -euo pipefail
 # Detect repository root
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
+# shellcheck source=/dev/null
+source "$REPO_ROOT/lib/pkg.sh"
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
@@ -53,7 +56,7 @@ if [[ $pkg == *-git ]]; then
 fi
 
 print_msg "Installing $pkg"
-paru -S --noconfirm --needed "$pkg" || print_error "Failed to install $pkg"
+aur_install "$pkg" || print_error "Failed to install $pkg"
 
 if [ -d "$REPO_ROOT/dotfiles/config/$confdir" ]; then
     "$REPO_ROOT/scripts/utils/update-config.sh" config "$confdir"

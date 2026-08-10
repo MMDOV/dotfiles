@@ -12,5 +12,5 @@ fi
 
 paru -S --noconfirm --needed firefox chromium vivaldi vivaldi-ffmpeg-codecs
 
-install -Dm644 $REPO_ROOT/dotfiles/local/share/chromium.desktop /usr/share/applications/chromium.desktop
+sudo install -Dm644 "$REPO_ROOT/dotfiles/local/share/chromium.desktop" /usr/share/applications/chromium.desktop
 cp -f $REPO_ROOT/dotfiles/local/share/youtube-music.desktop $HOME/.local/share/applications/youtube-music.desktop

@@ -25,13 +25,17 @@ else
   sudo bash <(curl -sSL https://raw.githubusercontent.com/stepanzubkov/where-is-my-sddm-theme/main/install.sh)
 fi
 
-if [ ! -f $WALLPAPER_PATH ]; then
+# All three destinations are root-owned (/usr/share/sddm, /etc). These used to
+# work only because pacman.sh demanded root, forcing the whole setup to run
+# under sudo; now that each module elevates only where it needs to, they have
+# to ask for it themselves.
+if [ ! -f "$WALLPAPER_PATH" ]; then
   echo "Copying wallpaper..."
-  install -Dm644 "$REPO_ROOT/assets/wallpapers/mima-1080.png" "${WALLPAPER_PATH}"
+  sudo install -Dm644 "$REPO_ROOT/assets/wallpapers/mima-1080.png" "$WALLPAPER_PATH"
 fi
 
 echo "Writing theme.conf..."
-install -Dm644 "$REPO_ROOT/themes/sddm/where_is_my_sddm_theme/theme.conf" "$THEME_CONF"
+sudo install -Dm644 "$REPO_ROOT/themes/sddm/where_is_my_sddm_theme/theme.conf" "$THEME_CONF"
 
 echo "Configuring SDDM..."
-install -Dm644 "$REPO_ROOT/themes/sddm/sddm.conf" "$SDDM_CONF"
+sudo install -Dm644 "$REPO_ROOT/themes/sddm/sddm.conf" "$SDDM_CONF"
