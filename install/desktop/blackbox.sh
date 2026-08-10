@@ -40,7 +40,10 @@ print_msg "Applying BlackBox settings..."
 gsettings set com.raggesilver.BlackBox theme-dark 'Tokyo Night'
 gsettings set com.raggesilver.BlackBox font 'JetBrains Mono 11'
 gsettings set com.raggesilver.BlackBox terminal-padding "(uint32 5, uint32 5, uint32 5, uint32 5)"
-gsettings set com.raggesilver.BlackBox opacity uint32 97
+# The value is one GVariant argument, so the type prefix must stay quoted.
+# Unquoted, gsettings sees four arguments instead of three, exits non-zero,
+# and under set -e takes hyprland.sh and the whole run down with it.
+gsettings set com.raggesilver.BlackBox opacity "uint32 97"
 gsettings set com.raggesilver.BlackBox floating-controls true
 gsettings set com.raggesilver.BlackBox headerbar-drag-area false
 gsettings set com.raggesilver.BlackBox show-headerbar false

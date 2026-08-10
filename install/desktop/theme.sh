@@ -122,10 +122,14 @@ print_msg "Refreshing font cache..."
 fc-cache -fv >/dev/null || print_error "Failed to refresh font cache."
 
 print_msg "Applying GTK and Dark Mode settings..."
-sudo -u "$SUDO_USER" gsettings set org.gnome.desktop.interface gtk-theme "Tokyonight-Dark" || true
-sudo -u "$SUDO_USER" gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" || true
-sudo -u "$SUDO_USER" gsettings set org.gnome.desktop.interface font-name "Rubik 9" || true
-sudo -u "$SUDO_USER" gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' || true
+# Run as the invoking user directly. This script refuses to run as root, so
+# SUDO_USER was always empty here and every call expanded to `sudo -u ""`,
+# which is a usage error. The `|| true` hid it: the settings silently never
+# applied while the run reported success.
+gsettings set org.gnome.desktop.interface gtk-theme "Tokyonight-Dark"
+gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
+gsettings set org.gnome.desktop.interface font-name "Rubik 9"
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
 print_msg "Theme setup complete! Restart your applications or log out and log back in to apply changes."
 print_msg "If themes/icons/fonts don't apply correctly, try running 'lxappearance' or 'qt5ct/qt6ct' manually."
