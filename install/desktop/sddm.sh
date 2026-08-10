@@ -14,7 +14,16 @@ THEME_CONF="${THEME_DIR}/theme.conf"
 SDDM_CONF="/etc/sddm.conf"
 WALLPAPER_PATH="${THEME_DIR}/mima-1080.png"
 
-sudo bash <(curl -sSL https://raw.githubusercontent.com/stepanzubkov/where-is-my-sddm-theme/main/install.sh)
+# Third-party theme installer, fetched and run as root. Only done when the
+# theme is not already present: re-downloading and re-executing a remote script
+# on every run is both wasteful and a standing supply-chain exposure, for no
+# benefit once the theme is installed.
+if [ -d "$THEME_DIR" ]; then
+  echo "SDDM theme already installed, skipping remote installer"
+else
+  echo "Installing SDDM theme from upstream installer"
+  sudo bash <(curl -sSL https://raw.githubusercontent.com/stepanzubkov/where-is-my-sddm-theme/main/install.sh)
+fi
 
 if [ ! -f $WALLPAPER_PATH ]; then
   echo "Copying wallpaper..."

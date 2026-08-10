@@ -1,4 +1,17 @@
 #
+# REFERENCE SNAPSHOT — NOT DEPLOYED.
+#
+# This file is never installed over /etc/pacman.conf. That file is owned by the
+# system: it carries the repositories the machine actually has, and overwriting
+# it deletes them. install/core/pacman.sh edits the live file's [options] keys
+# in place and leaves every repository block alone.
+#
+# Kept only so repository/option changes are visible in version control and via
+# scripts/utils/check-drift.sh. Snapshot taken from a working Arch + CachyOS-v3
+# hybrid.
+#
+# --- snapshot begins ---
+#
 # /etc/pacman.conf
 #
 # See the pacman.conf(5) manpage for option and repository directives
@@ -74,11 +87,25 @@ LocalFileSigLevel = Optional
 #[core-testing]
 #Include = /etc/pacman.d/mirrorlist
 
+
+
+
+
+[cachyos-v3]
+Include = /etc/pacman.d/cachyos-v3-mirrorlist
+
+[cachyos-core-v3]
+Include = /etc/pacman.d/cachyos-v3-mirrorlist
+
+[cachyos-extra-v3]
+Include = /etc/pacman.d/cachyos-v3-mirrorlist
+
+[cachyos]
+Include = /etc/pacman.d/cachyos-mirrorlist
+
 [core]
 Include = /etc/pacman.d/mirrorlist
 
-#[extra-testing]
-#Include = /etc/pacman.d/mirrorlist
 
 [extra]
 Include = /etc/pacman.d/mirrorlist
@@ -92,6 +119,10 @@ SigLevel = Optional TrustAll
 
 [multilib]
 Include = /etc/pacman.d/mirrorlist
+
+#[extra-testing]
+#Include = /etc/pacman.d/mirrorlist
+
 
 #[chaotic-aur]
 #Include = /etc/pacman.d/chaotic-mirrorlist

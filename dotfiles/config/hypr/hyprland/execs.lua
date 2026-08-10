@@ -6,7 +6,7 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("walker --gapplication-service")
 	-- Input method
 	hl.exec_cmd("fcitx5")
-	hl.exec_cmd(dotfilesRoot .. "/scripts/thd.sh")
+	hl.exec_cmd(dotfilesRoot .. "/scripts/helpers/thd.sh")
 	-- Core components (authentication, lock screen, notification daemon)
 	hl.exec_cmd(
 		"/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 || /usr/libexec/polkit-gnome-authentication-agent-1"

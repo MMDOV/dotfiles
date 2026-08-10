@@ -1,19 +1,7 @@
 -- MONITOR CONFIG
-hl.monitor({
-	output = "HDMI-A-1",
-	mode = "1440x900@75",
-	position = "0x0",
-	scale = "1",
-})
-
--- 2. THE RIGHT "MAIN" (Laptop)
--- Position: 1440x0 (Immediately to the right of the external)
-hl.monitor({
-	output = "eDP-1",
-	mode = "1920x1080@60",
-	position = "1440x0",
-	scale = "1",
-})
+-- Declared in monitors.lua, matched on EDID description rather than connector
+-- name so the config is not bound to this machine's ports.
+require("hyprland.monitors")
 
 -- Variables
 local activeBorderColor = { colors = { "rgba(589ED7ee)", "rgba(0DB9D7ee)" }, angle = 45 }
@@ -125,7 +113,9 @@ hl.config({
 		disable_splash_rendering = true,
 		focus_on_activate = false,
 		anr_missed_pings = 3,
-		vrr = 1,
+		-- vrr is set per-monitor in monitors.lua. Adaptive sync support is a
+		-- property of the panel, and forcing it globally means a display that
+		-- flickers under VRR drags the others along with it.
 		animate_manual_resizes = false,
 		animate_mouse_windowdragging = false,
 		enable_swallow = false,
@@ -140,6 +130,16 @@ hl.config({
 	},
 	cursor = {
 		hide_on_key_press = true,
+	},
+	xwayland = {
+		-- Keeps XWayland clients from being rendered at the wrong scale and
+		-- upscaled into blur. Harmless at scale 1; matters as soon as a
+		-- higher-DPI display is attached.
+		force_zero_scaling = true,
+	},
+	ecosystem = {
+		no_update_news = true,
+		no_donation_nag = true,
 	},
 })
 

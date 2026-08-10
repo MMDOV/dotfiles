@@ -2,31 +2,96 @@
 
 ## Project Structure & Module Organization
 
-This repository stores Hyprland desktop configuration files. Top-level `hyprland.conf`, `hyprlock.conf`, `hypridle.conf`, and `hyprpaper.conf` are entry points loaded by the corresponding Hypr tools. The `hyprland/` directory contains sourced modules: `env.conf`, `execs.conf`, `general.conf`, `input.conf`, `rules.conf`, `colors.conf`, and keybinding groups under `hyprland/keybinds/`. Application-specific window rules live in `hyprland/apps/`. Helper scripts are in `hyprland/scripts/` and `hyprlock/`. Shader files live in `shaders/`. Lua experiments and editor settings are in `hyprland.lua`, `hyprland/general.lua`, and `.luarc.json`.
+This directory is the Hyprland desktop configuration. Since Hyprland 0.55 the
+compositor is configured in **Lua**, not hyprlang, so the entry point is
+`hyprland.lua` and the modules under `hyprland/` are `.lua` files loaded with
+`require`. Only the companion tools still use their own formats.
+
+`hyprland.lua` requires four modules in order:
+
+- `hyprland/general.lua` — pulls in `monitors.lua`, then sets input, layout,
+  decoration, animation, `misc`, `xwayland` and `ecosystem` options via
+  `hl.config`, and defines animation curves.
+- `hyprland/rules.lua` — pulls in `roles.lua` for workspace placement, defines
+  global window rules, then loads `hyprland/apps.lua`.
+- `hyprland/execs.lua` — startup orchestration inside an `hl.on("hyprland.start", …)`
+  hook.
+- `hyprland/keybinds.lua` — composes the keybinding modules.
+
+Two modules carry the machine-independence logic and are worth understanding
+before editing anything display-related:
+
+- `hyprland/monitors.lua` — monitor declarations. Displays are matched on their
+  **EDID description** (`output = "desc:…"`), never on connector names like
+  `eDP-1` or `DP-2`, which differ per machine and per port. A catch-all rule
+  with an empty `output` is declared first so unknown displays still come up.
+  `vrr` is set per-monitor here, not globally.
+- `hyprland/roles.lua` — resolves `PRIMARY` / secondary roles from
+  `hl.get_monitors()` and generates the workspace rules from them, then
+  re-applies on `monitor.added` / `monitor.removed`. **Do not reintroduce
+  hardcoded connector names in workspace rules.**
+
+`hyprland/facts.lua` is **generated** by `scripts/utils/facts.sh --write-lua`
+and is not tracked. It reports machine capabilities (backlight, GPU, chassis)
+so config can branch on hardware; `keybinds.lua` uses it to decide whether to
+load `keybinds/backlight.lua`. Hardware probing belongs in bash, not here —
+EDID under `/sys/class/drm/*/edid` is unreadable unprivileged.
+
+Application-specific window rules live in `hyprland/apps/`. Keybinding groups
+live in `hyprland/keybinds/`, split by capability rather than form factor:
+`media.lua` always loads, `backlight.lua` only where a backlight device exists.
+
+Still in their own formats, because these are separate tools: `hyprlock.conf`,
+`hypridle.conf`, `hyprpaper.conf`, `hyprshade.toml`, and `xdph.conf`
+(xdg-desktop-portal-hyprland). Shaders are in `shaders/`, helper scripts in
+`hyprland/scripts/` and `hyprlock/`.
 
 ## Build, Test, and Development Commands
 
-There is no build step; changes are plain configuration. Useful checks:
+There is no build step. Useful checks:
 
-- `hyprctl reload` reloads Hyprland after config edits.
-- `hyprctl monitors`, `hyprctl clients`, and `hyprctl devices -j` verify monitor, window, and input assumptions.
-- `bash -n hyprland/scripts/screenshot_area.sh hyprlock/status.sh` checks shell script syntax.
-- `find . -name '*.conf' -o -name '*.sh' -o -name '*.frag'` reviews tracked config-style files before committing.
+- `luac -p hyprland/<file>.lua` — parse-check a module before reloading.
+- `hyprctl reload` — apply config changes.
+- `hyprctl monitors` — read connector names **and the `description:` strings**
+  needed for `desc:` matching in `monitors.lua`.
+- `hyprctl clients`, `hyprctl devices -j` — verify window and input assumptions.
+- `scripts/utils/facts.sh --report` — see what the machine is detected as.
+- `bash -n hyprland/scripts/<script>.sh` — syntax-check shell helpers.
 
-Run commands from this repository or from `~/.config/hypr` after symlinking/copying the config into place.
+Role resolution can be exercised without a compositor by stubbing `hl` and
+calling `roles.resolve()` — useful for checking multi-monitor behaviour you
+cannot easily reproduce.
 
 ## Coding Style & Naming Conventions
 
-Use Hyprland's native `.conf` syntax: `key = value` assignments and named blocks with braces. Keep related settings grouped in focused files and source new modules from the nearest existing aggregate file, such as `hyprland/keybinds.conf` for keybindings. Prefer lowercase, descriptive file names (`browser.conf`, `screenshot_fullscreen.sh`). Shell scripts should start with `#!/usr/bin/env bash`, quote command substitutions, and avoid machine-specific paths unless this config already depends on them.
+Lua, tab-indented, formatted the way `stylua` leaves it. Configuration is
+expressed through `hl.*` calls — `hl.config`, `hl.monitor`, `hl.workspace_rule`,
+`hl.window_rule`, `hl.bind`, `hl.exec_cmd`, `hl.on` — with table arguments.
+Group related settings in focused modules and `require` them from the nearest
+aggregate (`keybinds.lua` for binds, `apps.lua` for per-app rules). Prefer
+lowercase descriptive filenames (`browser.lua`, `screenshot_fullscreen.sh`).
+Shell scripts start with `#!/usr/bin/env bash` and quote substitutions.
 
 ## Testing Guidelines
 
-Validate edits in a live Hyprland session with `hyprctl reload`, then test the affected behavior directly: launch the app, trigger the keybind, lock the screen, or apply the shader. For scripts, run `bash -n` before manual execution. When editing monitor, input, or power-related settings, verify both laptop and external-display scenarios where possible.
+Validate in a live session with `hyprctl reload`, then exercise the affected
+behaviour directly: launch the app, press the keybind, lock the screen.
+
+For anything touching monitors, test **both** the docked and undocked cases,
+and unplug/replug to confirm the `monitor.added` / `monitor.removed` hooks
+re-resolve roles. A change that only works with the external display attached
+is not finished.
 
 ## Commit & Pull Request Guidelines
 
-Recent history uses automated messages such as `Automated Commit - 2026-05-11 00:15:43`. For manual work, use concise imperative commits, for example `Update screenshot keybinds` or `Tune Hyprlock status script`. Pull requests should describe the changed behavior, list tested commands, mention hardware assumptions such as monitor names, and include screenshots or short screen recordings for visual changes.
+Use concise imperative commits (`Fix thd exec path`, `Tune hyprlock status`).
+Describe changed behaviour, list the commands tested, and state hardware
+assumptions. Include a screen recording for visual changes.
 
 ## Security & Configuration Tips
 
-Do not commit secrets, tokens, or private hostnames. Keep personal overrides in a separate `custom/` file or local-only include when possible. Be careful with `exec` entries: prefer explicit commands and avoid background services that restart repeatedly on reload.
+Do not commit secrets, tokens, or private hostnames. Keep machine-specific
+values out of tracked files — they belong in generated output (`facts.lua`,
+`~/.config/uwsm/env-hyprland`) or keyed on monitor description. Be careful with
+`exec` entries: prefer explicit commands and avoid services that restart on
+every reload.

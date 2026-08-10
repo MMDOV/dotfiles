@@ -55,14 +55,26 @@ chmod +x "$REPO_ROOT/scripts/helpers/walker.sh"
 "$REPO_ROOT/scripts/helpers/walker.sh"
 
 # setup DOTFILES_ROOT env variable
-echo setting up .profile
+# Written as a delimited block so re-running replaces it instead of appending a
+# duplicate export every time. The old version grew ~/.profile on each run.
+echo "setting up .profile"
 PROFILE="$HOME/.profile"
-CUSTOM_CONFIG=$(
-  cat <<EOF
-export DOTFILES_ROOT=$REPO_ROOT
-EOF
-)
-echo "$CUSTOM_CONFIG" >>"$PROFILE"
+BEGIN_MARK="# >>> dotfiles managed >>>"
+END_MARK="# <<< dotfiles managed <<<"
+
+touch "$PROFILE"
+if grep -qF "$BEGIN_MARK" "$PROFILE"; then
+  # Drop the previous block; the new one is appended below.
+  sed -i "/^${BEGIN_MARK}\$/,/^${END_MARK}\$/d" "$PROFILE"
+fi
+{
+  echo "$BEGIN_MARK"
+  echo "export DOTFILES_ROOT=$REPO_ROOT"
+  echo "$END_MARK"
+} >>"$PROFILE"
+
+# Machine facts consumed by the Hyprland Lua config (see keybinds.lua).
+"$REPO_ROOT/scripts/utils/facts.sh" --write-lua
 
 # setting up apps
 chmod +x "$REPO_ROOT/scripts/utils/install.sh"

@@ -1,11 +1,6 @@
-# --- Graphics / Hardware ---
-export LIBVA_DRIVER_NAME=nvidia
-export __GLX_VENDOR_LIBRARY_NAME=nvidia
-export GBM_BACKEND=nvidia-drm
-export NVD_BACKEND=direct
-export __VK_LAYER_NV_optimus=NVIDIA_only
-# Tell Hyprland which GPUs to use
-export AQ_DRM_DEVICES="/dev/dri/card1:/dev/dri/card0"
+# Vendor-neutral session environment. Anything that depends on the GPU or on
+# DRM card numbering belongs in env-hyprland, which install/core/env.sh
+# generates per machine — those values are wrong on any other hardware.
 
 # --- Toolkits ---
 export GDK_BACKEND="wayland,x11,*"
