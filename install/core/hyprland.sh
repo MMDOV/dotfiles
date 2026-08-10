@@ -78,7 +78,12 @@ fi
 
 # setting up apps
 chmod +x "$REPO_ROOT/scripts/utils/install.sh"
-"$REPO_ROOT/scripts/utils/install.sh" waybar
+# waybar-git, not the stable package: Hyprland 0.55 moved its IPC to Lua and
+# stable waybar (0.15.0, tagged before that) has no support for it. The config
+# in dotfiles/config/waybar depends on it — the workspace scroll handlers
+# dispatch Lua, e.g. hyprctl dispatch 'hl.dsp.focus({ workspace = "-1" })'.
+# Second argument is the config directory, which stays "waybar".
+"$REPO_ROOT/scripts/utils/install.sh" waybar-git waybar
 "$REPO_ROOT/scripts/utils/install.sh" mako
 "$REPO_ROOT/scripts/utils/install.sh" fuzzel
 "$REPO_ROOT/scripts/utils/install.sh" fcitx5
