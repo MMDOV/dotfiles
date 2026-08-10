@@ -8,6 +8,7 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
 NC='\033[0m'
 
 print_msg() {
@@ -18,6 +19,10 @@ print_action() {
   echo -e "${BLUE}[DRY] $1${NC}"
 }
 
+print_warn() {
+  echo -e "${YELLOW}[!] $1${NC}"
+}
+
 print_error() {
   echo -e "${RED}[!] $1${NC}"
   exit 1
@@ -25,10 +30,12 @@ print_error() {
 
 DRY_RUN=false
 WITH_CACHYOS=false
+STRICT=false
 skip_list=()
 only_list=()
 declare -a ran_list=()
 declare -a skipped_list=()
+declare -a failed_list=()
 
 # Parse flags
 while [[ $# -gt 0 ]]; do
@@ -39,6 +46,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --with-cachyos)
     WITH_CACHYOS=true
+    shift
+    ;;
+  --strict)
+    STRICT=true
     shift
     ;;
   --skip)
@@ -97,8 +108,18 @@ run_script() {
   fi
 
   chmod +x "$path"
-  "$path" "$@" || print_error "$name failed"
-  ran_list+=("$name")
+  if "$path" "$@"; then
+    ran_list+=("$name")
+  elif $STRICT; then
+    print_error "$name failed"
+  else
+    # Keep going. Aborting the whole run on the first failure means every
+    # later module's state stays unknown, so problems surface one per run
+    # instead of all at once. Failures are collected and reported at the end,
+    # and the exit code still reflects them.
+    print_warn "$name failed — continuing (use --strict to stop here)"
+    failed_list+=("$name")
+  fi
 }
 
 # List of modules with their categories
@@ -206,6 +227,9 @@ print_msg "Summary"
 FACTS_REFRESH=1 source "$REPO_ROOT/lib/facts.sh"
 echo "  modules run:     ${ran_list[*]:-none}"
 echo "  modules skipped: ${skipped_list[*]:-none}"
+if [ ${#failed_list[@]} -gt 0 ]; then
+  echo -e "  modules FAILED:  ${RED}${failed_list[*]}${NC}"
+fi
 echo "  package tier:    $([ "$FACT_CACHY_REPOS" = true ] &&
   echo "cachyos ($FACT_CACHY_TIER)" || echo "vanilla arch")"
 echo "  gpu:             $FACT_GPU_VENDORS"
@@ -215,6 +239,16 @@ echo "  backlight binds: $FACT_HAS_BACKLIGHT"
 if [ "$FACT_CACHY_REPOS" != true ]; then
   echo
   print_action "CachyOS repos absent — re-run with --with-cachyos for the optimized tier"
+fi
+
+if [ ${#failed_list[@]} -gt 0 ]; then
+  echo
+  print_warn "Finished with ${#failed_list[@]} failed module(s). Re-run just those with:"
+  echo "    ./install/setup.sh --only $(
+    IFS=,
+    echo "${failed_list[*]}"
+  )"
+  exit 1
 fi
 
 print_msg "Done."
