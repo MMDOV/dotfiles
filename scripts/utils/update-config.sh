@@ -69,7 +69,7 @@ fi
 
 if ! $configonly; then
   copyandreplace "$REPO_ROOT/dotfiles/local/bin" "$HOME/.local/bin"
-  copyandreplace "$REPO_ROOT/dotfiles/local/share" "$HOME/.local/share/applications/"
+  copyandreplace "$REPO_ROOT/dotfiles/local/share" "$HOME/.local/share"
   copyandreplace "$REPO_ROOT/dotfiles/home" "$HOME"
   # Copy tmux stuff
   cp -f "$REPO_ROOT/tmux/sessionizer" "$HOME/.local/bin/tmux-sessionizer"

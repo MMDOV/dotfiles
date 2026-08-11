@@ -6,12 +6,6 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m'
 
-# Detect repository root
-REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-
-THEME_SOURCE_DIR="$REPO_ROOT/themes/konsole"
-# -----------------------------------------------------
-
 print_msg() {
   echo -e "${GREEN}[*] $1${NC}"
 }
@@ -28,10 +22,10 @@ fi
 print_msg "Installing Konsole..."
 sudo pacman -S --needed --noconfirm konsole || print_error "Failed to install Konsole."
 
-print_msg "Installing Tokyo Night color scheme and profile..."
-mkdir -p "$HOME/.local/share/konsole"
-cp -f "$THEME_SOURCE_DIR/TokyoNight.colorscheme" "$HOME/.local/share/konsole/TokyoNight.colorscheme"
-cp -f "$THEME_SOURCE_DIR/TokyoNight.profile" "$HOME/.local/share/konsole/TokyoNight.profile"
+# The TokyoNight colorscheme/profile live in dotfiles/local/share/konsole
+# and are deployed to ~/.local/share/konsole by update-config.sh (dotmmd),
+# same as every other tracked config file — run dotmmd if you haven't, or
+# this DefaultProfile setting will point at a profile that isn't there yet.
 
 print_msg "Setting TokyoNight as the default profile..."
 kwriteconfig6 --file konsolerc --group "Desktop Entry" --key "DefaultProfile" "TokyoNight.profile"
