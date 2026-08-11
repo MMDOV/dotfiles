@@ -1,6 +1,6 @@
 [Appearance]
 ColorScheme=TokyoNight
-Font=Fira Code,12,-1,5,50,0,0,0,0,0
+Font=JetBrains Mono,11,-1,5,50,0,0,0,0,0
 TerminalMargin=5
 LineSpacing=0
 

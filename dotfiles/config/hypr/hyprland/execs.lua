@@ -29,7 +29,7 @@ hl.on("hyprland.start", function()
 	-- Custom execs
 	hl.exec_cmd("uwsm app -- zen-browser")
 	hl.exec_cmd(
-		"uwsm app -- blackbox-terminal -c '" .. homeDir .. "/.config/hypr/hyprland/scripts/start_tmux_sessionizer.sh'",
+		"uwsm app -- konsole -e " .. homeDir .. "/.config/hypr/hyprland/scripts/start_tmux_sessionizer.sh",
 		{ workspace = "3" }
 	)
 	hl.exec_cmd("uwsm app -- Telegram", { workspace = "4 silent" })

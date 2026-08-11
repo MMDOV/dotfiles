@@ -8,7 +8,7 @@ toolBarFont=Noto Sans,10,-1,5,50,0,0,0,0,0
 [General]
 ColorScheme=Tokyonight
 Name=Tokyonight
-TerminalApplication=alacritty
+TerminalApplication=konsole
 XftHintStyle=hintfull
 XftSubPixel=rgb
 
