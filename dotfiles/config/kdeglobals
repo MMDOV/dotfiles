@@ -6,11 +6,11 @@ taskbarFont=Noto Sans,10,-1,5,50,0,0,0,0,0
 toolBarFont=Noto Sans,10,-1,5,50,0,0,0,0,0
 
 [General]
-ColorScheme=Breeze
-Name=Breeze
+ColorScheme=Tokyonight
+Name=Tokyonight
+TerminalApplication=alacritty
 XftHintStyle=hintfull
 XftSubPixel=rgb
-TerminalApplication=alacritty
 
 [Icons]
 Theme=breeze

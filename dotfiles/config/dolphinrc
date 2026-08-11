@@ -1,0 +1,43 @@
+MenuBar=Disabled
+
+[ContentDisplay]
+RecursiveDirectorySizeLimit=20
+
+[DetailsMode]
+ExpandableFolders=false
+PreviewSize=32
+
+[ExtractDialog]
+1920x1080 screen: Window-Maximized=true
+2 screens: Window-Maximized=true
+DirHistory[$e]=$HOME/extensions/locoloader/,/mnt/HDD/Downloads/Programs/ /Animations/new/
+
+[General]
+GlobalViewProps=false
+Version=202
+ViewPropsTimestamp=2025,9,30,17,22,33.621
+
+[IconsMode]
+PreviewSize=256
+
+[KDE]
+colorScheme=Tokyonight
+
+[KFileDialog Settings]
+Places Icons Auto-resize=false
+Places Icons Static Size=22
+
+[MainWindow]
+MenuBar=Disabled
+
+[Notification Messages]
+warnAboutRisksBeforeActingAsAdmin=false
+
+[PreviewSettings]
+Plugins=ffmpegthumbnailer,appimagethumbnail,audiothumbnail,glycin-heif,blenderthumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,glycin-image-rs,jpegthumbnail,glycin-jxl,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,mobithumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,glycin-svg,svgthumbnail,ffmpegthumbs
+
+[UiSettings]
+ColorScheme=Tokyonight
+
+[ViewPropertiesDialog]
+1920x1080 screen: Window-Maximized=true

@@ -140,6 +140,7 @@ declare -A modules=(
   ["sddm"]="desktop"
   ["theme"]="desktop"
   ["blackbox"]="desktop"
+  ["konsole"]="desktop"
 )
 
 # Execution order.
@@ -159,6 +160,7 @@ module_order=(
   "sddm"
   "theme"
   "blackbox"
+  "konsole"
   "nvim"
   "tmux"
   "gaming"
