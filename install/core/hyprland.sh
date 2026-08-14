@@ -20,6 +20,19 @@ paru -S --noconfirm --needed qt5-wayland qt6-wayland
 paru -S --noconfirm --needed xdg-desktop-portal-hyprland xdg-utils xdg-desktop-portal-gtk uwsm
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
 paru -S --noconfirm --needed playerctl easyeffects calf brightnessctl wlogout
+
+# Hyprbars supplies the compact titlebar used only for floating windows. It is
+# an official Hyprland plugin, so hyprpm pins and rebuilds it for the installed
+# Hyprland version. Keep each operation conditional: setup.sh is safe to rerun.
+HYPRLAND_PLUGINS_REPO="https://github.com/hyprwm/hyprland-plugins"
+if ! hyprpm list | grep -q "Repository hyprland-plugins"; then
+  hyprpm add "$HYPRLAND_PLUGINS_REPO"
+fi
+hyprpm update
+if ! hyprpm list | grep -A2 "Plugin hyprbars" | grep -q "enabled:.*true"; then
+  hyprpm enable hyprbars
+fi
+
 aur_install \
   noto-fonts \
   noto-fonts-cjk \

@@ -77,6 +77,22 @@ hl.config({
 			contrast = 0.75,
 		},
 	},
+	-- Hyprbars is enabled through hyprpm. Keep its chrome intentionally quiet:
+	-- it is only visible on floating windows (see rules.lua), borrowing the
+	-- Waybar/Tokyo Night surface, the notification text colour, and our cyan
+	-- accent through the existing window border.
+	plugin = {
+		hyprbars = {
+			enabled = true,
+			bar_color = "rgba(161A2Dcc)",
+			bar_height = 18,
+			bar_blur = true,
+			bar_title_enabled = false,
+			col = {
+				text = "rgb(cdd6f4)",
+			},
+		},
+	},
 	group = {
 		col = {
 			border_active = activeBorderColor,
