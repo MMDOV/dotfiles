@@ -13,7 +13,10 @@ hl.on("hyprland.start", function()
 	)
 	hl.exec_cmd("uwsm app -- hypridle")
 	hl.exec_cmd("uwsm app -- hyprshade auto")
-	hl.exec_cmd("uwsm app -- hyprpm enable hyprbars")
+	-- `hyprpm enable` writes to the root-owned state store and silently fails
+	-- here; hyprbars is already enabled there persistently, so we only need to
+	-- load it. `reload` is read-only and needs no sudo.
+	hl.exec_cmd("hyprpm reload -n")
 	hl.exec_cmd("uwsm app -- xembedsniproxy")
 	hl.exec_cmd("dbus-update-activation-environment --all")
 	hl.exec_cmd("dbus-update-activation-environment --systemd HYPRLAND_INSTANCE_SIGNATURE")
