@@ -17,7 +17,6 @@ hl.on("hyprland.start", function()
 	-- here; hyprbars is already enabled there persistently, so we only need to
 	-- load it. `reload` is read-only and needs no sudo.
 	hl.exec_cmd("hyprpm reload -n")
-	hl.exec_cmd("uwsm app -- xembedsniproxy")
 	hl.exec_cmd("dbus-update-activation-environment --all")
 	hl.exec_cmd("dbus-update-activation-environment --systemd HYPRLAND_INSTANCE_SIGNATURE")
 	hl.exec_cmd("sleep 1 && dbus-update-activation-environment --systemd")
