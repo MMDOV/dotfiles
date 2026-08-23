@@ -8,5 +8,6 @@ set -euo pipefail
 #
 # bluetooth.service carries no Alias, so enabling it is a plain idempotent
 # operation with nothing to collide with.
-sudo pacman -S --noconfirm --needed bluez bluez-utils
+sudo pacman -S --noconfirm --needed bluez bluez-utils blueman
 sudo systemctl enable bluetooth.service
+sudo systemctl enable --now bluetooth
