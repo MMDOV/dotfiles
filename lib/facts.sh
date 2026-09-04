@@ -139,6 +139,12 @@ command -v game-performance &>/dev/null && FACT_HAS_GAME_PERF=true
 FACT_HAS_CACHY_SETTINGS=false
 pacman -Qq cachyos-settings &>/dev/null && FACT_HAS_CACHY_SETTINGS=true
 
+# Ranks both /etc/pacman.d/mirrorlist and the cachyos-*-mirrorlist set. Only
+# meaningful with the CachyOS repos present, since it lives in [cachyos] and
+# there is no cachyos-mirrorlist to rank without them.
+FACT_HAS_RATE_MIRRORS=false
+command -v cachyos-rate-mirrors &>/dev/null && FACT_HAS_RATE_MIRRORS=true
+
 # The CachyOS wiki puts the floor for game-performance at roughly 6c/12t —
 # below that it gives no benefit and can actively hurt. This laptop (8 threads)
 # is under it; any AM5 part clears it.
@@ -170,6 +176,7 @@ facts_report() {
   printf "  %-22s %s\n" "cachyos repos" "$FACT_CACHY_REPOS"
   printf "  %-22s %s\n" "cachyos tier" "$FACT_CACHY_TIER"
   printf "  %-22s %s\n" "cachyos-settings" "$FACT_HAS_CACHY_SETTINGS"
+  printf "  %-22s %s\n" "rate-mirrors" "$FACT_HAS_RATE_MIRRORS"
   printf "  %-22s %s\n" "chwd" "$FACT_HAS_CHWD"
   printf "  %-22s %s\n" "game-performance" "$FACT_HAS_GAME_PERF"
   printf "  %-22s %s\n" "  worth using" "$FACT_GAME_PERF_USEFUL"
@@ -205,6 +212,7 @@ facts_json() {
   "cachy_repos": $FACT_CACHY_REPOS,
   "cachy_tier": "$FACT_CACHY_TIER",
   "has_cachy_settings": $FACT_HAS_CACHY_SETTINGS,
+  "has_rate_mirrors": $FACT_HAS_RATE_MIRRORS,
   "has_chwd": $FACT_HAS_CHWD,
   "has_game_performance": $FACT_HAS_GAME_PERF,
   "game_perf_useful": $FACT_GAME_PERF_USEFUL,

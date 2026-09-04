@@ -8,7 +8,7 @@
 #
 #   pacman.sh                 apply options, sync, update
 #   pacman.sh --with-cachyos  additionally add the CachyOS repos if missing
-#   pacman.sh --mirrors       additionally refresh the Arch mirrorlist
+#   pacman.sh --mirrors       additionally re-rank the pacman mirrorlists
 #   pacman.sh --no-update     skip the -Syu at the end
 
 set -euo pipefail
@@ -138,16 +138,38 @@ elif [ "$with_cachyos" = true ]; then
     -o "$workdir/cachyos-repo.tar.xz"
   tar xf "$workdir/cachyos-repo.tar.xz" -C "$workdir"
   (cd "$workdir/cachyos-repo" && sudo ./cachyos-repo.sh)
+  # Re-probe: the repos exist as of this line, and the mirrors block below
+  # gates on FACT_CACHY_REPOS. Without this a fresh `--with-cachyos --mirrors`
+  # run would add the repos and then decline to rank them until the next run.
+  FACTS_REFRESH=1 source "$REPO_ROOT/lib/facts.sh"
 else
   print_warn "cachyos repos: absent — re-run with --with-cachyos to add them"
 fi
 
 # --- mirrors ----------------------------------------------------------------
-# Opt-in. reflector rewrites the Arch mirrorlist and is slow; CachyOS manages
-# its own mirrors separately via cachyos-*-mirrorlist.
+# Opt-in, and deliberately placed after the CachyOS block: cachyos-repo.sh
+# installs stock mirrorlists ordered for nobody in particular, so a machine
+# that just gained the repos is exactly the machine that needs ranking.
+#
+# Two paths, never both. cachyos-rate-mirrors ranks BOTH lists — it runs
+# `rate-mirrors arch` over /etc/pacman.d/mirrorlist and `rate-mirrors cachyos`
+# over cachyos-mirrorlist, then derives the v3 and v4 lists from the latter by
+# rewriting $arch to $arch_v3 / $arch_v4. So it supersedes reflector rather
+# than complementing it; running both just has the second clobber the first.
 
-if [ "$refresh_mirrors" = true ]; then
-  print_msg "refreshing Arch mirrorlist"
+if [ "$refresh_mirrors" != true ]; then
+  print_skip "mirrors: unchanged (pass --mirrors to refresh)"
+elif [ "$FACT_CACHY_REPOS" = true ]; then
+  # Lives in [cachyos] and pulls rate-mirrors as its only dependency. Plain
+  # -S, never -Sy: the databases are already current here and a partial
+  # upgrade is not worth the convenience.
+  sudo pacman -S --noconfirm --needed cachyos-rate-mirrors
+  print_msg "ranking arch + cachyos mirrors (this takes a few minutes)"
+  sudo cachyos-rate-mirrors
+else
+  # Vanilla Arch tier: no cachyos-mirrorlist to rank, so reflector is the
+  # whole job.
+  print_msg "refreshing Arch mirrorlist with reflector"
   sudo pacman -S --noconfirm --needed reflector
   sudo reflector \
     --protocol https \
@@ -157,8 +179,6 @@ if [ "$refresh_mirrors" = true ]; then
     --fastest 10 \
     --save /etc/pacman.d/mirrorlist \
     --threads 5
-else
-  print_skip "mirrors: unchanged (pass --mirrors to refresh)"
 fi
 
 # --- update -----------------------------------------------------------------

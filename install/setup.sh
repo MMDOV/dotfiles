@@ -30,6 +30,7 @@ print_error() {
 
 DRY_RUN=false
 WITH_CACHYOS=false
+MIRRORS=false
 STRICT=false
 skip_list=()
 only_list=()
@@ -46,6 +47,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --with-cachyos)
     WITH_CACHYOS=true
+    shift
+    ;;
+  --mirrors)
+    MIRRORS=true
     shift
     ;;
   --strict)
@@ -177,11 +182,14 @@ for mod in "${module_order[@]}"; do
 
   case "$mod" in
   pacman)
-    if $WITH_CACHYOS; then
-      run_script "$mod" "${modules[$mod]}" --with-cachyos
-    else
-      run_script "$mod" "${modules[$mod]}"
-    fi
+    # Order matters inside pacman.sh: the repos are added before the mirrors
+    # are ranked, so `--with-cachyos --mirrors` on a fresh machine adds the
+    # CachyOS repos and then ranks the stock mirrorlists its installer left
+    # behind, in one pass.
+    pacman_args=()
+    $WITH_CACHYOS && pacman_args+=(--with-cachyos)
+    $MIRRORS && pacman_args+=(--mirrors)
+    run_script "$mod" "${modules[$mod]}" "${pacman_args[@]+"${pacman_args[@]}"}"
     ;;
   *)
     run_script "$mod" "${modules[$mod]}"

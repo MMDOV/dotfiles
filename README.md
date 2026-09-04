@@ -43,6 +43,7 @@ This repository **configures** a system; it does not install one. Before running
 - **`paru`** is built by the `paru` module if it is missing.
 - **`aria2`** is installed alongside the `makepkg` drop-in that depends on it.
 - **The CachyOS repositories** are used when present. They are never added implicitly — pass `--with-cachyos` to add them via CachyOS's own installer. Without them the setup falls back to a vanilla Arch tier, which works but skips the optimized builds, `proton-cachyos-slr`, `chwd` and `game-performance`.
+- **Mirror ranking** is opt-in via `--mirrors`. With the CachyOS repos present it runs `cachyos-rate-mirrors`, which ranks the Arch mirrorlist *and* `cachyos-mirrorlist`, then derives the v3 and v4 lists from it; without them it falls back to `reflector` on the Arch list alone. Only one of the two ever runs — `cachyos-rate-mirrors` covers both lists, so pairing it with reflector would just overwrite reflector's work.
 
 ### Worth knowing before you run it
 
@@ -111,7 +112,7 @@ Examples of the routing model:
 
 The setup flow is intentionally modular rather than a single monolithic installer:
 
-- `install/setup.sh` detects `REPO_ROOT`, prints the detected machine, defines an ordered module list, supports `--dry-run`, `--only`, `--skip`, and `--with-cachyos`, and runs each install module from `install/core/` or `install/desktop/`.
+- `install/setup.sh` detects `REPO_ROOT`, prints the detected machine, defines an ordered module list, supports `--dry-run`, `--only`, `--skip`, `--with-cachyos` and `--mirrors`, and runs each install module from `install/core/` or `install/desktop/`.
 - Install modules are grouped by responsibility so package installation, services, desktop components, and application setup can be tested independently.
 - `scripts/utils/update-config.sh` copies tracked config trees into their runtime destinations and reloads Hyprland when available. It reports conflicting local edits before overwriting them.
 - `scripts/utils/install.sh` ensures `paru` exists, installs a requested package, then copies the matching config folder.
@@ -153,6 +154,13 @@ Add the CachyOS optimized repositories during setup. This is never implicit: it 
 
 ```bash
 ./install/setup.sh --with-cachyos
+```
+
+Rank mirrors while adding the repos, so a fresh machine does not inherit the
+stock mirrorlist ordering that `cachyos-repo.sh` leaves behind:
+
+```bash
+./install/setup.sh --with-cachyos --mirrors
 ```
 
 Report where the live system has diverged from what the repo tracks:
