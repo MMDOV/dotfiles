@@ -1,0 +1,9 @@
+# ASUS VivoBook X570UD (ALC256). The kernel's pin-match quirk relabels pin 0x13,
+# unconnected per the BIOS, as the internal mic and demotes the real mic on
+# 0x1b, so the internal mic records digital silence. Restoring the BIOS config
+# for 0x13 leaves 0x1b as the only internal mic.
+[codec]
+0x10ec0256 0x10431f40 0
+
+[pincfg]
+0x13 0x411111f0
