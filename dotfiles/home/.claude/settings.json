@@ -1,5 +1,5 @@
 {
-  "model": "sonnet",
+  "model": "claude-opus-5-5",
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true,
     "claude-seo@agricidaniel-claude-seo": true
@@ -19,6 +19,7 @@
     }
   },
   "effortLevel": "high",
+  "autoCompactWindow": 200000,
   "theme": "dark-ansi",
   "editorMode": "vim"
 }
