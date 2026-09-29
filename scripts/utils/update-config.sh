@@ -57,6 +57,46 @@ copyandreplace() {
   done
 }
 
+# Claude Code settings are merged into the live file instead of replaced, so
+# keys that only exist locally (e.g. work-specific autoMode) survive. Tracked
+# keys win; keys removed from the repo copy are not removed locally.
+mergeclaudesettings() {
+  local src="$REPO_ROOT/dotfiles/home/.claude/settings.json"
+  local dest="$HOME/.claude/settings.json"
+  [ -f "$src" ] || return 0
+  if $debug; then
+    echo "merging $src into $dest"
+    return 0
+  fi
+  mkdir -p "$(dirname "$dest")"
+  if [ ! -f "$dest" ]; then
+    cp -fvp "$src" "$dest"
+    return 0
+  fi
+  local merged
+  if merged="$(jq -s '.[0] * .[1]' "$dest" "$src")"; then
+    printf '%s\n' "$merged" >"$dest"
+    echo "merged '$src' -> '$dest'"
+  else
+    echo "failed to merge $src, left $dest untouched" >&2
+  fi
+}
+
+copyhome() {
+  local item rel
+  while IFS= read -r -d '' item; do
+    rel="${item#"$REPO_ROOT/dotfiles/home/"}"
+    [ "$rel" = ".claude/settings.json" ] && continue
+    if $debug; then
+      echo "copying $item to $HOME/$rel"
+    else
+      mkdir -p "$(dirname "$HOME/$rel")"
+      cp -fvp "$item" "$HOME/$rel"
+    fi
+  done < <(find "$REPO_ROOT/dotfiles/home" -type f -print0)
+  mergeclaudesettings
+}
+
 if [ -z "$subconf" ]; then
   copyandreplace "$REPO_ROOT/dotfiles/config" "$HOME/.config"
   hyprctl reload
@@ -70,7 +110,7 @@ fi
 if ! $configonly; then
   copyandreplace "$REPO_ROOT/dotfiles/local/bin" "$HOME/.local/bin"
   copyandreplace "$REPO_ROOT/dotfiles/local/share" "$HOME/.local/share"
-  copyandreplace "$REPO_ROOT/dotfiles/home" "$HOME"
+  copyhome
   # Copy tmux stuff
   cp -f "$REPO_ROOT/tmux/sessionizer" "$HOME/.local/bin/tmux-sessionizer"
   cp -f "$REPO_ROOT/tmux/.tmux.conf" "$HOME"
