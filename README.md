@@ -41,7 +41,6 @@ This repository **configures** a system; it does not install one. Before running
 
 - **`multilib`** is enabled by the `pacman` module if it is not already. It is required for the 32-bit gaming libraries.
 - **`paru`** is built by the `paru` module if it is missing.
-- **`aria2`** is installed alongside the `makepkg` drop-in that depends on it.
 - **The CachyOS repositories** are used when present. They are never added implicitly — pass `--with-cachyos` to add them via CachyOS's own installer. Without them the setup falls back to a vanilla Arch tier, which works but skips the optimized builds, `proton-cachyos-slr`, `chwd` and `game-performance`.
 - **Mirror ranking** is opt-in via `--mirrors`. With the CachyOS repos present it runs `cachyos-rate-mirrors`, which ranks the Arch mirrorlist *and* `cachyos-mirrorlist`, then derives the v3 and v4 lists from it; without them it falls back to `reflector` on the Arch list alone. Only one of the two ever runs — `cachyos-rate-mirrors` covers both lists, so pairing it with reflector would just overwrite reflector's work.
 
@@ -61,7 +60,7 @@ This repo is organized around a source-controlled copy of the Linux user environ
 - `dotfiles/config/` mirrors `~/.config/` for Hyprland, Waybar, Neovim, Yazi, terminal emulators, input methods, notifications, and application configs.
 - `dotfiles/local/` mirrors `~/.local/` for desktop entries and user-level launchers.
 - `dotfiles/home/` mirrors dotfiles that live directly under `~/` (e.g. `~/.claude/settings.json`).
-- `dotfiles/system/` stores system configuration. `makepkg.conf.d/` holds drop-ins deployed to `/etc/makepkg.conf.d/`; `pacman.conf.reference` is a **read-only snapshot** that is never deployed, because `/etc/pacman.conf` is owned by the system and carries repositories this repo must not overwrite.
+- `dotfiles/system/` stores system configuration. `pacman.conf.reference` is a **read-only snapshot** that is never deployed, because `/etc/pacman.conf` is owned by the system and carries repositories this repo must not overwrite.
 - `lib/facts.sh` is the hardware and distro detection layer. Every install module sources it and branches on capabilities rather than on a distro name.
 - `install/core/` contains focused install modules for base packages, drivers, PipeWire, NetworkManager, environment, Hyprland, Neovim, tmux, gaming, and extras.
 - `install/desktop/` contains display-manager and theme setup.

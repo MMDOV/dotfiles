@@ -25,25 +25,6 @@ NC='\033[0m'
 drift_found=0
 scope="${1:---all}"
 
-report_diff() {
-  local label="$1" live="$2" tracked="$3"
-  if [ ! -e "$live" ]; then
-    echo -e "${YELLOW}[?] $label: not present on this system${NC}"
-    return
-  fi
-  if [ ! -e "$tracked" ]; then
-    echo -e "${YELLOW}[?] $label: not tracked in the repo${NC}"
-    return
-  fi
-  if diff -q "$live" "$tracked" >/dev/null 2>&1; then
-    echo -e "${GREEN}[=] $label: in sync${NC}"
-  else
-    echo -e "${YELLOW}[!] $label: DIVERGED${NC}"
-    diff -u "$tracked" "$live" | sed 's/^/    /'
-    drift_found=1
-  fi
-}
-
 # --- system files -----------------------------------------------------------
 
 check_system() {
@@ -68,10 +49,6 @@ check_system() {
     fi
     rm -f "$snapshot"
   fi
-
-  report_diff "/etc/makepkg.conf.d/10-dlagents.conf" \
-    /etc/makepkg.conf.d/10-dlagents.conf \
-    "$REPO_ROOT/dotfiles/system/makepkg.conf.d/10-dlagents.conf"
 }
 
 # --- user config tree -------------------------------------------------------

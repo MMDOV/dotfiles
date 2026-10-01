@@ -44,7 +44,6 @@
 
 - **`multilib`** اگر فعال نباشد توسط ماژول `pacman` فعال می‌شود. برای کتابخانه‌های ۳۲ بیتی گیمینگ لازم است.
 - **`paru`** اگر نصب نباشد توسط ماژول `paru` ساخته می‌شود.
-- **`aria2`** همراه با drop-in مربوط به `makepkg` که به آن وابسته است نصب می‌شود.
 - **مخازن CachyOS** در صورت وجود استفاده می‌شوند. هرگز به‌صورت ضمنی اضافه نمی‌شوند — برای افزودن آن‌ها از طریق installer خود CachyOS باید `--with-cachyos` را پاس بدهید. بدون آن‌ها setup به سطح Arch معمولی برمی‌گردد که کار می‌کند اما build های بهینه‌شده، `proton-cachyos-slr`، `chwd` و `game-performance` را ندارد.
 
 ### چیزهایی که بهتر است قبل از اجرا بدانید
@@ -62,7 +61,7 @@
 
 - `dotfiles/config/` معادل `~/.config/` است و تنظیمات Hyprland، Waybar، Neovim، Yazi، ترمینال‌ها، input method، اعلان‌ها و برنامه‌ها را نگه می‌دارد.
 - `dotfiles/local/` معادل `~/.local/` است و desktop entry ها و لانچرهای سطح کاربر را نگه می‌دارد.
-- `dotfiles/system/` شامل تنظیمات سیستمی است. پوشه `makepkg.conf.d/` شامل drop-in هایی است که در `/etc/makepkg.conf.d/` قرار می‌گیرند؛ و `pacman.conf.reference` یک **snapshot فقط-خواندنی** است که هرگز deploy نمی‌شود، چون `/etc/pacman.conf` متعلق به سیستم است و مخازنی را نگه می‌دارد که این مخزن نباید بازنویسی‌شان کند.
+- `dotfiles/system/` شامل تنظیمات سیستمی است. `pacman.conf.reference` یک **snapshot فقط-خواندنی** است که هرگز deploy نمی‌شود، چون `/etc/pacman.conf` متعلق به سیستم است و مخازنی را نگه می‌دارد که این مخزن نباید بازنویسی‌شان کند.
 - `lib/facts.sh` لایه تشخیص سخت‌افزار و توزیع است. همه ماژول‌های نصب آن را source می‌کنند و به‌جای نام توزیع، بر اساس قابلیت‌ها تصمیم می‌گیرند.
 - `install/core/` ماژول‌های نصب برای پکیج‌های پایه، درایورها، PipeWire، NetworkManager، environment، Hyprland، Neovim، tmux، گیمینگ و extras را نگه می‌دارد.
 - `install/desktop/` شامل راه‌اندازی display manager و تم است.

@@ -4,7 +4,7 @@
 
 - `dotfiles/config/` -> `~/.config/`
 - `dotfiles/local/` -> `~/.local/` (bin, share/applications)
-- `dotfiles/system/` -> `/etc/` (pacman.conf, makepkg.conf) - requires sudo
+- `dotfiles/system/` -> `/etc/` (pacman.conf reference, hda-quirks) - requires sudo
 - `install/core/` & `install/desktop/` - focused setup modules (hyprland, nvim, gaming, etc.)
 - `scripts/utils/` - daily maintenance (sync configs, install, update)
 - `scripts/helpers/` - standalone launchers and workflow tools
