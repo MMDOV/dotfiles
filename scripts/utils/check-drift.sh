@@ -10,6 +10,9 @@
 #   check-drift.sh --system   only /etc files
 #   check-drift.sh --config   only the ~/.config tree
 #
+# --no-wm (with --with-theme) limits the ~/.config check to what a no-wm
+# install deploys, so it never warns about files that would not be touched.
+#
 # Exits 1 when drift is found, 0 when clean, so it can gate other scripts.
 # Read-only: this script never modifies anything.
 
@@ -23,7 +26,18 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 drift_found=0
-scope="${1:---all}"
+scope="--all"
+SCOPE_NO_WM=false
+SCOPE_WITH_THEME=false
+for arg in "$@"; do
+  case "$arg" in
+  --no-wm) SCOPE_NO_WM=true ;;
+  --with-theme) SCOPE_WITH_THEME=true ;;
+  *) scope="$arg" ;;
+  esac
+done
+# shellcheck source=/dev/null
+source "$REPO_ROOT/lib/scope.sh"
 
 # --- system files -----------------------------------------------------------
 
@@ -66,6 +80,7 @@ check_config() {
   for entry in "$REPO_ROOT"/dotfiles/config/*; do
     [ -e "$entry" ] || continue
     name="$(basename "$entry")"
+    scope_skips "$name" && continue
     live="$HOME/.config/$name"
     if [ ! -e "$live" ]; then
       echo -e "${YELLOW}[?] $name: not deployed${NC}"
@@ -105,7 +120,7 @@ case "$scope" in
   check_config
   ;;
 *)
-  echo "usage: $(basename "$0") [--all|--system|--config]" >&2
+  echo "usage: $(basename "$0") [--all|--system|--config] [--no-wm [--with-theme]]" >&2
   exit 2
   ;;
 esac

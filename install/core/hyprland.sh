@@ -19,7 +19,7 @@ paru -S --noconfirm --needed hyprland hyprlock hyprpicker hypridle hyprpaper hyp
 paru -S --noconfirm --needed qt5-wayland qt6-wayland
 paru -S --noconfirm --needed xdg-desktop-portal-hyprland xdg-utils xdg-desktop-portal-gtk uwsm
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
-paru -S --noconfirm --needed playerctl easyeffects calf brightnessctl wlogout
+paru -S --noconfirm --needed playerctl brightnessctl wlogout
 
 # Hyprbars supplies the compact titlebar used only for floating windows. It is
 # an official Hyprland plugin, so hyprpm pins and rebuilds it for the installed
@@ -33,17 +33,9 @@ if ! hyprpm list | grep -A2 "Plugin hyprbars" | grep -q "enabled:.*true"; then
   hyprpm enable hyprbars
 fi
 
-aur_install \
-  noto-fonts \
-  noto-fonts-cjk \
-  noto-fonts-emoji \
-  noto-fonts-extra \
-  ttf-fira-code \
-  ttf-material-symbols-variable-git \
-  ttf-dejavu \
-  ttf-liberation
-aur_install polkit polkit-gnome bicon-git breeze yad
-paru -S --noconfirm --needed dbus bc unzip fzf fastfetch curl wget tldr
+# Fonts, CLI tools, the DOTFILES_ROOT profile block, fcitx5 and the audio and
+# VPN apps are in tools.sh, which runs before this module in every mode.
+aur_install polkit polkit-gnome yad
 
 # update hyprland config
 echo "Setting up hyprland config"
@@ -60,34 +52,10 @@ echo "Setting up theme"
 chmod +x "$REPO_ROOT/install/desktop/theme.sh"
 "$REPO_ROOT/install/desktop/theme.sh"
 
-# setup default terminal
-echo "Setting up BlackBox terminal"
-chmod +x "$REPO_ROOT/install/desktop/blackbox.sh"
-"$REPO_ROOT/install/desktop/blackbox.sh"
-
 # setup walker
 echo "Setting up walker"
 chmod +x "$REPO_ROOT/scripts/helpers/walker.sh"
 "$REPO_ROOT/scripts/helpers/walker.sh"
-
-# setup DOTFILES_ROOT env variable
-# Written as a delimited block so re-running replaces it instead of appending a
-# duplicate export every time. The old version grew ~/.profile on each run.
-echo "setting up .profile"
-PROFILE="$HOME/.profile"
-BEGIN_MARK="# >>> dotfiles managed >>>"
-END_MARK="# <<< dotfiles managed <<<"
-
-touch "$PROFILE"
-if grep -qF "$BEGIN_MARK" "$PROFILE"; then
-  # Drop the previous block; the new one is appended below.
-  sed -i "/^${BEGIN_MARK}\$/,/^${END_MARK}\$/d" "$PROFILE"
-fi
-{
-  echo "$BEGIN_MARK"
-  echo "export DOTFILES_ROOT=$REPO_ROOT"
-  echo "$END_MARK"
-} >>"$PROFILE"
 
 # Machine facts consumed by the Hyprland Lua config (see keybinds.lua).
 "$REPO_ROOT/scripts/utils/facts.sh" --write-lua
@@ -102,4 +70,3 @@ chmod +x "$REPO_ROOT/scripts/utils/install.sh"
 "$REPO_ROOT/scripts/utils/install.sh" waybar-git waybar
 "$REPO_ROOT/scripts/utils/install.sh" mako
 "$REPO_ROOT/scripts/utils/install.sh" fuzzel
-"$REPO_ROOT/scripts/utils/install.sh" fcitx5

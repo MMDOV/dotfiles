@@ -22,9 +22,8 @@ sudo systemctl enable NetworkManager.service
 sudo pacman -S --noconfirm --needed modemmanager usb_modeswitch
 sudo systemctl enable ModemManager.service
 
-# `bind` is pulled in for the DNS client tools (dig, nslookup, host) — it
-# provides bind-tools/dnsutils. It also ships named.service, which is left
-# disabled; nothing here runs a DNS server.
-sudo pacman -S --noconfirm --needed ppp bind
+sudo pacman -S --noconfirm --needed ppp
 
-sudo pacman -S --noconfirm --needed networkmanager-openvpn networkmanager-openconnect openconnect openvpn
+# The DNS client tools (bind) and the VPN clients and plugins are user tools
+# that work under any network manager setup; they live in tools.sh, which runs
+# in every mode.

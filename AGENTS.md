@@ -18,6 +18,7 @@
 - Validate all shell scripts: `find scripts install -name '*.sh' -print0 | xargs -0 bash -n`
 - Validate single script: `bash -n <script>`
 - Preview setup without changes: `./install/setup.sh --dry-run`
+- Install on a machine that keeps its own desktop (no WM, display manager, session theming): `./install/setup.sh --no-wm` (add `--with-theme` for GTK/Qt theming). Scope lists: `install/setup.sh` (modules), `lib/scope.sh` (configs)
 - Run only specific modules: `./install/setup.sh --only hyprland,nvim`
 - Skip modules: `./install/setup.sh --skip drivers,sddm`
 - Sync all tracked configs: `./scripts/utils/update-config.sh`

@@ -117,26 +117,34 @@ fi
 # watches the raw input device so the guide button reaches Steam even when
 # nothing has focus; scripts/helpers/thd.sh runs it from the Hyprland session,
 # so the system-wide unit must stay off to avoid two daemons on one device.
+#
+# The triggerhappy half is Hyprland-specific (uwsm app, hyprctl dispatch, a
+# per-session launcher), so --no-wm leaves it out and keeps only xpadneo.
 
 print_msg "controller support"
-aur xpadneo-dkms triggerhappy
-
-if systemctl is-enabled triggerhappy.service &>/dev/null; then
-  print_msg "disabling system triggerhappy (run per-session instead)"
-  sudo systemctl disable --now triggerhappy.service
+if [ "${DOTFILES_MODE:-full}" = "no-wm" ]; then
+  aur xpadneo-dkms
+  print_skip "triggerhappy guide-button trigger: Hyprland-only, skipped in no-wm mode"
 else
-  print_skip "system triggerhappy: already disabled"
-fi
+  aur xpadneo-dkms triggerhappy
 
-mkdir -p "$HOME/.config/triggerhappy/triggers.d"
-cat >"$HOME/.config/triggerhappy/triggers.d/xbox.conf" <<'EOF'
+  if systemctl is-enabled triggerhappy.service &>/dev/null; then
+    print_msg "disabling system triggerhappy (run per-session instead)"
+    sudo systemctl disable --now triggerhappy.service
+  else
+    print_skip "system triggerhappy: already disabled"
+  fi
+
+  mkdir -p "$HOME/.config/triggerhappy/triggers.d"
+  cat >"$HOME/.config/triggerhappy/triggers.d/xbox.conf" <<'EOF'
 BTN_MODE 1 sh -c "uwsm app -- steam -tenfoot"
 BTN_MODE 1 sh -c "sleep 0.25; hyprctl dispatch workspace 1"
 EOF
+fi
 
 # --- desktop entry ----------------------------------------------------------
 
-install -Dm644 "$REPO_ROOT/dotfiles/local/share/steam.desktop" \
+install -Dm644 "$REPO_ROOT/dotfiles/local/share/applications/steam.desktop" \
   "$HOME/.local/share/applications/steam.desktop"
 
 print_msg "gaming setup complete (launch wrapper: $wrapper)"

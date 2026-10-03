@@ -6,27 +6,45 @@ REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 debug=false
 configonly=false
 force=false
+nowm=false
+with_theme=false
+subconf=""
 
-if [ $# -ge 1 ]; then
-  if [ $1 == "--debug" ]; then
-    debug=true
-  elif [ $1 == "--force" ]; then
-    force=true
-  elif [ $1 == "config" ]; then
+# Flags may come in any order; `config [name]` consumes the argument after it.
+while [ $# -gt 0 ]; do
+  case "$1" in
+  --debug) debug=true ;;
+  --force) force=true ;;
+  --no-wm) nowm=true ;;
+  --with-theme) with_theme=true ;;
+  config)
     configonly=true
     if [ $# -gt 1 ]; then
       subconf=$2
+      shift
     fi
-  fi
-fi
+    ;;
+  esac
+  shift
+done
+
+# no-wm mode leaves the session layer alone: see lib/scope.sh for what that
+# excludes. With --no-wm off, scope_skips never matches and nothing changes.
+SCOPE_NO_WM=$nowm
+SCOPE_WITH_THEME=$with_theme
+# shellcheck source=/dev/null
+source "$REPO_ROOT/lib/scope.sh"
+drift_args=(--config)
+$nowm && drift_args+=(--no-wm)
+$with_theme && drift_args+=(--with-theme)
 
 # This copies repo -> system with cp -f, so any local edit under ~/.config is
 # overwritten without trace. Surface that first. Only content conflicts on
 # tracked files count; generated state living alongside them is ignored.
-if ! $debug && ! $force && [ -z "${subconf:-}" ]; then
-  if ! "$REPO_ROOT/scripts/utils/check-drift.sh" --config >/dev/null 2>&1; then
+if ! $debug && ! $force && [ -z "$subconf" ]; then
+  if ! "$REPO_ROOT/scripts/utils/check-drift.sh" "${drift_args[@]}" >/dev/null 2>&1; then
     echo "Local changes would be overwritten:"
-    "$REPO_ROOT/scripts/utils/check-drift.sh" --config | grep -A3 CONFLICT || true
+    "$REPO_ROOT/scripts/utils/check-drift.sh" "${drift_args[@]}" | grep -A3 CONFLICT || true
     echo
     read -rp "Overwrite them? [y/N] " reply
     case "$reply" in
@@ -39,21 +57,40 @@ if ! $debug && ! $force && [ -z "${subconf:-}" ]; then
   fi
 fi
 
+copyandreplace_one() {
+  local item="$1" destpath="$2"
+  mkdir -p "$(dirname "$destpath")"
+  if ! $debug; then
+    if [ -d "$item" ]; then
+      cp -rfvp "$item" "$destpath"
+    else
+      cp -fvp "$item" "$destpath"
+    fi
+  else
+    echo "copying $item to $destpath"
+  fi
+}
+
 copyandreplace() {
+  local item
   shopt -s dotglob
   for item in "$1"/*; do
-    itemname=$(basename "$item")
-    destpath="$2"
-    mkdir -p "$(dirname "$destpath")"
-    if ! $debug; then
-      if [ -d "$item" ]; then
-        cp -rfvp "$item" "$destpath"
-      else
-        cp -fvp "$item" "$destpath"
-      fi
-    else
-      echo "copying $item to $destpath"
+    copyandreplace_one "$item" "$2"
+  done
+}
+
+# Like copyandreplace, but one top-level entry at a time so scope_skips can
+# drop the ones this mode does not deploy.
+copyconfigscoped() {
+  local item name
+  shopt -s dotglob
+  for item in "$1"/*; do
+    name="$(basename "$item")"
+    if scope_skips "$name"; then
+      echo "skipping $name (not deployed in no-wm mode)"
+      continue
     fi
+    copyandreplace_one "$item" "$2"
   done
 }
 
@@ -98,9 +135,13 @@ copyhome() {
 }
 
 if [ -z "$subconf" ]; then
-  copyandreplace "$REPO_ROOT/dotfiles/config" "$HOME/.config"
-  hyprctl reload
-  hyprshade auto
+  if $nowm; then
+    copyconfigscoped "$REPO_ROOT/dotfiles/config" "$HOME/.config"
+  else
+    copyandreplace "$REPO_ROOT/dotfiles/config" "$HOME/.config"
+    hyprctl reload
+    hyprshade auto
+  fi
 
 else
   mkdir -p "$HOME/.config/$subconf"
@@ -117,5 +158,8 @@ if ! $configonly; then
   chmod +x "$HOME/.local/bin/tmux-sessionizer"
 fi
 
-hyprctl reload 2>/dev/null || true
-hyprshade auto
+# The session is not ours in no-wm mode; there is nothing to reload.
+if ! $nowm; then
+  hyprctl reload 2>/dev/null || true
+  hyprshade auto
+fi

@@ -62,7 +62,7 @@ This repo is organized around a source-controlled copy of the Linux user environ
 - `dotfiles/home/` mirrors dotfiles that live directly under `~/` (e.g. `~/.claude/settings.json`).
 - `dotfiles/system/` stores system configuration. `pacman.conf.reference` is a **read-only snapshot** that is never deployed, because `/etc/pacman.conf` is owned by the system and carries repositories this repo must not overwrite.
 - `lib/facts.sh` is the hardware and distro detection layer. Every install module sources it and branches on capabilities rather than on a distro name.
-- `install/core/` contains focused install modules for base packages, drivers, PipeWire, NetworkManager, environment, Hyprland, Neovim, tmux, gaming, and extras.
+- `install/core/` contains focused install modules for base packages, drivers, PipeWire, NetworkManager, environment, shared tools (`tools`), audio quirks (`hda-quirks`), config deployment for `--no-wm` (`dotfiles`), Hyprland, Neovim, tmux, gaming, and extras.
 - `install/desktop/` contains display-manager and theme setup.
 - `scripts/utils/` contains orchestration utilities for detection (`facts.sh`), drift reporting (`check-drift.sh`), config syncing, package installation, and Obsidian/brain workflows.
 - `scripts/helpers/` contains standalone runtime helpers for VPN routing, file managers, Yazi, browser launchers, mounting, and GUI dialogs. These are invoked by keybinds and the compositor, not by the installer.
@@ -111,7 +111,7 @@ Examples of the routing model:
 
 The setup flow is intentionally modular rather than a single monolithic installer:
 
-- `install/setup.sh` detects `REPO_ROOT`, prints the detected machine, defines an ordered module list, supports `--dry-run`, `--only`, `--skip`, `--with-cachyos` and `--mirrors`, and runs each install module from `install/core/` or `install/desktop/`.
+- `install/setup.sh` detects `REPO_ROOT`, prints the detected machine, defines an ordered module list, supports `--dry-run`, `--only`, `--skip`, `--with-cachyos`, `--mirrors`, `--no-wm` and `--with-theme`, and runs each install module from `install/core/` or `install/desktop/`.
 - Install modules are grouped by responsibility so package installation, services, desktop components, and application setup can be tested independently.
 - `scripts/utils/update-config.sh` copies tracked config trees into their runtime destinations and reloads Hyprland when available. It reports conflicting local edits before overwriting them.
 - `scripts/utils/install.sh` ensures `paru` exists, installs a requested package, then copies the matching config folder.
@@ -148,6 +148,31 @@ Run the full setup:
 ```bash
 ./install/setup.sh
 ```
+
+### `--no-wm` mode: apps and tools only
+
+For a machine that already has a desktop (KDE, GNOME, another WM) and should keep it. `--no-wm` installs the apps, tools, terminals and dotfiles, and leaves the session layer alone. Anything that defines, styles or owns the desktop session, or that the distro already set up, is skipped.
+
+```bash
+./install/setup.sh --no-wm
+```
+
+One line on a fresh Arch-based install (needs `git`, `sudo` and `base-devel`; extra flags such as `--with-cachyos` are passed through):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/MMDOV/dotfiles/main/bootstrap.sh | bash -s -- --no-wm
+```
+
+The bootstrap clones to `~/personal` (override with `DOTFILES_DIR`) over HTTPS, or pulls if it is already there, then runs `install/setup.sh` with your arguments.
+
+| | `--no-wm` |
+| --- | --- |
+| **Installed** | `pacman` and `paru` setup, Konsole with its TokyoNight profile and the terminal defaults, kitty/foot/alacritty configs, nvim, tmux, yazi, cmus, spicetify, fcitx5, fonts, CLI tools, `extras`, `gaming` (without the Hyprland-only triggerhappy trigger), audio apps (easyeffects, pavucontrol, pulsemixer), VPN tools, the HDA mic quirk |
+| **Skipped: session** | `hyprland`, `sddm`, `env` (uwsm), and the hypr, waybar, mako, fuzzel, walker, uwsm and xsettingsd configs |
+| **Skipped: distro-owned** | `drivers`, `pipewire`, `networkmanager`, `bluetooth`, and enabling NetworkManager or taking over the display manager |
+| **Skipped unless `--with-theme`** | the `theme` module (Tokyonight GTK, Kvantum, qt5ct/qt6ct, gsettings) and the gtk-3.0, gtk-4.0, qt5ct, qt6ct, kdeglobals, dolphinrc and mimeapps.list configs |
+
+`--with-theme` only applies together with `--no-wm`. An explicit `--only <module>` always runs that module, whatever the mode. The skip lists live in `setup.sh` (modules) and `lib/scope.sh` (configs).
 
 Add the CachyOS optimized repositories during setup. This is never implicit: it uses CachyOS's own `cachyos-repo.sh`, which picks the tier matching the CPU, and pulls in a forked `pacman` along with the `[cachyos]` repository.
 

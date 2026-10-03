@@ -30,6 +30,8 @@ print_error() {
 
 DRY_RUN=false
 WITH_CACHYOS=false
+NO_WM=false
+WITH_THEME=false
 MIRRORS=false
 STRICT=false
 skip_list=()
@@ -47,6 +49,14 @@ while [[ $# -gt 0 ]]; do
     ;;
   --with-cachyos)
     WITH_CACHYOS=true
+    shift
+    ;;
+  --no-wm)
+    NO_WM=true
+    shift
+    ;;
+  --with-theme)
+    WITH_THEME=true
     shift
     ;;
   --mirrors)
@@ -71,13 +81,54 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+$WITH_THEME && ! $NO_WM && print_error "--with-theme only applies to --no-wm (full mode always themes)"
+
+# Modules read this to branch on mode, the way they read lib/facts.sh.
+if $NO_WM; then
+  export DOTFILES_MODE="no-wm"
+else
+  export DOTFILES_MODE="full"
+fi
+
 # What this machine is, before anything acts on it. Auto-detection is only
 # trustworthy if it says what it decided — the failure mode worth guarding
 # against is silently landing on a degraded tier and never noticing.
 # shellcheck source=/dev/null
 source "$REPO_ROOT/lib/facts.sh"
 facts_report
+echo "mode: $DOTFILES_MODE$($NO_WM && $WITH_THEME && echo ' (+theme)')"
 echo
+
+# --no-wm installs apps, tools, terminals and dotfiles, and leaves the session
+# layer alone. A module is excluded there when it defines or styles the session
+# (wm), or when the distro already owns it and a desktop install will have set
+# it up (distro). `dotfiles` only exists for no-wm: full mode deploys configs
+# through hyprland.sh. An explicit --only bypasses this, so any module stays
+# reachable by name.
+WM_MODULES=(hyprland sddm env)
+DISTRO_MODULES=(drivers pipewire networkmanager bluetooth)
+THEME_MODULES=(theme)
+NOWM_ONLY_MODULES=(dotfiles)
+
+in_list() {
+  local needle="$1" x
+  shift
+  for x in "$@"; do
+    [[ "$x" == "$needle" ]] && return 0
+  done
+  return 1
+}
+
+mode_allows() {
+  local mod="$1"
+  if $NO_WM; then
+    in_list "$mod" "${WM_MODULES[@]}" "${DISTRO_MODULES[@]}" && return 1
+    in_list "$mod" "${THEME_MODULES[@]}" && ! $WITH_THEME && return 1
+    return 0
+  fi
+  in_list "$mod" "${NOWM_ONLY_MODULES[@]}" && return 1
+  return 0
+}
 
 should_run() {
   local mod="$1"
@@ -92,6 +143,8 @@ should_run() {
   for s in "${skip_list[@]}"; do
     [[ "$s" == "$mod" ]] && return 1
   done
+
+  mode_allows "$mod" || return 1
 
   return 0
 }
@@ -137,6 +190,9 @@ declare -A modules=(
   ["drivers"]="core"
   ["base"]="core"
   ["env"]="core"
+  ["hda-quirks"]="core"
+  ["tools"]="core"
+  ["dotfiles"]="core"
   ["hyprland"]="core"
   ["nvim"]="core"
   ["tmux"]="core"
@@ -144,7 +200,6 @@ declare -A modules=(
   ["extras"]="core"
   ["sddm"]="desktop"
   ["theme"]="desktop"
-  ["blackbox"]="desktop"
   ["konsole"]="desktop"
 )
 
@@ -161,10 +216,12 @@ module_order=(
   "bluetooth"
   "drivers"
   "env"
+  "hda-quirks"
+  "tools"
+  "dotfiles"
   "hyprland"
   "sddm"
   "theme"
-  "blackbox"
   "konsole"
   "nvim"
   "tmux"
@@ -191,6 +248,11 @@ for mod in "${module_order[@]}"; do
     $MIRRORS && pacman_args+=(--mirrors)
     run_script "$mod" "${modules[$mod]}" "${pacman_args[@]+"${pacman_args[@]}"}"
     ;;
+  dotfiles)
+    dotfiles_args=()
+    $WITH_THEME && dotfiles_args+=(--with-theme)
+    run_script "$mod" "${modules[$mod]}" "${dotfiles_args[@]+"${dotfiles_args[@]}"}"
+    ;;
   *)
     run_script "$mod" "${modules[$mod]}"
     ;;
@@ -199,9 +261,15 @@ done
 
 # Post tasks
 if $DRY_RUN; then
-  print_action "Would enable sddm"
-  print_action "Would enable NetworkManager"
+  if ! $NO_WM; then
+    print_action "Would enable sddm"
+    print_action "Would enable NetworkManager"
+  fi
   print_action "Would create directory: $HOME/Projects/"
+elif $NO_WM; then
+  # The display manager and network stack belong to whatever desktop is
+  # already installed; taking either over is exactly what this mode avoids.
+  mkdir -p "$HOME/Projects/"
 else
   print_msg "Enabling services"
 
@@ -235,6 +303,7 @@ fi
 echo
 print_msg "Summary"
 FACTS_REFRESH=1 source "$REPO_ROOT/lib/facts.sh"
+echo "  mode:            $DOTFILES_MODE$($NO_WM && $WITH_THEME && echo ' (+theme)')"
 echo "  modules run:     ${ran_list[*]:-none}"
 echo "  modules skipped: ${skipped_list[*]:-none}"
 if [ ${#failed_list[@]} -gt 0 ]; then

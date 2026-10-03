@@ -33,7 +33,7 @@ if ! command -v paru &>/dev/null; then
 fi
 
 print_msg "Installing required packages..."
-sudo pacman -S --needed --noconfirm qt5-base qt6-base gtk3 gtk4 papirus-icon-theme ttf-dejavu lxappearance kvantum || print_error "Failed to install packages."
+sudo pacman -S --needed --noconfirm qt5-base qt6-base gtk3 gtk4 papirus-icon-theme ttf-dejavu lxappearance kvantum breeze || print_error "Failed to install packages."
 
 print_msg "Installing Tokyonight GTK theme..."
 aur_install tokyonight-gtk-theme-git || print_error "Failed to install Tokyonight GTK theme."

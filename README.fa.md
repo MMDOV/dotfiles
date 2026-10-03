@@ -112,7 +112,7 @@
 
 روند setup عمداً ماژولار است و به‌صورت یک installer تک‌فایلی بزرگ نوشته نشده:
 
-- `install/setup.sh` مقدار `REPO_ROOT` را تشخیص می‌دهد، مشخصات دستگاه تشخیص‌داده‌شده را چاپ می‌کند، ترتیب اجرای ماژول‌ها را تعریف می‌کند، از `--dry-run`، `--only`، `--skip` و `--with-cachyos` پشتیبانی می‌کند و هر ماژول نصب را از `install/core/` یا `install/desktop/` اجرا می‌کند.
+- `install/setup.sh` مقدار `REPO_ROOT` را تشخیص می‌دهد، مشخصات دستگاه تشخیص‌داده‌شده را چاپ می‌کند، ترتیب اجرای ماژول‌ها را تعریف می‌کند، از `--dry-run`، `--only`، `--skip`، `--with-cachyos`، `--no-wm` و `--with-theme` پشتیبانی می‌کند و هر ماژول نصب را از `install/core/` یا `install/desktop/` اجرا می‌کند.
 - ماژول‌های نصب بر اساس مسئولیت جدا شده‌اند تا نصب پکیج، سرویس‌ها، اجزای دسکتاپ و setup برنامه‌ها مستقل‌تر تست شوند.
 - `scripts/utils/update-config.sh` درخت config های track شده را به مقصد runtime کپی می‌کند و در صورت امکان Hyprland را reload می‌کند. قبل از بازنویسی، تغییرات محلی متعارض را گزارش می‌دهد.
 - `scripts/utils/install.sh` وجود `paru` را تضمین می‌کند، پکیج درخواستی را نصب می‌کند و سپس پوشه config متناظر را کپی می‌کند.
@@ -149,6 +149,29 @@ cd ~/personal
 ```bash
 ./install/setup.sh
 ```
+
+### حالت `--no-wm`: فقط برنامه‌ها و ابزارها
+
+برای سیستمی که از قبل دسکتاپ دارد (KDE، GNOME یا هر WM دیگر) و باید همان بماند. حالت `--no-wm` برنامه‌ها، ابزارها، ترمینال‌ها و dotfile ها را نصب می‌کند و به لایه session دست نمی‌زند. هر چیزی که session دسکتاپ را تعریف، استایل یا مدیریت می‌کند، یا قبلاً توسط توزیع تنظیم شده، رد می‌شود.
+
+```bash
+./install/setup.sh --no-wm
+```
+
+یک خط روی نصب تازه‌ی مبتنی بر Arch (به `git`، `sudo` و `base-devel` نیاز دارد؛ فلگ‌های اضافه مثل `--with-cachyos` به setup پاس داده می‌شوند):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/MMDOV/dotfiles/main/bootstrap.sh | bash -s -- --no-wm
+```
+
+bootstrap ریپو را با HTTPS در `~/personal` کلون می‌کند (با `DOTFILES_DIR` قابل تغییر است)، یا اگر از قبل وجود دارد pull می‌کند، و بعد `install/setup.sh` را با همان آرگومان‌ها اجرا می‌کند.
+
+- **نصب می‌شود:** setup مربوط به `pacman` و `paru`، Konsole با پروفایل TokyoNight و پیش‌فرض‌های ترمینال، config های kitty/foot/alacritty، nvim، tmux، yazi، cmus، spicetify، fcitx5، فونت‌ها، ابزارهای CLI، `extras`، `gaming` (بدون trigger مخصوص Hyprland)، برنامه‌های صوتی، ابزارهای VPN و quirk میکروفون HDA.
+- **رد می‌شود (session):** `hyprland`، `sddm`، `env` (uwsm) و config های hypr، waybar، mako، fuzzel، walker، uwsm و xsettingsd.
+- **رد می‌شود (متعلق به توزیع):** `drivers`، `pipewire`، `networkmanager`، `bluetooth` و فعال‌سازی NetworkManager یا جایگزینی display manager.
+- **رد می‌شود مگر با `--with-theme`:** ماژول `theme` (Tokyonight GTK، Kvantum، qt5ct/qt6ct، gsettings) و config های gtk-3.0، gtk-4.0، qt5ct، qt6ct، kdeglobals، dolphinrc و mimeapps.list.
+
+`--with-theme` فقط همراه `--no-wm` معنی دارد. `--only <module>` صریح همیشه همان ماژول را اجرا می‌کند، فارغ از حالت. لیست ماژول‌های رد‌شده در `setup.sh` و لیست config ها در `lib/scope.sh` است.
 
 اضافه کردن مخازن بهینه‌شده CachyOS در حین setup. این کار هرگز ضمنی نیست: از `cachyos-repo.sh` خود CachyOS استفاده می‌کند که سطح متناسب با CPU را انتخاب می‌کند و همراه با مخزن `[cachyos]` یک `pacman` فورک‌شده هم می‌آورد.
 
