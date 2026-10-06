@@ -12,15 +12,17 @@ state_file="$state_dir/$session.tsv"
 legacy_file="${XDG_STATE_HOME:-$HOME/.local/state}/tmux-claude/$session.tsv"
 saved_sessions=""
 
-[ -s "$state_file" ] && saved_sessions="$(cat "$state_file")"
-if [ -z "$saved_sessions" ] && [ -s "$legacy_file" ]; then
+[ -f "$state_file" ] && saved_sessions="$(grep -v '^#' "$state_file" || true)"
+# Import the pre-multi-provider file only once, when no new-format file exists
+# yet. An existing (even empty) state file is authoritative.
+if [ ! -e "$state_file" ] && [ -s "$legacy_file" ]; then
   mkdir -p "$state_dir"
   while IFS=$'\t' read -r session_id window_name; do
     [ -n "$session_id" ] || continue
     printf 'claude\t%s\t%s\t%s\n' "$session_id" "$window_name" "$project_dir"
   done < "$legacy_file" > "${state_file}.import"
   mv "${state_file}.import" "$state_file"
-  saved_sessions="$(cat "$state_file")"
+  saved_sessions="$(grep -v '^#' "$state_file" || true)"
 fi
 
 restored=false
