@@ -18,8 +18,11 @@
       }
     }
   },
-  "autoCompactWindow": 400000,
+  "autoCompactWindow": 300000,
   "theme": "dark-ansi",
   "editorMode": "vim",
-  "advisorModel": "opus"
+  "advisorModel": "opus",
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  }
 }
