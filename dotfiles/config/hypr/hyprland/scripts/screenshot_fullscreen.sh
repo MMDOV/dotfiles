@@ -9,7 +9,7 @@ fi
 
 monitors=$(hyprctl monitors | grep -Eo --group-separator=\n "[0-9]*x[0-9]*@[0-9]*.[0-9]*\s+at\s+[0-9]*x[0-9]*")
 
-selected_monitor=$(printf "Both\n$monitors" | fuzzel --dmenu --prompt "Which monitor?")
+selected_monitor=$(printf "Both\n$monitors" | rofi -dmenu -i -no-custom -mesg "Which monitor?" -theme-str 'window { width: 420px; } mainbox { children: [message, listview]; } message { padding: 8px 12px; border: 0; } listview { border: 0; } textbox { text-color: @fg; }')
 
 if [[ $selected_monitor == "Both" ]]; then
   grim - | swappy -f -

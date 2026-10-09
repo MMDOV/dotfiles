@@ -1,9 +1,6 @@
 local homeDir = os.getenv("HOME")
 hl.on("hyprland.start", function()
 	local dotfilesRoot = os.getenv("DOTFILES_ROOT")
-	-- App launcher
-	hl.exec_cmd("elephant")
-	hl.exec_cmd("walker --gapplication-service")
 	-- Input method
 	hl.exec_cmd("fcitx5")
 	hl.exec_cmd("blueman-applet &")
@@ -12,6 +9,11 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd(
 		"/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 || /usr/libexec/polkit-gnome-authentication-agent-1"
 	)
+	-- Wallpaper: awww draws it; `look restore` re-applies the saved look and wallpaper
+	hl.exec_cmd("uwsm app -- awww-daemon")
+	hl.exec_cmd(homeDir .. "/.local/bin/look restore")
+	-- Notifications: our own daemon (quickshell/notifd) owns org.freedesktop.Notifications
+	hl.exec_cmd("uwsm app -- qs -n -p " .. homeDir .. "/.config/quickshell/notifd")
 	hl.exec_cmd("uwsm app -- hypridle")
 	hl.exec_cmd("uwsm app -- hyprshade auto")
 	-- `hyprpm enable` writes to the root-owned state store and silently fails

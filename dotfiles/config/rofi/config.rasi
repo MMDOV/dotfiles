@@ -1,0 +1,100 @@
+/* Colors come from the active look (see dotfiles/config/look). */
+@import "look.rasi"
+
+configuration {
+    modes: "drun,run,window";
+    terminal: "konsole";
+    /* uwsm puts every launched app in its own systemd scope */
+    run-command: "uwsm app -- {cmd}";
+
+    show-icons: true;
+    drun-display-format: "{name}";
+    window-format: "{c}  ·  {t}";
+    matching: "fuzzy";
+    sort: true;
+    sorting-method: "fzf";
+    font: "JetBrains Mono 11";
+
+    display-drun: "";
+    display-run: "";
+    display-window: "";
+}
+
+* {
+    background-color: transparent;
+    text-color: @fg;
+    margin: 0;
+    padding: 0;
+    spacing: 0;
+}
+
+window {
+    location: center;
+    width: 480px;
+    background-color: @bg;
+    border: 1px;
+    border-color: @border;
+    border-radius: 8px;
+}
+
+mainbox {
+    padding: 10px;
+    spacing: 8px;
+    children: [inputbar, listview];
+}
+
+inputbar {
+    padding: 8px 12px;
+    spacing: 10px;
+    background-color: @surface;
+    border-radius: 6px;
+    children: [prompt, entry];
+}
+
+prompt { text-color: @accent; }
+
+entry {
+    placeholder: "search";
+    placeholder-color: @fg-faint;
+    text-color: @fg;
+}
+
+/* rofi's defaults draw dashed rules between the bars; the theme has no use for them */
+mainbox, inputbar, message, listview { border: 0; }
+
+listview {
+    lines: 8;
+    columns: 1;
+    fixed-height: true;
+    scrollbar: false;
+    spacing: 2px;
+}
+
+element {
+    padding: 7px 10px;
+    spacing: 10px;
+    border-radius: 6px;
+}
+
+element-icon {
+    size: 22px;
+    vertical-align: 0.5;
+}
+
+element-text {
+    vertical-align: 0.5;
+    text-color: inherit;
+}
+
+element normal.normal, element alternate.normal, element normal.urgent, element alternate.urgent, element normal.active, element alternate.active {
+    background-color: transparent;
+    text-color: @fg;
+}
+
+element selected.normal, element selected.urgent, element selected.active {
+    background-color: @surface;
+    text-color: @accent;
+}
+
+element normal.urgent, element alternate.urgent { text-color: @urgent; }
+element normal.active, element alternate.active { text-color: @accent; }

@@ -10,6 +10,25 @@ hl.window_rule({
 	no_blur = true,
 	opacity = "opacity 0.97 override 0.9 override",
 })
+-- Konsole fades its own background (Opacity in the Look color scheme), so the
+-- text stays solid. Undo the window-wide fade above and let it blur what is
+-- behind it instead.
+hl.window_rule({
+	match = { class = "^org\\.kde\\.konsole$" },
+	opacity = "opacity 1.0 override 1.0 override",
+	no_blur = false,
+})
+-- Notification cards and history (quickshell/notifd): blur what is behind them.
+hl.layer_rule({ match = { namespace = "^notifd(-history)?$" }, blur = true, ignore_alpha = 0.2 })
+-- Dolphin fades its own background through the translucent Kvantum `Look` theme
+-- (same idea as Konsole); here it only needs blur and no window-wide fade.
+hl.window_rule({
+	match = { class = "^org\\.kde\\.dolphin$" },
+	opacity = "opacity 1.0 override 1.0 override",
+	no_blur = false,
+})
+-- rofi (launcher and dialogs) is translucent and blurs what is behind it.
+hl.layer_rule({ match = { namespace = "^rofi$" }, blur = true, ignore_alpha = 0.1 })
 hl.window_rule({ match = { title = "^(Open File)(.*)$" }, center = true, float = true })
 hl.window_rule({ match = { title = "^(Select a File)(.*)$" }, center = true, float = true })
 hl.window_rule({ match = { title = "^(Choose wallpaper)(.*)$" }, center = true, float = true })

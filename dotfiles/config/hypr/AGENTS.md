@@ -42,7 +42,7 @@ live in `hyprland/keybinds/`, split by capability rather than form factor:
 `media.lua` always loads, `backlight.lua` only where a backlight device exists.
 
 Still in their own formats, because these are separate tools: `hyprlock.conf`,
-`hypridle.conf`, `hyprpaper.conf`, `hyprshade.toml`, and `xdph.conf`
+`hypridle.conf`, `hyprshade.toml`, and `xdph.conf`
 (xdg-desktop-portal-hyprland). Shaders are in `shaders/`, helper scripts in
 `hyprland/scripts/` and `hyprlock/`.
 

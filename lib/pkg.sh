@@ -2,7 +2,7 @@
 # Package installation helpers.
 #
 #   source "$REPO_ROOT/lib/pkg.sh"
-#   aur_install waybar-git mako fuzzel
+#   aur_install waybar-git rofi
 
 [ -n "${PKG_LIB_LOADED:-}" ] && return 0
 PKG_LIB_LOADED=1

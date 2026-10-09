@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-# Self-locating, same as walker.sh. The previous $1-based scripts directory
+# Self-locating, same as the other helpers. The previous $1-based scripts directory
 # was never passed by any caller, so the paru fallback path would have been
 # empty had it ever been reached.
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"

@@ -5,7 +5,18 @@ hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("uwsm app -- konsole -e tmux a"))
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd("uwsm app -- konsole"))
 
 -- App launcher
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("walker"))
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("pkill -x rofi || rofi -show drun"))
+
+-- Wallpaper / look picker (toggles: a second press closes it)
+hl.bind(
+	mainMod .. " + SHIFT + E",
+	hl.dsp.exec_cmd("qs kill -p $HOME/.config/quickshell/wallpicker || uwsm app -- qs -n -p $HOME/.config/quickshell/wallpicker")
+)
+
+-- Notifications: history panel, do-not-disturb toggle, dismiss all
+hl.bind(mainMod .. " + ALT + H", hl.dsp.exec_cmd("qs -p $HOME/.config/quickshell/notifd ipc call notifd toggleHistory"))
+hl.bind(mainMod .. " + ALT + N", hl.dsp.exec_cmd("qs -p $HOME/.config/quickshell/notifd ipc call notifd toggleDnd"))
+hl.bind(mainMod .. " + ALT + SHIFT + N", hl.dsp.exec_cmd("qs -p $HOME/.config/quickshell/notifd ipc call notifd dismissAll"))
 
 -- Screenshot
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd(hyprlandPath .. "scripts/screenshot_fullscreen.sh"))
@@ -14,7 +25,7 @@ hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(hyprlandPath .. "scripts/scre
 -- Clipboard history
 hl.bind(
 	mainMod .. " + SHIFT + V",
-	hl.dsp.exec_cmd("uwsm app -- pkill fuzzel || cliphist list | walker -d | cliphist decode | wl-copy")
+	hl.dsp.exec_cmd("pkill -x rofi || cliphist list | rofi -dmenu -p clipboard | cliphist decode | wl-copy")
 )
 
 -- Color picker

@@ -13,16 +13,16 @@ hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("playerctl previous -p spotify"), { l
 -- General
 hl.bind(
 	mainMod .. " + SHIFT + N",
-	hl.dsp.exec_cmd("uwsm app -- sh -c 'pkill fuzzel || playerctl -l | walker -d | xargs -r playerctl next -p'"),
+	hl.dsp.exec_cmd("uwsm app -- sh -c 'pkill -x rofi || playerctl -l | rofi -dmenu -p player | xargs -r playerctl next -p'"),
 	{ locked = true }
 )
 hl.bind(
 	mainMod .. " + SHIFT + P",
-	hl.dsp.exec_cmd("uwsm app -- sh -c 'pkill fuzzel || playerctl -l | walker -d | xargs -r playerctl play-pause -p'"),
+	hl.dsp.exec_cmd("uwsm app -- sh -c 'pkill -x rofi || playerctl -l | rofi -dmenu -p player | xargs -r playerctl play-pause -p'"),
 	{ locked = true }
 )
 hl.bind(
 	mainMod .. " + SHIFT + B",
-	hl.dsp.exec_cmd("uwsm app -- sh -c 'pkill fuzzel || playerctl -l | walker -d | xargs -r playerctl previous -p'"),
+	hl.dsp.exec_cmd("uwsm app -- sh -c 'pkill -x rofi || playerctl -l | rofi -dmenu -p player | xargs -r playerctl previous -p'"),
 	{ locked = true }
 )

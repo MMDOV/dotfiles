@@ -15,7 +15,10 @@ fi
 # shellcheck source=/dev/null
 source "$REPO_ROOT/lib/pkg.sh"
 
-paru -S --noconfirm --needed hyprland hyprlock hyprpicker hypridle hyprpaper hyprshutdown hyprshade
+paru -S --noconfirm --needed hyprland hyprlock hyprpicker hypridle hyprshutdown hyprshade
+# Wallpaper daemon (awww) and the color extractor `look` uses for wallpapers
+# that have no hand-made look. `look` itself is deployed by update-config.sh.
+paru -S --noconfirm --needed awww matugen rofi quickshell imagemagick
 paru -S --noconfirm --needed qt5-wayland qt6-wayland
 paru -S --noconfirm --needed xdg-desktop-portal-hyprland xdg-utils xdg-desktop-portal-gtk uwsm
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
@@ -41,8 +44,9 @@ aur_install polkit polkit-gnome yad
 echo "Setting up hyprland config"
 chmod +x "$REPO_ROOT/scripts/utils/update-config.sh"
 "$REPO_ROOT/scripts/utils/update-config.sh" config hypr
-# Enable hyprpaper as a service
-systemctl --user enable --now hyprpaper.service
+# awww replaces hyprpaper; hyprland/execs.lua starts the daemon. Keep an old
+# hyprpaper service from drawing underneath it.
+systemctl --user disable --now hyprpaper.service 2>/dev/null || true
 # Enable hyprshade
 hyprshade install
 systemctl --user enable --now hyprshade.timer
@@ -51,11 +55,6 @@ systemctl --user enable --now hyprshade.timer
 echo "Setting up theme"
 chmod +x "$REPO_ROOT/install/desktop/theme.sh"
 "$REPO_ROOT/install/desktop/theme.sh"
-
-# setup walker
-echo "Setting up walker"
-chmod +x "$REPO_ROOT/scripts/helpers/walker.sh"
-"$REPO_ROOT/scripts/helpers/walker.sh"
 
 # Machine facts consumed by the Hyprland Lua config (see keybinds.lua).
 "$REPO_ROOT/scripts/utils/facts.sh" --write-lua
@@ -67,6 +66,4 @@ chmod +x "$REPO_ROOT/scripts/utils/install.sh"
 # in dotfiles/config/waybar depends on it — the workspace scroll handlers
 # dispatch Lua, e.g. hyprctl dispatch 'hl.dsp.focus({ workspace = "-1" })'.
 # Second argument is the config directory, which stays "waybar".
-"$REPO_ROOT/scripts/utils/install.sh" waybar-git waybar
-"$REPO_ROOT/scripts/utils/install.sh" mako
-"$REPO_ROOT/scripts/utils/install.sh" fuzzel
+"$REPO_ROOT/scripts/utils/install.sh" waybar waybar

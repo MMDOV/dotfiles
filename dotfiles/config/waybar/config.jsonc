@@ -1,11 +1,15 @@
 {
     "layer": "top",
+    "reload_style_on_change": true,
     "position": "top",
-    "height": 20,
-    "spacing": 4,
+    "height": 18,
+    "spacing": 2,
+    "margin-top": 4,
+    "margin-left": 6,
+    "margin-right": 6,
 
     "modules-left": [
-        "custom/walker",
+        "custom/launcher",
         "hyprland/workspaces",
         "custom/move_workspace",
     ],
@@ -17,6 +21,7 @@
     "modules-right": [
         "custom/ping",
         "custom/vpn",
+        "custom/notifications",
         "group/group-stats",
         "wireplumber",
         "backlight",
@@ -25,10 +30,10 @@
         "group/group-power",
     ],
 
-    "custom/walker": {
+    "custom/launcher": {
         "format": "",
         "tooltip": false,
-        "on-click": "walker"
+        "on-click": "pkill -x rofi || rofi -show drun"
     },
 
     "clock": {
@@ -64,6 +69,13 @@
         "on-click-right": "~/.config/waybar/scripts/montior_toggle.sh"
     },
 
+    "custom/notifications": {
+        "format": "󰂚",
+        "tooltip": false,
+        "on-click": "qs -p $HOME/.config/quickshell/notifd ipc call notifd toggleHistory",
+        "on-click-right": "qs -p $HOME/.config/quickshell/notifd ipc call notifd toggleDnd"
+    },
+
     "custom/ping": {
         "exec": "~/.config/waybar/scripts/ping-status.sh",
         "interval": 1,
@@ -72,7 +84,8 @@
         "tooltip": true
     },
     "tray": {
-        "spacing": 10
+        "icon-size": 12,
+        "spacing": 6
     },
 
 
@@ -162,4 +175,3 @@
 }
 
 }
-
