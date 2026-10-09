@@ -58,15 +58,42 @@ Run `./scripts/utils/facts.sh --report` first. It tells you what the setup will 
 This repo is organized around a source-controlled copy of the Linux user environment:
 
 - `dotfiles/config/` mirrors `~/.config/` for Hyprland, Waybar, Neovim, Yazi, terminal emulators, input methods, notifications, and application configs.
-- `dotfiles/local/` mirrors `~/.local/` for desktop entries and user-level launchers.
+- `dotfiles/local/` mirrors `~/.local/` for desktop entries, user-level launchers and the `look` and `spicetify-setup` commands (`bin/`).
 - `dotfiles/home/` mirrors dotfiles that live directly under `~/` (e.g. `~/.claude/settings.json`).
 - `dotfiles/system/` stores system configuration. `pacman.conf.reference` is a **read-only snapshot** that is never deployed, because `/etc/pacman.conf` is owned by the system and carries repositories this repo must not overwrite.
 - `lib/facts.sh` is the hardware and distro detection layer. Every install module sources it and branches on capabilities rather than on a distro name.
 - `install/core/` contains focused install modules for base packages, drivers, PipeWire, NetworkManager, environment, shared tools (`tools`), audio quirks (`hda-quirks`), config deployment for `--no-wm` (`dotfiles`), Hyprland, Neovim, tmux, gaming, and extras.
-- `install/desktop/` contains display-manager and theme setup.
+- `install/desktop/` contains display-manager (SDDM), theme, Konsole and Spotify setup.
 - `scripts/utils/` contains orchestration utilities for detection (`facts.sh`), drift reporting (`check-drift.sh`), config syncing, package installation, and Obsidian/brain workflows.
 - `scripts/helpers/` contains standalone runtime helpers for VPN routing, file managers, Yazi, browser launchers, mounting, and GUI dialogs. These are invoked by keybinds and the compositor, not by the installer.
 - `themes/`, `assets/`, and `tmux/` provide visual assets, screenshots, SDDM/Qt themes, tmux config, and session bootstrap scripts.
+
+## Appearance: the `look` engine
+
+One script, `dotfiles/local/bin/look` (deployed to `~/.local/bin/look`), owns every color on the desktop.
+
+- A **look** is a palette in `dotfiles/config/look/looks/`. `tokyo` (Tokyonight) is the base. A wallpaper only moves the accent, borders, cursor, selection and the terminal's blue slot; backgrounds stay neutral gray. Colors come from `matugen` unless the wallpaper is bound to a look in `look/bindings.toml`.
+- `look apply` renders every target in `look/targets.toml` (a template, or a recolored copy of an installed theme) into the app's own config location, replaces the files atomically, then runs the reload hooks. Apps that cannot reload live (Dolphin, Spotify) show the change on their next start.
+- Generated files are not tracked. `update-config.sh` (`dotmmd`) deploys the configs and then runs `look apply`.
+
+| Area | What follows the look |
+| --- | --- |
+| Compositor and shell | Hyprland borders, Waybar, hyprlock, rofi (launcher, power menu, screenshot picker), the `notifd` notification daemon and its history panel |
+| Terminals and editors | Konsole (open windows are swapped in place, tmux keeps the sessions), kitty, alacritty, tmux, Neovim, Yazi |
+| Toolkits | GTK (`Look` theme), Qt through qt5ct/qt6ct, a tinted translucent Kvantum `Look` theme and the KDE `Look` color scheme (Dolphin) |
+| Spotify | spicetify color scheme, applied by `spicetify-setup` once Spotify has run |
+| Login screen | SDDM shows the current wallpaper and the lock screen's colors. `install/desktop/sddm.sh` hands the theme folder to your user once so `look` can update it without `sudo` |
+
+```bash
+look apply [NAME]     # apply a look, or re-render the current palette
+look wallpaper PATH   # set the wallpaper and derive or bind its colors
+look pin | unpin      # keep the current colors when the wallpaper changes
+look status
+```
+
+Keybinds: `SUPER+E` launcher, `SUPER+SHIFT+E` wallpaper picker (Quickshell), `SUPER+ALT+H` notification history, `SUPER+ALT+N` do-not-disturb, `SUPER+ALT+SHIFT+N` dismiss all.
+
+Not themed: Zen, Discord, TeamSpeak and Telegram. Their theming needs client mods or per-app style files that did not look right, so they keep their own looks.
 
 ## Machine Detection
 
@@ -167,8 +194,8 @@ The bootstrap clones to `~/personal` (override with `DOTFILES_DIR`) over HTTPS, 
 
 | | `--no-wm` |
 | --- | --- |
-| **Installed** | `pacman` and `paru` setup, Konsole with its TokyoNight profile and the terminal defaults, kitty/foot/alacritty configs, nvim, tmux, yazi, cmus, spicetify, fcitx5, fonts, CLI tools, `extras`, `gaming` (without the Hyprland-only triggerhappy trigger), audio apps (easyeffects, pavucontrol, pulsemixer), VPN tools, the HDA mic quirk |
-| **Skipped: session** | `hyprland`, `sddm`, `env` (uwsm), and the hypr, waybar, mako, fuzzel, walker, uwsm and xsettingsd configs |
+| **Installed** | `pacman` and `paru` setup, Konsole with its Look profile and the terminal defaults, kitty/foot/alacritty configs, nvim, tmux, yazi, cmus, spicetify, fcitx5, fonts, CLI tools, `extras`, `gaming` (without the Hyprland-only triggerhappy trigger), audio apps (easyeffects, pavucontrol, pulsemixer), VPN tools, the HDA mic quirk |
+| **Skipped: session** | `hyprland`, `sddm`, `env` (uwsm), and the hypr, waybar, look, rofi, quickshell, uwsm and xsettingsd configs |
 | **Skipped: distro-owned** | `drivers`, `pipewire`, `networkmanager`, `bluetooth`, and enabling NetworkManager or taking over the display manager |
 | **Skipped unless `--with-theme`** | the `theme` module (Tokyonight GTK, Kvantum, qt5ct/qt6ct, gsettings) and the gtk-3.0, gtk-4.0, qt5ct, qt6ct, kdeglobals, dolphinrc and mimeapps.list configs |
 

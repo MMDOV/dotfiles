@@ -5,3 +5,5 @@ pc-build-baseline.md
 
 # private career notes, never committed
 career/
+
+__pycache__/

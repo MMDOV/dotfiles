@@ -69,6 +69,33 @@
 - `scripts/helpers/` شامل ابزارهای مستقل runtime برای VPN routing، file manager ها، Yazi، مرورگرها، mount کردن و دیالوگ‌های GUI است. این‌ها توسط keybind ها و compositor صدا زده می‌شوند، نه توسط installer.
 - `themes/`، `assets/` و `tmux/` شامل asset های تصویری، screenshot ها، تم‌های SDDM/Qt، تنظیمات tmux و اسکریپت‌های ساخت session هستند.
 
+## ظاهر: موتور `look`
+
+یک اسکریپت، `dotfiles/local/bin/look` (که در `~/.local/bin/look` نصب می‌شود)، مسئول همهٔ رنگ‌های دسکتاپ است.
+
+- هر **look** یک پالت رنگ در `dotfiles/config/look/looks/` است و `tokyo` (Tokyonight) پایه است. والپیپر فقط رنگ تأکیدی، حاشیه‌ها، نشانگر، انتخاب و جایگاه آبی ترمینال را تغییر می‌دهد و پس‌زمینه‌ها خاکستری خنثی می‌مانند. رنگ‌ها از `matugen` می‌آیند، مگر اینکه والپیپر در `look/bindings.toml` به یک look بسته شده باشد.
+- `look apply` همهٔ targetهای `look/targets.toml` (یک template یا نسخهٔ بازرنگ‌شدهٔ یک تم نصب‌شده) را در محل config خود برنامه می‌نویسد، فایل‌ها را اتمی جایگزین می‌کند و سپس reload hookها را اجرا می‌کند. برنامه‌هایی که زنده reload نمی‌شوند (Dolphin و Spotify) تغییر را در اجرای بعدی نشان می‌دهند.
+- فایل‌های تولیدشده track نمی‌شوند. `update-config.sh` (`dotmmd`) configها را کپی می‌کند و بعد `look apply` را اجرا می‌کند.
+
+| بخش | چه چیزی از look پیروی می‌کند |
+| --- | --- |
+| کامپوزیتور و پوسته | حاشیه‌های Hyprland، Waybar، hyprlock، rofi (لانچر، منوی پاور، انتخاب مانیتور اسکرین‌شات)، دیمن اعلان `notifd` و پنل تاریخچهٔ آن |
+| ترمینال و ویرایشگر | Konsole (پنجره‌های باز در جا عوض می‌شوند و tmux نشست‌ها را نگه می‌دارد)، kitty، alacritty، tmux، Neovim، Yazi |
+| ابزارک‌ها | GTK (تم `Look`)، Qt از طریق qt5ct/qt6ct، تم Kvantum `Look` با رنگ‌آمیزی و شفافیت و طرح رنگ KDE به نام `Look` (Dolphin) |
+| Spotify | طرح رنگ spicetify که `spicetify-setup` پس از اولین اجرای Spotify اعمال می‌کند |
+| صفحهٔ ورود | SDDM والپیپر فعلی و رنگ‌های صفحهٔ قفل را نشان می‌دهد. `install/desktop/sddm.sh` یک بار پوشهٔ تم را به کاربر می‌دهد تا `look` بدون `sudo` آن را به‌روز کند |
+
+```bash
+look apply [NAME]     # اعمال یک look یا ساخت دوبارهٔ پالت فعلی
+look wallpaper PATH   # تنظیم والپیپر و استخراج یا اتصال رنگ‌های آن
+look pin | unpin      # نگه داشتن رنگ‌های فعلی هنگام تغییر والپیپر
+look status
+```
+
+کلیدها: `SUPER+E` لانچر، `SUPER+SHIFT+E` انتخاب والپیپر (Quickshell)، `SUPER+ALT+H` تاریخچهٔ اعلان‌ها، `SUPER+ALT+N` مزاحم نشوید، `SUPER+ALT+SHIFT+N` بستن همهٔ اعلان‌ها.
+
+تم نشده‌اند: Zen، Discord، TeamSpeak و Telegram. تم‌دادن به آن‌ها به mod برای کلاینت یا فایل سبک جدا نیاز دارد که خوب از آب درنیامد، پس ظاهر خودشان را نگه می‌دارند.
+
 ## تشخیص دستگاه
 
 فایل `lib/facts.sh` یک بار سیستم را بررسی می‌کند و متغیرهای `FACT_*` را در اختیار ماژول‌های نصب می‌گذارد:
@@ -166,8 +193,8 @@ curl -fsSL https://raw.githubusercontent.com/MMDOV/dotfiles/main/bootstrap.sh | 
 
 bootstrap ریپو را با HTTPS در `~/personal` کلون می‌کند (با `DOTFILES_DIR` قابل تغییر است)، یا اگر از قبل وجود دارد pull می‌کند، و بعد `install/setup.sh` را با همان آرگومان‌ها اجرا می‌کند.
 
-- **نصب می‌شود:** setup مربوط به `pacman` و `paru`، Konsole با پروفایل TokyoNight و پیش‌فرض‌های ترمینال، config های kitty/foot/alacritty، nvim، tmux، yazi، cmus، spicetify، fcitx5، فونت‌ها، ابزارهای CLI، `extras`، `gaming` (بدون trigger مخصوص Hyprland)، برنامه‌های صوتی، ابزارهای VPN و quirk میکروفون HDA.
-- **رد می‌شود (session):** `hyprland`، `sddm`، `env` (uwsm) و config های hypr، waybar، mako، fuzzel، walker، uwsm و xsettingsd.
+- **نصب می‌شود:** setup مربوط به `pacman` و `paru`، Konsole با پروفایل Look و پیش‌فرض‌های ترمینال، config های kitty/foot/alacritty، nvim، tmux، yazi، cmus، spicetify، fcitx5، فونت‌ها، ابزارهای CLI، `extras`، `gaming` (بدون trigger مخصوص Hyprland)، برنامه‌های صوتی، ابزارهای VPN و quirk میکروفون HDA.
+- **رد می‌شود (session):** `hyprland`، `sddm`، `env` (uwsm) و config های hypr، waybar، look، rofi، quickshell، uwsm و xsettingsd.
 - **رد می‌شود (متعلق به توزیع):** `drivers`، `pipewire`، `networkmanager`، `bluetooth` و فعال‌سازی NetworkManager یا جایگزینی display manager.
 - **رد می‌شود مگر با `--with-theme`:** ماژول `theme` (Tokyonight GTK، Kvantum، qt5ct/qt6ct، gsettings) و config های gtk-3.0، gtk-4.0، qt5ct، qt6ct، kdeglobals، dolphinrc و mimeapps.list.
 
