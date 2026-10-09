@@ -1,0 +1,5 @@
+# Wallpapers that switch to a hand-made look instead of colors derived from the
+# image. Keyed by file name without extension, so the folder does not matter.
+# Anything not listed here gets its colors from matugen.
+[wallpapers]
+# wallhaven-xxxxxx = "tokyo"

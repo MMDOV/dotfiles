@@ -140,7 +140,7 @@ if [ -z "$subconf" ]; then
   else
     copyandreplace "$REPO_ROOT/dotfiles/config" "$HOME/.config"
     hyprctl reload
-    hyprshade auto
+    command -v hyprshade >/dev/null 2>&1 && hyprshade auto
   fi
 
 else
@@ -160,6 +160,12 @@ fi
 
 # The session is not ours in no-wm mode; there is nothing to reload.
 if ! $nowm; then
+  # Tracked configs include colors that `look` generates (they are not in the
+  # repo), so render them now: first run applies the default look, later runs
+  # re-apply the current one.
+  if [ -x "$HOME/.local/bin/look" ] && ! $debug; then
+    "$HOME/.local/bin/look" apply || echo "look apply failed; run it by hand" >&2
+  fi
   hyprctl reload 2>/dev/null || true
-  hyprshade auto
+  command -v hyprshade >/dev/null 2>&1 && hyprshade auto
 fi

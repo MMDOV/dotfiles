@@ -16,9 +16,9 @@
 WM_ONLY_CONFIG=(
   hypr
   waybar
-  mako
-  fuzzel
-  walker
+  look
+  rofi
+  quickshell
   uwsm
   xsettingsd
   hyprland-xdg-terminals.list

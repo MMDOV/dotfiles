@@ -1,0 +1,2 @@
+# Where the wallpaper picker looks. Subfolders show up as collections.
+wallpapers = "~/Pictures/Wallpapers"

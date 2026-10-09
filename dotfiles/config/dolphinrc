@@ -21,7 +21,7 @@ ViewPropsTimestamp=2025,9,30,17,22,33.621
 PreviewSize=256
 
 [KDE]
-colorScheme=Tokyonight
+colorScheme=Look
 
 [KFileDialog Settings]
 Places Icons Auto-resize=false
@@ -37,7 +37,7 @@ warnAboutRisksBeforeActingAsAdmin=false
 Plugins=ffmpegthumbnailer,appimagethumbnail,audiothumbnail,glycin-heif,blenderthumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,glycin-image-rs,jpegthumbnail,glycin-jxl,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,mobithumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,glycin-svg,svgthumbnail,ffmpegthumbs
 
 [UiSettings]
-ColorScheme=Tokyonight
+ColorScheme=Look
 
 [ViewPropertiesDialog]
 1920x1080 screen: Window-Maximized=true

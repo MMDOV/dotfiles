@@ -1,11 +1,11 @@
 [Appearance]
-ColorScheme=TokyoNight
+ColorScheme=Look
 Font=JetBrains Mono,11,-1,5,50,0,0,0,0,0
 TerminalMargin=5
 LineSpacing=0
 
 [General]
-Name=TokyoNight
+Name=Look
 Parent=FALLBACK/
 Icon=utilities-terminal
 

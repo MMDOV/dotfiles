@@ -1,0 +1,781 @@
+#!/usr/bin/env python3
+"""look - switch the desktop between looks (a palette plus a wallpaper).
+
+A look is a TOML file of colors. Applying one renders every template listed in
+targets.toml into the app's own config location, then reloads the apps that can
+be reloaded live. A wallpaper without a look of its own gets its palette from
+matugen instead.
+
+  look apply [NAME]        apply a look (no NAME: re-render the current palette)
+  look wallpaper PATH      set wallpaper; use its bound look, else derive colors
+  look restore             re-apply the saved look and wallpaper (for login)
+  look pin | unpin         keep the current colors when the wallpaper changes
+  look mode dark|light     appearance used when deriving colors from a wallpaper
+  look list | status | info
+"""
+import argparse, colorsys, fcntl, filecmp, json, os, re, shlex, shutil, subprocess, sys, tempfile, tomllib
+from contextlib import contextmanager
+from pathlib import Path
+
+HOME = Path.home()
+CONFIG = Path(os.environ.get("XDG_CONFIG_HOME", HOME / ".config")) / "look"
+STATE_DIR = Path(os.environ.get("XDG_STATE_HOME", HOME / ".local/state")) / "look"
+LOOKS = CONFIG / "looks"
+TEMPLATES = CONFIG / "templates"
+TARGETS = CONFIG / "targets.toml"
+BINDINGS = CONFIG / "bindings.toml"
+SETTINGS = CONFIG / "config.toml"
+STATE = STATE_DIR / "state.json"
+PALETTE = STATE_DIR / "palette.json"
+
+HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
+NAME = re.compile(r"^[A-Za-z0-9._-]+$")
+TOKEN = re.compile(r"\{\{\s*([a-z0-9_]+)((?:\s*\|\s*[a-z0-9]+(?:=[0-9a-fA-F.]+)?)*)\s*\}\}")
+IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".bmp"}
+
+
+def die(msg):
+    print(f"look: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def warn(msg):
+    print(f"look: warning: {msg}", file=sys.stderr)
+
+
+# ---------- small helpers ----------
+
+def atomic_write(path, text):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f".{path.name}.look-tmp")
+    tmp.write_text(text)
+    os.replace(tmp, path)
+
+
+@contextmanager
+def lock():
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    with open(STATE_DIR / "lock", "w") as f:
+        fcntl.flock(f, fcntl.LOCK_EX)  # picking wallpapers quickly must not interleave renders
+        yield
+
+
+def load_toml(path):
+    with open(path, "rb") as f:
+        return tomllib.load(f)
+
+
+def load_state():
+    try:
+        return json.loads(STATE.read_text())
+    except (OSError, ValueError):
+        return {}
+
+
+def save_state(st):
+    atomic_write(STATE, json.dumps(st, indent=2))
+
+
+def to_rgb(h):
+    h = h.lstrip("#")
+    return [int(h[i:i + 2], 16) for i in (0, 2, 4)]
+
+
+def mix(a, b, t):
+    """Blend color a toward color b by t (0..1)."""
+    ra, rb = to_rgb(a), to_rgb(b)
+    return "#" + "".join(f"{round(x + (y - x) * t):02x}" for x, y in zip(ra, rb))
+
+
+def is_light(h):
+    r, g, b = (c / 255 for c in to_rgb(h))
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.5
+
+
+def luminance(h):
+    """Relative brightness, sufficient for keeping UI text readable."""
+    r, g, b = (c / 255 for c in to_rgb(h))
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def to_hsl(h):
+    r, g, b = (x / 255 for x in to_rgb(h))
+    hue, l, sat = colorsys.rgb_to_hls(r, g, b)
+    return hue * 360, sat, l
+
+
+def from_hsl(hue, sat, l):
+    r, g, b = colorsys.hls_to_rgb((hue % 360) / 360, l, sat)
+    return "#%02x%02x%02x" % (round(r * 255), round(g * 255), round(b * 255))
+
+
+# Terminal colors keep fixed hues so red still reads as error and green as success.
+# The wallpaper only nudges each hue toward its own (like Material's "harmonize"),
+# which tints the terminal without turning it gray.
+ANSI_HUES = {1: "#f7768e", 2: "#9ece6a", 3: "#e0af68", 5: "#bb9af7", 6: "#7dcfff"}
+HARMONIZE_MAX = 18      # degrees a hue may move toward the wallpaper's
+
+
+def harmonized_ansi(accent, light):
+    ah, a_sat, a_l = to_hsl(accent)
+    out = {}
+    for i, base in ANSI_HUES.items():
+        hue, sat, l = to_hsl(base)
+        d = ((ah - hue + 540) % 360) - 180
+        hue += max(-HARMONIZE_MAX, min(HARMONIZE_MAX, d * 0.5))
+        l = min(l, 0.38) if light else max(l, 0.68)
+        out[i] = from_hsl(hue, sat, l)
+    # blue is the wallpaper's own accent, pinned to a readable lightness
+    l = min(max(a_l, 0.30), 0.40) if light else min(max(a_l, 0.68), 0.78)
+    out[4] = from_hsl(ah, max(a_sat, 0.55), l)
+    return out
+
+
+def readable_foreground(h, light):
+    """Keep accent and ANSI text colors away from the background extreme."""
+    target, toward = (0.45, "#ffffff") if not light else (0.25, "#000000")
+    out = h
+    for _ in range(8):
+        if (not light and luminance(out) >= target) or (light and luminance(out) <= target):
+            return out
+        out = mix(out, toward, 0.35)
+    return out
+
+
+# ---------- palettes ----------
+
+def complete(colors):
+    """Fill every key a template may use, deriving what the look left out."""
+    c = {k: v.lower() for k, v in colors.items()}
+    bad = {k: v for k, v in c.items() if not HEX.match(v)}
+    if bad:
+        raise ValueError(f"invalid colors: {bad}")
+    for need in ("bg", "fg", "accent"):
+        if need not in c:
+            raise ValueError(f"a look needs at least bg, fg and accent (missing {need})")
+
+    light = is_light(c["bg"])
+    deeper = "#000000" if not light else "#ffffff"
+
+    def default(key, value):
+        c.setdefault(key, value)
+
+    default("bg_alt", mix(c["bg"], deeper, 0.2))
+    default("surface", mix(c["bg"], c["fg"], 0.07))
+    default("border", mix(c["bg"], c["fg"], 0.15))
+    c["fg_dim"] = mix(c["fg"], c["bg"], 0.2)
+    c["fg_faint"] = mix(c["fg"], c["bg"], 0.5)
+    default("accent_alt", c["accent"])
+    default("selection", mix(c["bg"], c["accent"], 0.3))
+    default("cursor", c["accent"])
+    default("ok", c.get("t2", "#9ece6a"))
+    default("warn", c.get("t3", "#e0af68"))
+    default("danger", c.get("t1", "#f7768e"))
+
+    ansi = [c["bg_alt"], c["danger"], c["ok"], c["warn"], c["accent"], c["accent_alt"],
+            c["accent_alt"], c["fg_dim"]]
+    bright = [c["fg_faint"], c["danger"], c["ok"], c["warn"], c["accent"], c["accent_alt"],
+              c["accent_alt"], c["fg"]]
+    for i, v in enumerate(ansi + bright):
+        default(f"t{i}", v)
+
+    # Material's accents can come out too dark; the terminal colors are already
+    # pinned readable by harmonized_ansi, so only the UI accents are guarded here.
+    for key in ("accent", "accent_alt", "ok", "warn", "danger"):
+        c[key] = readable_foreground(c[key], light)
+
+    for i in range(8):                      # konsole's dimmed variants
+        default(f"t{i}_faint", mix(c[f"t{i}"], c["bg"], 0.5))
+
+    # per-app knobs, so a look can tune one app without touching the rest
+    default("bar_bg", c["bg_alt"])
+    default("bar_fg", c["fg"])
+    default("bar_accent", c["accent"])
+    default("bar_border", c["border"])
+    default("bar_hover", c["surface"])
+    default("lock_accent", c["accent"])
+    default("border_active", c["accent"])
+    default("border_active_alt", c["accent_alt"])
+    default("border_inactive", mix(c["bg"], c["fg"], 0.3))
+    return c
+
+
+def look_path(name):
+    if not NAME.match(name):
+        die(f"invalid look name: {name!r}")
+    p = LOOKS / f"{name}.toml"
+    if not p.is_file():
+        die(f"no such look: {name} (looked in {LOOKS})")
+    return p
+
+
+def look_palette(name):
+    data = load_toml(look_path(name))
+    pal = complete(data.get("colors", {}))
+    pal["_appearance"] = data.get("appearance") or ("light" if is_light(pal["bg"]) else "dark")
+    return pal
+
+
+# A wallpaper changes only these things in the base look; everything else (text,
+# red/green/yellow/magenta/cyan) stays as the base look defines it.
+TINT_KEYS = ("bg", "bg_alt", "surface", "border", "fg_faint", "t0", "t8")
+# How much of the base look's saturation those keep, in the wallpaper's hue.
+# 0 = plain gray, 1 = the base look's own tint (tokyo's blue-black) but wallpaper-colored.
+BG_SATURATION = 0.0
+# Per-app overrides the base look may carry; they would pin the accent, so a
+# wallpaper lets them derive from its accent instead.
+ACCENT_BOUND = ("selection", "cursor", "bar_bg", "bar_accent", "lock_accent",
+                "border_active", "border_active_alt", "border_inactive")
+
+
+def tinted_base(accent, base_name):
+    """Base look with the wallpaper's accent and background hue (dark mode)."""
+    colors = dict(load_toml(look_path(base_name)).get("colors", {}))
+    ah, a_sat, a_l = to_hsl(accent)
+    for key in TINT_KEYS:
+        if key in colors:
+            _, sat, l = to_hsl(colors[key])
+            colors[key] = from_hsl(ah, sat * BG_SATURATION, l)
+    for key in ACCENT_BOUND:
+        colors.pop(key, None)
+    ansi = harmonized_ansi(accent, False)
+    colors["accent"] = colors["t4"] = colors["t12"] = ansi[4]
+    colors["accent_alt"] = ansi[6]
+    pal = complete(colors)
+    pal["_appearance"] = "dark"
+    return pal
+
+
+def wallpaper_palette(path, mode):
+    """Derive a palette from an image with matugen. Raises on any failure."""
+    if not shutil.which("matugen"):
+        raise RuntimeError("matugen is not installed")
+    r = subprocess.run(
+        ["matugen", "image", str(path), "--dry-run", "--json", "hex", "-m", mode,
+         "-t", "scheme-tonal-spot", "--source-color-index", "0", "-q"],
+        stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=60)
+    if r.returncode != 0:
+        raise RuntimeError(f"matugen failed: {(r.stderr or r.stdout).strip()}")
+    data = json.loads(r.stdout)
+    m = {k: v[mode]["color"] for k, v in data["colors"].items()}
+    b = {k: v[mode]["color"] for k, v in data["base16"].items()}
+    light = mode == "light"
+    if not light:
+        return tinted_base(m["primary"], default_look())
+    accent = m["primary"]
+    ansi = harmonized_ansi(accent, light)
+    # Reading color: neutral near-white (near-black in light mode) with a faint
+    # wallpaper tint. Material's on_surface can be almost black on a dark image.
+    fg = mix("#16181d" if light else "#f3f5f7", accent, 0.06)
+    colors = {
+        "bg": m["background"], "bg_alt": m["surface_container_low"], "surface": m["surface_container"],
+        "border": m["outline_variant"], "fg": fg, "fg_dim": mix(fg, m["background"], 0.2),
+        "fg_faint": mix(fg, m["background"], 0.5), "accent": ansi[4], "accent_alt": ansi[6],
+        "selection": m["primary_container"], "danger": ansi[1], "ok": ansi[2], "warn": ansi[3],
+    }
+    for i, v in ansi.items():
+        colors[f"t{i}"] = colors[f"t{i + 8}"] = v
+    # t0/t7/t8/t15 (black, white and their bright twins) derive from bg and fg in complete()
+    pal = complete(colors)
+    pal["_appearance"] = mode
+    return pal
+
+
+# ---------- rendering ----------
+
+def render(text, pal, where):
+    def sub(m):
+        key, chain = m.group(1), m.group(2)
+        if key == "home":
+            v = str(HOME)
+        elif key not in pal:
+            raise ValueError(f"{where}: unknown color '{key}'")
+        else:
+            v = pal[key]
+        for f in (x.strip() for x in chain.split("|") if x.strip()):
+            name, _, arg = f.partition("=")
+            r, g, b = to_rgb(v)
+            if name == "strip":
+                v = v.lstrip("#")
+            elif name == "rgb":                       # 26,27,38  (konsole)
+                v = f"{r},{g},{b}"
+            elif name == "css" and arg:               # rgba(26, 27, 38, 0.8)
+                v = f"rgba({r}, {g}, {b}, {arg})"
+            elif name == "hex8" and arg:              # #1a1b26ee  (rofi)
+                v = f"{v}{arg}"
+            elif name == "argb" and arg:              # #cc1a1b26  (Qt: alpha first, sddm)
+                v = f"#{arg}{v.lstrip('#')}"
+            elif name == "hl":                        # rgba(1a1b26ee)  (hyprland, hyprlock); default opaque
+                v = f"rgba({v.lstrip('#')}{arg or 'ff'})"
+            else:
+                raise ValueError(f"{where}: bad filter '{f}'")
+        return v
+    out = TOKEN.sub(sub, text)
+    left = re.search(r"\{\{.*?\}\}", out)
+    if left:
+        raise ValueError(f"{where}: malformed token: {left.group(0)}")
+    return out
+
+
+def recolor(text, mapping, pal, src_dir):
+    """Swap a base theme's palette colors for the active palette; layout and effects stay.
+
+    mapping: {"#1a1b26": "bg", ...} (base color -> palette key). Matches #rrggbb and
+    rgba(r, g, b, a) spellings. Relative url("assets/..") points back at the base theme.
+    """
+    table = {}
+    for base, key in mapping.items():
+        if key not in pal:
+            raise ValueError(f"recolor map: unknown color '{key}'")
+        table[tuple(to_rgb(base))] = tuple(to_rgb(pal[key]))
+
+    def hexsub(m):
+        new = table.get(tuple(to_rgb(m.group(0))))
+        return "#%02x%02x%02x" % new if new else m.group(0)
+
+    def rgbasub(m):
+        new = table.get((int(m.group(1)), int(m.group(2)), int(m.group(3))))
+        return f"rgba({new[0]}, {new[1]}, {new[2]}," if new else m.group(0)
+
+    text = re.sub(r"#[0-9a-fA-F]{6}\b", hexsub, text)
+    text = re.sub(r"rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,", rgbasub, text)
+    return text.replace('url("assets/', f'url("file://{src_dir}/assets/')
+
+
+def tint(text, pal, settings=None, sections=None, translucent=None):
+    """Recolor a base theme by hue instead of by exact color, for art with many shades.
+
+    Bluish grays become neutral grays (the look's backgrounds have no hue), and the
+    base theme's saturated blues take the look's accent hue with their own saturation
+    and lightness, so gradients and hover states keep their shape. Light text colors,
+    reds, purples and the like are left as the theme has them. `settings` rewrites
+    `key=value` lines of an ini-style file (added to the first section if absent);
+    `{bg}` in a value stands for the look's background hex, so alpha colors can follow it.
+    `translucent` (0-1) multiplies the opacity of the theme's dark surface fills in SVG
+    styles, so every bar, menu and field shows the window behind it, not just the ones named.
+    `sections` does the same inside named `[Section]` blocks: {"Toolbar": {"interior": "false"}}.
+    """
+    acc_hue = to_hsl(pal["accent"])[0]
+
+    def sub(m):
+        hue, sat, l = to_hsl(m.group(0))
+        if sat < 0.35:
+            return from_hsl(0, 0, l)
+        if 195 <= hue <= 240 and sat >= 0.5 and 0.3 <= l <= 0.85:
+            return from_hsl(acc_hue, sat, l)
+        return m.group(0)
+
+    text = re.sub(r"(?<=[:=\"'])#[0-9a-fA-F]{6}\b", sub, text)
+    if translucent is not None:
+        def surfaces(m):
+            decl = dict(d.split(":", 1) for d in m.group(1).split(";") if ":" in d)
+            for color, opacity in (("fill", "fill-opacity"), ("stop-color", "stop-opacity")):
+                c = decl.get(color, "")
+                if re.fullmatch(r"#[0-9a-fA-F]{6}", c):
+                    _, sat, l = to_hsl(c)
+                    if sat < 0.35 and 0.02 < l < 0.3:
+                        decl[opacity] = "%.2f" % (float(decl.get(opacity, 1)) * translucent)
+            return 'style="' + ";".join(f"{k}:{v}" for k, v in decl.items()) + '"'
+        text = re.sub(r'style="([^"]*)"', surfaces, text)
+    bg = pal["bg"].lstrip("#")
+    for key, value in (settings or {}).items():
+        line = f"{key}={value.replace('{bg}', bg)}"
+        if re.search(rf"^{re.escape(key)}=.*$", text, flags=re.M):
+            text = re.sub(rf"^{re.escape(key)}=.*$", line, text, count=1, flags=re.M)
+        else:
+            text = re.sub(r"(\n\[[^\]]+\])", lambda m: "\n" + line + m.group(1), text, count=1)
+    for sec, kv in (sections or {}).items():
+        m = re.search(rf"^\[{re.escape(sec)}\]\n(.*?)(?=^\[|\Z)", text, flags=re.M | re.S)
+        if not m:
+            continue
+        body = m.group(1)
+        for key, value in kv.items():
+            line = f"{key}={value}"
+            if re.search(rf"^{re.escape(key)}=.*$", body, flags=re.M):
+                body = re.sub(rf"^{re.escape(key)}=.*$", line, body, count=1, flags=re.M)
+            else:
+                body = line + "\n" + body
+        text = text[:m.start(1)] + body + text[m.end(1):]
+    return text
+
+
+def konsole_ttys(pids=None):
+    """ptys of running Konsole sessions: the pty of each direct child of a konsole process."""
+    if pids is None:
+        r = subprocess.run(["pgrep", "-x", "konsole"], capture_output=True, text=True)
+        pids = [int(x) for x in r.stdout.split()]
+    me = os.getuid()
+    ttys = set()
+    for pid in pids:
+        try:
+            kids = Path(f"/proc/{pid}/task/{pid}/children").read_text().split()
+        except OSError:
+            continue
+        for kid in kids:
+            try:
+                tty = os.readlink(f"/proc/{kid}/fd/0")
+                st = os.stat(tty)
+            except OSError:
+                continue
+            if tty.startswith("/dev/pts/") and st.st_uid == me:
+                ttys.add(tty)
+    return sorted(ttys)
+
+
+def push_konsole(pal, pids=None):
+    """Recolor already-open Konsole terminals: default text, background and cursor.
+
+    New windows read Look.colorscheme. Konsole 26.08 ignores the escape for the 16
+    ANSI colors (OSC 4) and does not re-read a changed scheme on a profile switch, so
+    those only change in new windows. Explicit colors are always sent; a reset
+    sequence is not reliable in Konsole.
+    """
+    data = (f"\033]10;{pal['fg']}\007\033]11;{pal['bg']}\007"
+            f"\033]12;{pal['cursor']}\007").encode()
+    for tty in konsole_ttys(pids):
+        try:
+            fd = os.open(tty, os.O_WRONLY | os.O_NOCTTY | os.O_NONBLOCK)
+            try:
+                os.write(fd, data)
+            finally:
+                os.close(fd)
+        except OSError as e:
+            warn(f"konsole {tty}: {e}")
+
+
+def palette_changed_for_terminals(old, new):
+    keys = ["fg", "bg", "cursor"] + [f"t{i}" for i in range(16)]
+    return not old or any(old.get(k) != new.get(k) for k in keys)
+
+
+def hypr_clients():
+    r = subprocess.run(["hyprctl", "clients", "-j"], capture_output=True, text=True, timeout=5)
+    return json.loads(r.stdout) if r.returncode == 0 and r.stdout.strip() else []
+
+
+def restart_konsole(pids=None, tmux=("tmux",), konsole=("uwsm", "app", "--", "konsole"), wait=6.0):
+    """Reopen Konsole windows that are attached to tmux so they pick up the new scheme.
+
+    tmux, not the window, holds the sessions and everything running in them, so a
+    window can be closed and replaced by one attached to the same session. For each
+    window: open the replacement on the same workspace first, and only when it has
+    appeared close the old one, so the layout never has a gap and nothing is lost if
+    the replacement fails. Windows with anything other than tmux clients in them
+    (a plain shell has no session to come back to) are left alone.
+    """
+    import signal, time
+    if pids is None:
+        r = subprocess.run(["pgrep", "-x", "konsole"], capture_output=True, text=True)
+        pids = [int(x) for x in r.stdout.split()]
+    if not pids or not shutil.which("hyprctl"):
+        return
+    r = subprocess.run([*tmux, "list-clients", "-F", "#{client_pid}\t#{session_name}"],
+                       capture_output=True, text=True)
+    sessions = dict(line.split("\t", 1) for line in r.stdout.splitlines() if "\t" in line)
+    clients = hypr_clients()
+    focused = subprocess.run(["hyprctl", "activewindow", "-j"], capture_output=True, text=True).stdout
+    try:
+        focused_pid = json.loads(focused).get("pid")
+    except ValueError:
+        focused_pid = None
+
+    def descendants(pid):
+        out, todo = [], [pid]
+        while todo:
+            cur = todo.pop()
+            try:
+                kids = Path(f"/proc/{cur}/task/{cur}/children").read_text().split()
+            except OSError:
+                continue
+            for k in kids:
+                out.append(int(k))
+                todo.append(int(k))
+        return out
+
+    plan = []
+    for pid in pids:
+        # The tmux client is usually a grandchild (konsole -> shell -> tmux).
+        found = {sessions[str(d)] for d in descendants(pid) if str(d) in sessions}
+        win = next((c for c in clients if c["pid"] == pid), None)
+        if win is None or len(found) != 1:     # plain shell, or several sessions/tabs
+            warn(f"konsole {pid}: left open (no single tmux session; new colors apply to new windows)")
+            continue
+        plan.append((pid, found.pop(), win["workspace"]["id"], pid == focused_pid))
+    if not plan:
+        return
+
+    def animations(on):
+        subprocess.run(["hyprctl", "eval", f"hl.config({{ animations = {{ enabled = {str(on).lower()} }} }})"],
+                       capture_output=True, timeout=5)
+
+    # Animations off for the whole swap so windows appear and vanish in one frame
+    # instead of sliding; always restored.
+    animations(False)
+    try:
+        for old_pid, session, ws, was_focused in plan:
+            known = {c["pid"] for c in hypr_clients()}
+            cmd = " ".join(shlex.quote(x) for x in [*konsole, "-e", *tmux, "attach", "-t", session])
+            rule = f"[workspace {ws}]" if was_focused else f"[workspace {ws} silent]"
+            lua = f"hl.dsp.exec_cmd({json.dumps(f'{rule} {cmd}')})"
+            subprocess.run(["hyprctl", "dispatch", lua], capture_output=True, timeout=5)
+            deadline = time.time() + wait
+            new = None
+            while time.time() < deadline and new is None:
+                time.sleep(0.03)
+                new = next((c for c in hypr_clients() if c["class"] == "org.kde.konsole"
+                            and c["pid"] not in known and c["pid"] != old_pid), None)
+            if new is None:
+                warn(f"konsole {old_pid}: replacement did not appear; old window kept")
+                continue
+            try:
+                os.kill(old_pid, signal.SIGTERM)
+            except OSError:
+                pass
+            for _ in range(100):               # wait for the old one to be gone
+                if not any(c["pid"] == old_pid for c in hypr_clients()):
+                    break
+                time.sleep(0.03)
+    finally:
+        animations(True)
+
+
+def apply_palette(pal, reload=True):
+    """Render every target, replace the files only if all rendered, then reload."""
+    targets = load_toml(TARGETS) if TARGETS.is_file() else {}
+    try:
+        old_pal = json.loads(PALETTE.read_text())
+    except (OSError, ValueError):
+        old_pal = {}
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    stage = Path(tempfile.mkdtemp(prefix=".stage-", dir=STATE_DIR))
+    hooks, staged = [], []
+    try:
+        for name, t in targets.items():
+            if "output" not in t:           # wallpaper copies are handled by sync_wallpaper_copies
+                continue
+            dst = Path(t["output"]).expanduser()
+            # optional: the app (or a root-owned folder) is not set up for us; leave it alone
+            if t.get("optional") and not (dst.parent.is_dir() and os.access(dst.parent, os.W_OK)):
+                continue
+            f = stage / name
+            if "recolor" in t:
+                src = Path(t["recolor"]).expanduser()
+                if not src.is_file():       # base theme not installed: leave this target alone
+                    continue
+                if t.get("tint"):
+                    f.write_text(tint(src.read_text(), pal, t.get("set"), t.get("sections"), t.get("translucent")))
+                else:
+                    mapping = load_toml(CONFIG / "maps" / t["map"])["colors"]
+                    f.write_text(recolor(src.read_text(), mapping, pal, src.parent))
+            else:
+                f.write_text(render((TEMPLATES / t["template"]).read_text(), pal, name))
+            staged.append((f, dst))
+            if t.get("reload") and t["reload"] not in hooks:
+                hooks.append(t["reload"])
+        for f, dst in staged:
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            tmp = dst.with_name(f".{dst.name}.look-tmp")
+            shutil.copyfile(f, tmp)
+            os.replace(tmp, dst)
+        atomic_write(PALETTE, json.dumps(pal, indent=2))
+    finally:
+        shutil.rmtree(stage, ignore_errors=True)
+    if not reload:
+        return
+    for h in hooks:
+        try:
+            r = subprocess.run(h, stdin=subprocess.DEVNULL, capture_output=True, timeout=10)
+            if r.returncode != 0 and not (Path(h[0]).name == "pkill" and r.returncode == 1):
+                warn(f"reload {h} exited {r.returncode}")
+        except Exception as e:
+            warn(f"reload {h} failed: {e}")
+    push_konsole(pal)
+    cfg = load_toml(CONFIG / "config.toml") if (CONFIG / "config.toml").is_file() else {}
+    if cfg.get("restart_konsole", True) and palette_changed_for_terminals(old_pal, pal):
+        try:
+            restart_konsole()
+        except Exception as e:
+            warn(f"konsole restart failed: {e}")
+
+
+# ---------- wallpaper ----------
+
+def sync_wallpaper_copies(wallpaper):
+    """Copy the wallpaper where an app can only read files placed next to it (the login screen
+    runs as another user and cannot see ~/Pictures). Targets with `wallpaper_copy = "dest"`;
+    skipped when the folder is not writable."""
+    if not wallpaper or not Path(wallpaper).is_file():
+        return
+    targets = load_toml(TARGETS) if TARGETS.is_file() else {}
+    for name, t in targets.items():
+        if "wallpaper_copy" not in t:
+            continue
+        dst = Path(t["wallpaper_copy"]).expanduser()
+        if not (dst.parent.is_dir() and os.access(dst.parent, os.W_OK)):
+            continue
+        try:
+            if dst.is_file() and filecmp.cmp(wallpaper, dst, shallow=False):
+                continue
+            tmp = dst.with_name(f".{dst.name}.look-tmp")
+            shutil.copyfile(wallpaper, tmp)
+            os.replace(tmp, dst)
+        except OSError as e:
+            warn(f"{name}: could not copy wallpaper: {e}")
+
+
+def set_wallpaper(path):
+    if not shutil.which("awww"):
+        warn("awww not installed; wallpaper not changed")
+        return
+    cmd = ["awww", "img", str(path), "-t", "random", "--transition-duration", "1", "--transition-fps", "60"]
+    r = subprocess.run(cmd, stdin=subprocess.DEVNULL, capture_output=True, text=True)
+    if r.returncode != 0:   # the daemon may not be up yet (login race)
+        subprocess.Popen(["awww-daemon"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                         stderr=subprocess.DEVNULL, start_new_session=True)
+        for _ in range(20):
+            if subprocess.run(["awww", "query"], capture_output=True).returncode == 0:
+                break
+            subprocess.run(["sleep", "0.1"])
+        r = subprocess.run(cmd, stdin=subprocess.DEVNULL, capture_output=True, text=True)
+        if r.returncode != 0:
+            warn(f"awww failed: {r.stderr.strip()}")
+
+
+def bound_look(path):
+    """A wallpaper is bound to a look by file name, ignoring its folder, so
+    moving the library between disks keeps the bindings."""
+    if not BINDINGS.is_file():
+        return None
+    return load_toml(BINDINGS).get("wallpapers", {}).get(Path(path).stem)
+
+
+# ---------- commands ----------
+
+def cmd_apply(a):
+    with lock():
+        st = load_state()
+        if a.name:
+            pal = look_palette(a.name)
+            st.update(look=a.name, source="look")
+        elif PALETTE.is_file():
+            # State survives renderer upgrades. Complete it again so a newly
+            # added template token gets a safe derived value from old palettes.
+            saved = json.loads(PALETTE.read_text())
+            appearance = saved.pop("_appearance", None)
+            pal = complete(saved)
+            if appearance:
+                pal["_appearance"] = appearance
+        else:
+            pal = look_palette(st.get("look") or default_look())
+            st.update(look=st.get("look") or default_look(), source="look")
+        apply_palette(pal, reload=not a.no_reload)
+        st["appearance"] = pal.get("_appearance", "dark")
+        save_state(st)
+        sync_wallpaper_copies(st.get("wallpaper"))
+
+
+def default_look():
+    names = sorted(p.stem for p in LOOKS.glob("*.toml"))
+    if not names:
+        die(f"no looks in {LOOKS}")
+    return "tokyo" if "tokyo" in names else names[0]
+
+
+def cmd_wallpaper(a):
+    p = Path(a.path).expanduser().resolve()
+    if not p.is_file() or p.suffix.lower() not in IMAGE_EXT:
+        die(f"not a usable image: {p}")
+    with lock():
+        st = load_state()
+        bound = bound_look(p)
+        try:
+            if bound:
+                pal = look_palette(bound)
+                st.update(look=bound, source="look")
+            elif st.get("pinned"):
+                pal = None
+            else:
+                pal = wallpaper_palette(p, st.get("wanted_mode", "dark"))
+                st.update(source="wallpaper")
+            if pal:
+                apply_palette(pal, reload=not a.no_reload)
+                st["appearance"] = pal["_appearance"]
+        except Exception as e:
+            die(f"colors unchanged: {e}")
+        st["wallpaper"] = str(p)
+        save_state(st)
+        sync_wallpaper_copies(p)
+    if not a.no_reload:
+        set_wallpaper(p)
+
+
+def cmd_restore(a):
+    st = load_state()
+    cmd_apply(argparse.Namespace(name=None, no_reload=a.no_reload))
+    if not a.no_reload and st.get("wallpaper") and Path(st["wallpaper"]).is_file():
+        set_wallpaper(st["wallpaper"])
+
+
+def cmd_pin(a):
+    with lock():
+        st = load_state()
+        st["pinned"] = a.pin
+        save_state(st)
+    print("pinned" if a.pin else "following wallpapers")
+
+
+def cmd_mode(a):
+    with lock():
+        st = load_state()
+        st["wanted_mode"] = a.value
+        save_state(st)
+    w = st.get("wallpaper")
+    if st.get("source") == "wallpaper" and w:
+        cmd_wallpaper(argparse.Namespace(path=w, no_reload=a.no_reload))
+
+
+def wallpaper_dir():
+    raw = load_toml(SETTINGS).get("wallpapers", "~/Pictures/Wallpapers") if SETTINGS.is_file() else "~/Pictures/Wallpapers"
+    return Path(raw).expanduser()
+
+
+def cmd_info(_):
+    """Machine-readable state for the wallpaper picker."""
+    st = load_state()
+    print(json.dumps({"dir": str(wallpaper_dir()), "wallpaper": st.get("wallpaper", ""),
+                      "look": st.get("look", ""), "pinned": bool(st.get("pinned")),
+                      "palette": str(PALETTE)}))
+
+
+def cmd_list(_):
+    cur = load_state().get("look")
+    for p in sorted(LOOKS.glob("*.toml")):
+        print(("* " if p.stem == cur else "  ") + p.stem)
+
+
+def cmd_status(_):
+    st = load_state()
+    for k in ("look", "source", "appearance", "pinned", "wanted_mode", "wallpaper"):
+        print(f"{k}: {st.get(k, '-')}")
+
+
+def main():
+    p = argparse.ArgumentParser(prog="look", description=__doc__,
+                                formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("--no-reload", action="store_true", help="write files but do not reload apps")
+    sp = p.add_subparsers(dest="cmd", required=True)
+    s = sp.add_parser("apply"); s.add_argument("name", nargs="?"); s.set_defaults(f=cmd_apply)
+    s = sp.add_parser("wallpaper"); s.add_argument("path"); s.set_defaults(f=cmd_wallpaper)
+    s = sp.add_parser("restore"); s.set_defaults(f=cmd_restore)
+    s = sp.add_parser("pin"); s.set_defaults(f=cmd_pin, pin=True)
+    s = sp.add_parser("unpin"); s.set_defaults(f=cmd_pin, pin=False)
+    s = sp.add_parser("mode"); s.add_argument("value", choices=["dark", "light"]); s.set_defaults(f=cmd_mode)
+    s = sp.add_parser("info"); s.set_defaults(f=cmd_info)
+    s = sp.add_parser("list"); s.set_defaults(f=cmd_list)
+    s = sp.add_parser("status"); s.set_defaults(f=cmd_status)
+    a = p.parse_args()
+    a.f(a)
+
+
+if __name__ == "__main__":
+    main()

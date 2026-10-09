@@ -44,12 +44,19 @@ sudo pacman -S --needed --noconfirm qt5ct qt6ct || print_error "Failed to instal
 print_msg "Setting up configuration directories..."
 mkdir -p $HOME/.config/{gtk-2.0,gtk-3.0,gtk-4.0,qt5ct,qt6ct}
 mkdir -p $HOME/.local/share/{themes,icons,fonts,color-schemes}
-mkdir -p $HOME/wallpaper/
+mkdir -p "$HOME/Pictures/Wallpapers"
 mkdir -p $HOME/.config/Kvantum/Tokyonight
 
-WALLPAPER_PATH="$HOME/wallpaper/mima-1080.png"
-if [ ! -f $WALLPAPER_PATH ]; then
-  print_msg "Changing wallpaper..."
+# `look` (installed by the dotfiles module on a full install) owns wallpaper and colors.
+# Without it (--no-wm --with-theme) the static Tokyonight settings below are all there is.
+LOOK="$HOME/.local/bin/look"
+LOOK_READY=false
+[ -x "$LOOK" ] && [ -f "$HOME/.config/look/targets.toml" ] && LOOK_READY=true
+
+# Seed the wallpaper library (the picker's folder) so a fresh install has one to show.
+WALLPAPER_PATH="$HOME/Pictures/Wallpapers/mima-1080.png"
+if [ ! -f "$WALLPAPER_PATH" ]; then
+  print_msg "Copying fallback wallpaper..."
   cp -f "$REPO_ROOT/assets/wallpapers/mima-1080.png" "$WALLPAPER_PATH" || true
 fi
 
@@ -59,21 +66,22 @@ cp -f "$THEME_SOURCE_DIR/Tokyonight.kvconfig" $HOME/.config/Kvantum/Tokyonight/
 cp -f "$THEME_SOURCE_DIR/Tokyonight.svg" $HOME/.config/Kvantum/Tokyonight/
 cp -f "$THEME_SOURCE_DIR/Tokyonight.colors" $HOME/.local/share/color-schemes/
 
-# Tell Kvantum to use the Tokyonight theme
-cat >$HOME/.config/Kvantum/kvantum.kvconfig <<KVEOF
+if ! $LOOK_READY; then
+  # Tell Kvantum to use the Tokyonight theme
+  cat >$HOME/.config/Kvantum/kvantum.kvconfig <<KVEOF
 [General]
 theme=Tokyonight
 KVEOF
 
-print_msg "Configuring GTK2..."
-cat >~/.gtkrc-2.0 <<GTKEOF
+  print_msg "Configuring GTK2..."
+  cat >~/.gtkrc-2.0 <<GTKEOF
 gtk-theme-name="Tokyonight-Dark"
 gtk-icon-theme-name="Papirus-Dark"
 gtk-font-name="Rubik 9"
 GTKEOF
 
-print_msg "Configuring GTK3..."
-cat >~/.config/gtk-3.0/settings.ini <<GTK3EOF
+  print_msg "Configuring GTK3..."
+  cat >~/.config/gtk-3.0/settings.ini <<GTK3EOF
 [Settings]
 gtk-theme-name=Tokyonight-Dark
 gtk-icon-theme-name=Papirus-Dark
@@ -82,16 +90,16 @@ gtk-cursor-theme-name=breeze_cursors
 gtk-cursor-theme-size=24
 GTK3EOF
 
-print_msg "Configuring GTK4..."
-cat >~/.config/gtk-4.0/settings.ini <<GTK4EOF
+  print_msg "Configuring GTK4..."
+  cat >~/.config/gtk-4.0/settings.ini <<GTK4EOF
 [Settings]
 gtk-theme-name=Tokyonight-Dark
 gtk-icon-theme-name=Papirus-Dark
 gtk-font-name=Rubik 9
 GTK4EOF
 
-print_msg "Configuring Qt5 (Using Kvantum Engine)..."
-cat >~/.config/qt5ct/qt5ct.conf <<QT5EOF
+  print_msg "Configuring Qt5 (Using Kvantum Engine)..."
+  cat >~/.config/qt5ct/qt5ct.conf <<QT5EOF
 [Appearance]
 custom_palette=true
 icon_theme=Papirus-Dark
@@ -103,8 +111,8 @@ fixed="DejaVu LGC Sans,12,-1,5,50,0,0,0,0,0"
 general="DejaVu LGC Sans,12,-1,5,50,0,0,0,0,0"
 QT5EOF
 
-print_msg "Configuring Qt6 (Using Kvantum Engine)..."
-cat >~/.config/qt6ct/qt6ct.conf <<QT6EOF
+  print_msg "Configuring Qt6 (Using Kvantum Engine)..."
+  cat >~/.config/qt6ct/qt6ct.conf <<QT6EOF
 [Appearance]
 custom_palette=true
 style=kvantum
@@ -114,6 +122,7 @@ icon_theme=Papirus-Dark
 fixed="DejaVu LGC Sans,12,-1,5,50,0,0,0,0,0"
 general="DejaVu LGC Sans,12,-1,5,50,0,0,0,0,0"
 QT6EOF
+fi
 
 print_msg "Ensuring fonts are installed..."
 if ! fc-list | grep -q "DejaVu LGC Sans"; then
@@ -129,10 +138,21 @@ print_msg "Applying GTK and Dark Mode settings..."
 # SUDO_USER was always empty here and every call expanded to `sudo -u ""`,
 # which is a usage error. The `|| true` hid it: the settings silently never
 # applied while the run reported success.
-gsettings set org.gnome.desktop.interface gtk-theme "Tokyonight-Dark"
+$LOOK_READY || gsettings set org.gnome.desktop.interface gtk-theme "Tokyonight-Dark"
 gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
 gsettings set org.gnome.desktop.interface font-name "Rubik 9"
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+
+if $LOOK_READY; then
+  # The dotfiles module ran `look apply` before the base theme above existed, so the
+  # GTK/Kvantum targets that recolor it could not render. Render everything now, and
+  # set the wallpaper if none was chosen yet.
+  print_msg "Applying the look..."
+  "$LOOK" apply || print_msg "look apply failed; run it by hand"
+  if ! "$LOOK" status 2>/dev/null | grep -q '^wallpaper: .'; then
+    "$LOOK" wallpaper "$WALLPAPER_PATH" || true
+  fi
+fi
 
 print_msg "Theme setup complete! Restart your applications or log out and log back in to apply changes."
 print_msg "If themes/icons/fonts don't apply correctly, try running 'lxappearance' or 'qt5ct/qt6ct' manually."

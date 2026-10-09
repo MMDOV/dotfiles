@@ -1,0 +1,70 @@
+"$schema" = "https://yazi-rs.github.io/schemas/theme.json"
+
+[manager]
+cwd = { fg = "{{accent_alt}}" }
+hovered = { fg = "{{fg}}", bg = "{{selection}}" }
+preview_hovered = { underline = true }
+find_keyword = { fg = "{{warn}}", bold = true, italic = true }
+find_position = { fg = "{{accent_alt}}", bg = "{{bg_alt}}", bold = true }
+marker_copied = { fg = "{{ok}}", bg = "{{ok}}" }
+marker_cut = { fg = "{{danger}}", bg = "{{danger}}" }
+marker_marked = { fg = "{{accent_alt}}", bg = "{{accent_alt}}" }
+marker_selected = { fg = "{{warn}}", bg = "{{warn}}" }
+tab_active = { fg = "{{bg}}", bg = "{{accent}}", bold = true }
+tab_inactive = { fg = "{{fg_dim}}", bg = "{{surface}}" }
+border_symbol = "│"
+border_style = { fg = "{{border}}" }
+
+[status]
+separator_open = ""
+separator_close = ""
+separator_style = { fg = "{{surface}}", bg = "{{surface}}" }
+mode_normal = { fg = "{{bg}}", bg = "{{accent}}", bold = true }
+mode_select = { fg = "{{bg}}", bg = "{{warn}}", bold = true }
+mode_unset = { fg = "{{bg}}", bg = "{{danger}}", bold = true }
+progress_label = { fg = "{{fg}}", bold = true }
+progress_normal = { fg = "{{accent}}", bg = "{{surface}}" }
+progress_error = { fg = "{{danger}}", bg = "{{surface}}" }
+permissions_t = { fg = "{{ok}}" }
+permissions_r = { fg = "{{warn}}" }
+permissions_w = { fg = "{{danger}}" }
+permissions_x = { fg = "{{accent_alt}}" }
+permissions_s = { fg = "{{fg_faint}}" }
+
+[select]
+border = { fg = "{{accent}}" }
+active = { fg = "{{accent_alt}}", bold = true }
+
+[input]
+border = { fg = "{{accent}}" }
+selected = { bg = "{{selection}}" }
+
+[completion]
+border = { fg = "{{accent}}" }
+active = { fg = "{{fg}}", bg = "{{selection}}" }
+
+[tasks]
+border = { fg = "{{accent}}" }
+title = { fg = "{{fg}}" }
+hovered = { fg = "{{accent_alt}}", underline = true }
+
+[which]
+mask = { bg = "{{bg_alt}}" }
+cand = { fg = "{{accent_alt}}" }
+rest = { fg = "{{fg_faint}}" }
+desc = { fg = "{{accent}}" }
+separator_style = { fg = "{{border}}" }
+
+[notify]
+title_info = { fg = "{{ok}}" }
+title_warn = { fg = "{{warn}}" }
+title_error = { fg = "{{danger}}" }
+
+[filetype]
+rules = [
+  { mime = "image/*", fg = "{{warn}}" },
+  { mime = "{audio,video}/*", fg = "{{accent_alt}}" },
+  { mime = "application/{,g}zip", fg = "{{danger}}" },
+  { name = "*", is = "exec", fg = "{{ok}}" },
+  { name = "*/", fg = "{{accent}}" },
+]

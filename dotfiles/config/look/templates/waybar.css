@@ -1,0 +1,8 @@
+@define-color bar_bg {{bar_bg}};
+@define-color bar_fg {{bar_fg}};
+@define-color bar_accent {{bar_accent}};
+@define-color bar_dim {{fg_faint}};
+@define-color bar_danger {{danger}};
+@define-color bar_surface {{surface}};
+@define-color bar_border {{bar_border}};
+@define-color bar_hover {{bar_hover}};

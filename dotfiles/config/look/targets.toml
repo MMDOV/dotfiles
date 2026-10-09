@@ -1,0 +1,157 @@
+# One entry per app: a template in templates/, where to write it, and an
+# optional command that reloads the app. Reloads run once, after all files
+# were written successfully.
+
+[konsole]
+template = "konsole.colorscheme"
+output   = "~/.local/share/konsole/Look.colorscheme"
+reload   = ["sh", "-c", "command -v kwriteconfig6 >/dev/null && kwriteconfig6 --file konsolerc --group 'Desktop Entry' --key DefaultProfile Look.profile || true"]
+
+[tmux]
+template = "tmux.conf"
+output   = "~/.config/tmux/look.conf"
+reload   = ["sh", "-c", "tmux source-file ~/.config/tmux/look.conf 2>/dev/null || true"]
+
+[waybar]
+template = "waybar.css"
+output   = "~/.config/waybar/look.css"
+# Rewriting style.css in place (same bytes) makes waybar reload only its CSS
+# (reload_style_on_change), so the bar recolors where it is instead of being torn
+# down and rebuilt like SIGUSR2 does. A plain touch does not trigger it.
+reload   = ["sh", "-c", "f=\"$HOME/.config/waybar/style.css\"; [ -f \"$f\" ] && dd if=\"$f\" of=\"$f\" conv=notrunc status=none || true"]
+
+[hyprlock]
+template = "hyprlock.conf"
+output   = "~/.config/hypr/look-lock.conf"
+
+# The login screen (SDDM theme). The theme folder is root-owned until install/desktop/sddm.sh
+# hands it to the user; until then these two are skipped. The wallpaper is copied because the
+# greeter runs as another user and cannot read ~/Pictures.
+[sddm_theme]
+template = "sddm-theme.conf"
+output   = "/usr/share/sddm/themes/where_is_my_sddm_theme/theme.conf"
+optional = true
+
+[sddm_background]
+wallpaper_copy = "/usr/share/sddm/themes/where_is_my_sddm_theme/background"
+
+[hyprland]
+template = "hyprland.lua"
+output   = "~/.config/hypr/hyprland/look.lua"
+reload   = ["sh", "-c", "hyprctl reload 2>/dev/null || true"]
+
+[kitty]
+template = "kitty.conf"
+output   = "~/.config/kitty/look.conf"
+reload   = ["pkill", "-SIGUSR1", "-x", "kitty"]
+
+[rofi]
+template = "rofi.rasi"
+output   = "~/.config/rofi/look.rasi"
+
+# GTK keeps the Tokyonight-Dark theme's spacing and effects; only its colors follow
+# the look. The generated theme is named `Look` so a running GTK app reloads when
+# the reload hook toggles to another theme and back. libadwaita apps ignore themes
+# and read ~/.config/gtk-4.0/gtk.css instead.
+[gtk_theme_index]
+template = "gtk-index.theme"
+output   = "~/.themes/Look/index.theme"
+
+[gtk3_theme]
+recolor  = "/usr/share/themes/Tokyonight-Dark/gtk-3.0/gtk.css"
+map      = "tokyonight-gtk.toml"
+output   = "~/.themes/Look/gtk-3.0/gtk.css"
+reload   = ["sh", "-c", "gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark' && gsettings set org.gnome.desktop.interface gtk-theme 'Look'"]
+
+[gtk3_theme_dark]
+recolor  = "/usr/share/themes/Tokyonight-Dark/gtk-3.0/gtk-dark.css"
+map      = "tokyonight-gtk.toml"
+output   = "~/.themes/Look/gtk-3.0/gtk-dark.css"
+
+[gtk4_theme]
+recolor  = "/usr/share/themes/Tokyonight-Dark/gtk-4.0/gtk.css"
+map      = "tokyonight-gtk.toml"
+output   = "~/.themes/Look/gtk-4.0/gtk.css"
+
+[gtk4_theme_dark]
+recolor  = "/usr/share/themes/Tokyonight-Dark/gtk-4.0/gtk-dark.css"
+map      = "tokyonight-gtk.toml"
+output   = "~/.themes/Look/gtk-4.0/gtk-dark.css"
+
+[gtk4_user]
+recolor  = "/usr/share/themes/Tokyonight-Dark/gtk-4.0/gtk.css"
+map      = "tokyonight-gtk.toml"
+output   = "~/.config/gtk-4.0/gtk.css"
+
+[gtk4_user_dark]
+recolor  = "/usr/share/themes/Tokyonight-Dark/gtk-4.0/gtk-dark.css"
+map      = "tokyonight-gtk.toml"
+output   = "~/.config/gtk-4.0/gtk-dark.css"
+
+# An earlier version wrote flat override CSS here, which stripped the theme's look.
+[gtk3_user_clear]
+template = "empty.css"
+output   = "~/.config/gtk-3.0/gtk.css"
+
+[qt5ct]
+template = "qtct.conf"
+output   = "~/.config/qt5ct/colors/Look.conf"
+
+[qt5ct_settings]
+template = "qt5ct-settings.conf"
+output   = "~/.config/qt5ct/qt5ct.conf"
+
+[qt6ct]
+template = "qtct.conf"
+output   = "~/.config/qt6ct/colors/Look.conf"
+
+[qt6ct_settings]
+template = "qt6ct-settings.conf"
+output   = "~/.config/qt6ct/qt6ct.conf"
+
+[kde]
+template = "Look.colors"
+output   = "~/.local/share/color-schemes/Look.colors"
+reload   = ["sh", "-c", "busctl --user emit /KGlobalSettings org.kde.KGlobalSettings notifyChange ii 0 0 2>/dev/null || true"]
+
+# Qt apps (Dolphin and friends) draw through Kvantum. The generated `Look` theme is the
+# installed Tokyonight one, keeping its buttons, spacing and effects, tinted to the look
+# (see `tint`) and made translucent. `kvantummanager --set` makes running Qt apps pick the change up.
+[kvantum_config]
+recolor  = "~/.config/Kvantum/Tokyonight/Tokyonight.kvconfig"
+tint     = true
+output   = "~/.config/Kvantum/Look/Look.kvconfig"
+# Translucent windows with blur, like the terminal; the view fills follow the look's background.
+set      = { translucent_windows = "true", blurring = "true", popup_blurring = "true", reduce_window_opacity = "45", transparent_dolphin_view = "true", blur_translucent = "true", "alt.base.color" = "#8c{bg}", "base.color" = "#8c{bg}" }
+# The toolbar and menu bar are drawn by an opaque SVG element; without it they show the
+# translucent window.
+sections = { Toolbar = { interior = "false" }, MenuBar = { interior = "false" } }
+
+[kvantum_svg]
+recolor  = "~/.config/Kvantum/Tokyonight/Tokyonight.svg"
+tint     = true
+# Every dark surface of the theme (bars, menus, fields, status line) at this opacity.
+translucent = 0.7
+output   = "~/.config/Kvantum/Look/Look.svg"
+reload   = ["sh", "-c", "command -v kvantummanager >/dev/null && kvantummanager --set Look >/dev/null 2>&1 || true"]
+
+# Spotify, patched by spicetify. spicetify-setup applies the theme once Spotify is
+# installed and has run; a running Spotify shows the new colors after a restart.
+# It can take a minute, longer than a reload may run, so it goes to the background
+# (log: ~/.local/state/look/spicetify.log).
+[spicetify]
+template = "spicetify.ini"
+output   = "~/.config/spicetify/Themes/look/color.ini"
+reload   = ["sh", "-c", "setsid -f \"$HOME/.local/bin/spicetify-setup\" >\"$HOME/.local/state/look/spicetify.log\" 2>&1 </dev/null || true"]
+
+[nvim]
+template = "nvim.lua"
+output   = "~/.config/nvim/lua/config/look.lua"
+
+[yazi]
+template = "yazi.toml"
+output   = "~/.config/yazi/theme.toml"
+
+[alacritty]
+template = "alacritty.toml"
+output   = "~/.config/alacritty/alacritty.toml"

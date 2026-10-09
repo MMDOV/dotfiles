@@ -1,0 +1,38 @@
+[window]
+padding = { x = 5, y = 5 }
+opacity = 0.97
+
+[font]
+normal = { family = "Fira Code", style = "Regular" }
+bold = { style = "Bold" }
+italic = { style = "Italic" }
+bold_italic = { style = "Bold Italic" }
+size = 12.0
+
+[colors.primary]
+background = '{{bg}}'
+foreground = '{{fg}}'
+
+[colors.normal]
+black = '{{t0}}'
+red = '{{t1}}'
+green = '{{t2}}'
+yellow = '{{t3}}'
+blue = '{{t4}}'
+magenta = '{{t5}}'
+cyan = '{{t6}}'
+white = '{{t7}}'
+
+[colors.bright]
+black = '{{t8}}'
+red = '{{t9}}'
+green = '{{t10}}'
+yellow = '{{t11}}'
+blue = '{{t12}}'
+magenta = '{{t13}}'
+cyan = '{{t14}}'
+white = '{{t15}}'
+
+[bell]
+duration = 0
+command = "None"

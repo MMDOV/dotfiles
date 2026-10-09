@@ -6,8 +6,8 @@ taskbarFont=Noto Sans,10,-1,5,50,0,0,0,0,0
 toolBarFont=Noto Sans,10,-1,5,50,0,0,0,0,0
 
 [General]
-ColorScheme=Tokyonight
-Name=Tokyonight
+ColorScheme=Look
+Name=Look
 TerminalApplication=konsole
 XftHintStyle=hintfull
 XftSubPixel=rgb
