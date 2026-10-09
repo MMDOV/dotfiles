@@ -201,6 +201,7 @@ declare -A modules=(
   ["sddm"]="desktop"
   ["theme"]="desktop"
   ["konsole"]="desktop"
+  ["spotify"]="desktop"
 )
 
 # Execution order.
@@ -223,6 +224,7 @@ module_order=(
   "sddm"
   "theme"
   "konsole"
+  "spotify"
   "nvim"
   "tmux"
   "gaming"

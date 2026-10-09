@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Point spicetify at the spotify-launcher install and apply the `look` theme.
+# Safe to run any time: `look apply` calls it, and it repairs the patch after a
+# Spotify update replaces the install. Does nothing until Spotify has run once.
+
+command -v spicetify >/dev/null || exit 0
+
+SPOTIFY="${XDG_DATA_HOME:-$HOME/.local/share}/spotify-launcher/install/usr/share/spotify"
+PREFS="${XDG_CONFIG_HOME:-$HOME/.config}/spotify/prefs"
+CONF="${XDG_CONFIG_HOME:-$HOME/.config}/spicetify/config-xpui.ini"
+
+if [ ! -d "$SPOTIFY" ] || [ ! -f "$PREFS" ]; then
+  echo "spicetify-setup: open Spotify and log in for a minute, then run this again" >&2
+  exit 0
+fi
+
+# The first run writes a default config file
+[ -f "$CONF" ] || spicetify >/dev/null 2>&1
+
+spicetify config \
+  spotify_path "$SPOTIFY" prefs_path "$PREFS" \
+  current_theme look color_scheme look \
+  inject_css 1 replace_colors 1 overwrite_assets 0 \
+  inject_theme_js 1 >/dev/null
+
+if [ -d "${XDG_CONFIG_HOME:-$HOME/.config}/spicetify/CustomApps/marketplace" ]; then
+  spicetify config custom_apps marketplace >/dev/null
+fi
+
+# A plain apply is quick once a backup exists. The first run, or a run after a
+# Spotify update, has to back up and patch (about a minute); `backup apply`
+# fails when the backup belongs to an older Spotify, so redo that as a last step.
+spicetify apply >/dev/null 2>&1 ||
+  spicetify backup apply >/dev/null 2>&1 ||
+  spicetify restore backup apply >/dev/null 2>&1 ||
+  echo "spicetify-setup: could not apply the theme" >&2
