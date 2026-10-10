@@ -47,7 +47,9 @@
   }
 
   /* chat column (channel pages and VODs): #live-page-chat holds it, and its inner frames have generated class names, so clear every div in it except the
-     message box and popups. */
+     message box, popups and the cards that float over the messages (hype train, drops, pinned
+     message, predictions, polls, raids, point claims), which keep Twitch's own solid background
+     because there is no blur behind them to keep them readable. */
   body:not(:has(.right-column--fullscreen)) :is(
       .channel-root__right-column,
       .right-column,
@@ -59,9 +61,23 @@
       .video-chat,
       .video-chat__header,
       #live-page-chat,
-      #live-page-chat div:not([class*="chat-input"], [role="dialog"], [role="menu"], [class*="balloon"], [class*="tooltip"])
+      #live-page-chat div:not(
+        [class*="chat-input"], [role="dialog"], [role="menu"], [class*="balloon"], [class*="tooltip"],
+        [class*="community-highlight"], [class*="hype-train"], [class*="drops"], [class*="pinned"],
+        [class*="prediction"], [class*="poll"], [class*="raid"], [class*="community-points"],
+        [class*="channel-points"], [class*="chat-banner"], [class*="highlight"]
+      )
     ) {
     background-color: transparent !important;
+  }
+
+  /* if a card is still see-through, its background comes from the base token that is cleared
+     above; give those cards the token back */
+  #live-page-chat :is(
+      [class*="community-highlight"], [class*="hype-train"], [class*="pinned"],
+      [class*="prediction"], [class*="poll"], [class*="raid"], [class*="chat-banner"]
+    ) {
+    --color-background-base: var(--color-background-alt-2, #18181b);
   }
 
   /* body token: the page-colored bands (channel header, info, about) */
