@@ -15,7 +15,7 @@ window#waybar {
 .modules-left,
 .modules-center,
 .modules-right {
-    background-color: alpha(@bar_bg, 0.30);
+    background-color: alpha(@bar_bg, 0.55);
     border: none;
     border-radius: 10px;
     padding: 0 4px;
@@ -109,8 +109,8 @@ button {
     margin: 2px;
     border-radius: 7px;
     font-size: 10px;
-    color: @bar_dim;
-    background-color: alpha(@bar_fg, 0.12);
+    color: @bar_muted;
+    background-color: alpha(@bar_fg, 0.16);
     transition: background-color 180ms ease, color 180ms ease;
 }
 
