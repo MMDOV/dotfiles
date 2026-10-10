@@ -10,3 +10,11 @@ hl.window_rule({
 	pin = true,
 	move = { "(monitor_w-453-20)", "(monitor_h-268-20)" },
 })
+
+-- Dolphin fades its own background through the translucent Kvantum `Look` theme
+-- (same idea as Konsole); here it only needs blur and no window-wide fade.
+hl.window_rule({
+	match = { class = "^org\\.kde\\.dolphin$" },
+	opacity = "opacity 1.0 override 1.0 override",
+	no_blur = false,
+})
