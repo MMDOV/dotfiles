@@ -73,3 +73,5 @@ chmod +x "$REPO_ROOT/scripts/utils/install.sh"
 "$REPO_ROOT/scripts/helpers/vesktop.sh" || true
 # TeamSpeak: tints the user's own DarkenTS style (a no-op when it is not installed).
 "$REPO_ROOT/scripts/helpers/teamspeak.sh" || true
+# Zen: links the look-generated userChrome.css and the tracked Twitch rule into its profile.
+"$REPO_ROOT/scripts/helpers/zen.sh" || true

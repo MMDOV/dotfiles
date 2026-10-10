@@ -181,3 +181,10 @@ output   = "~/.config/yazi/theme.toml"
 [alacritty]
 template = "alacritty.toml"
 output   = "~/.config/alacritty/alacritty.toml"
+
+# Zen Browser's userChrome.css. Written next to the tracked userContent.css; the profile folder
+# has a random name, so scripts/helpers/zen.sh links both files into it.
+[zen]
+template = "zen.css"
+output   = "~/.config/zen/userChrome.css"
+optional = true

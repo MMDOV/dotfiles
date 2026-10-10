@@ -1,0 +1,105 @@
+/* Twitch: transparent page frame, solid content.
+   Two tools, both aimed at layout landmarks so cards, badges, buttons, menus and popups keep
+   their own backgrounds:
+   1. Twitch paints its frames from design tokens (--color-background-body, -base). Re-pointing
+      a token to transparent on a landmark clears every descendant that uses it, including
+      elements with generated class names (Layout-sc-xxxx) that change on each deploy.
+   2. A few frames are cleared directly by their stable class names (found in Twitch's
+      core stylesheet).
+   Shared by every page type: header, side nav, main. Channel pages add the info/about band and
+   chat; /videos, /clips and /about add the channel header band.
+
+   In theatre mode Twitch floats the chat over the page (.right-column--theatre), so the header,
+   side nav and the channel info card (name, Follow, Gift a Sub, Subscribe) would show through
+   it. There the page behind the player is hidden, so the chat shows the window behind it.
+
+   In fullscreen with chat (.right-column--fullscreen) the browser paints the fullscreen layer
+   black and nothing behind it is visible, so a transparent chat is just black; there the chat
+   keeps Twitch's own background. */
+@-moz-document domain("twitch.tv") {
+  /* page shell and landmarks */
+  html,
+  body,
+  #root,
+  #root > div,
+  #root > div > div,
+  nav,
+  header,
+  .top-nav__menu,
+  .side-nav,
+  [class*="side-nav"],
+  main,
+  [class*="root-scrollable"],
+  .simplebar-scroll-content,
+  .simplebar-content,
+  .channel-root,
+  .channel-root__player,
+  /* the oversized black layer behind the player and chat (2x the player's size) */
+  .channel-root__player > div > div,
+  /* the channel name / logo band and the info + about section under the player */
+  .home-header-sticky,
+  .home-header-sticky__inner,
+  .home-header-sticky__wrapper,
+  .channel-root__info,
+  .channel-info-content,
+  .live-channel-stream-information {
+    background-color: transparent !important;
+  }
+
+  /* chat column (channel pages and VODs): #live-page-chat holds it, and its inner frames have generated class names, so clear every div in it except the
+     message box and popups. */
+  body:not(:has(.right-column--fullscreen)) :is(
+      .channel-root__right-column,
+      .right-column,
+      .chat-room,
+      .chat-room__content,
+      .stream-chat,
+      .stream-chat-header,
+      .chat-shell,
+      .video-chat,
+      .video-chat__header,
+      #live-page-chat,
+      #live-page-chat div:not([class*="chat-input"], [role="dialog"], [role="menu"], [class*="balloon"], [class*="tooltip"])
+    ) {
+    background-color: transparent !important;
+  }
+
+  /* body token: the page-colored bands (channel header, info, about) */
+  main,
+  .channel-root,
+  .channel-root__info,
+  .home-header-sticky {
+    --color-background-body: transparent;
+  }
+
+  /* chat paints with the base token as well */
+  body:not(:has(.right-column--fullscreen)) :is(
+      .channel-root__right-column,
+      .right-column,
+      .chat-room,
+      .stream-chat,
+      .chat-shell
+    ) {
+    --color-background-body: transparent;
+    --color-background-base: transparent;
+  }
+
+  /* theatre mode: hide what the floating chat would show through. The player
+     is a sibling of .channel-root, not inside it, so it stays; the chat is shown again
+     explicitly in case it lives inside .channel-root. */
+  body:has(.right-column--theatre) :is(
+      nav,
+      header,
+      .side-nav,
+      [class*="side-nav"],
+      .channel-root
+    ) {
+    visibility: hidden !important;
+  }
+  body:has(.right-column--theatre) :is(
+      #live-page-chat,
+      .right-column--theatre
+    ) {
+    visibility: visible !important;
+  }
+}

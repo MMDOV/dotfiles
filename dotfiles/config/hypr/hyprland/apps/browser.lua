@@ -1,6 +1,10 @@
--- Only a subtle opacity change, but not for video sites
+-- Only a subtle opacity change, but not for video sites.
+-- The global rule turns blur off; browsers get it back, so Zen's transparent
+-- page and sidebar blur the wallpaper. Zen (zen-browser/desktop#7663) starts with
+-- an unblurred sidebar unless the active opacity is just under 1.
 hl.window_rule({
-	opacity = "1 override 0.97 override",
+	opacity = "0.99999 override 0.9 override",
+	no_blur = false,
 	tile = true,
 	workspace = "2 silent",
 	match = { class = "(chromium|zen|([Vv]ivaldi)(.*))" },
