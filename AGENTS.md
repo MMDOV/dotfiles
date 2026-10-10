@@ -51,7 +51,8 @@ Verify scripts that use `sudo`, install packages, enable services, or overwrite 
 ## Notes
 
 - Target is Arch Linux with `pacman`, `paru`, systemd, Wayland, Hyprland.
-- Zen, Discord, TeamSpeak and Telegram are deliberately not themed (tried and reverted); do not add them back without asking.
+- Zen, TeamSpeak and Telegram are deliberately not themed (tried and reverted); do not add them back without asking.
+- Discord is themed only through Vesktop (`scripts/helpers/vesktop.sh`): `look` writes Vencord's Quick CSS in place so the open window recolors live. Never theme the official client's files.
 - DarkenTS (TeamSpeak) is licensed no-sharing/no-derivatives: never copy or recolor it into the repo.
 - The opencode.nvim plugin in Neovim config is commented out; do not re-enable it.
 - Recent commit history may contain automated messages (`Automated Commit - YYYY-MM-DD ...`). For manual work, use concise imperative messages like `Update workspace rules` or `Add tmux helper`.

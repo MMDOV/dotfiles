@@ -144,6 +144,15 @@ template = "spicetify.ini"
 output   = "~/.config/spicetify/Themes/look/color.ini"
 reload   = ["sh", "-c", "setsid -f \"$HOME/.local/bin/spicetify-setup\" >\"$HOME/.local/state/look/spicetify.log\" 2>&1 </dev/null || true"]
 
+# Vesktop (Discord with Vencord). The colors go in Vencord's Quick CSS, which Vesktop reloads the
+# moment the file changes, so the open window recolors by itself.
+[vesktop]
+template = "vesktop.css"
+output   = "~/.config/vesktop/settings/quickCss.css"
+optional = true
+# Vesktop watches this exact file; replacing it with a new one would end the watch.
+in_place = true
+
 [nvim]
 template = "nvim.lua"
 output   = "~/.config/nvim/lua/config/look.lua"

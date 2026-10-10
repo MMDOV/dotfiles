@@ -17,8 +17,9 @@ source "$REPO_ROOT/lib/pkg.sh"
 
 paru -S --noconfirm --needed hyprland hyprlock hyprpicker hypridle hyprshutdown hyprshade
 # Wallpaper daemon (awww) and the color extractor `look` uses for wallpapers
-# that have no hand-made look. `look` itself is deployed by update-config.sh.
-paru -S --noconfirm --needed awww matugen rofi quickshell imagemagick
+# that have no hand-made look, libvips for the picker thumbnails. `look` itself is
+# deployed by update-config.sh.
+paru -S --noconfirm --needed awww matugen rofi quickshell imagemagick libvips
 paru -S --noconfirm --needed qt5-wayland qt6-wayland
 paru -S --noconfirm --needed xdg-desktop-portal-hyprland xdg-utils xdg-desktop-portal-gtk uwsm
 paru -S --noconfirm --needed grim slurp swappy wl-clipboard cliphist
@@ -67,3 +68,6 @@ chmod +x "$REPO_ROOT/scripts/utils/install.sh"
 # dispatch Lua, e.g. hyprctl dispatch 'hl.dsp.focus({ workspace = "-1" })'.
 # Second argument is the config directory, which stays "waybar".
 "$REPO_ROOT/scripts/utils/install.sh" waybar waybar
+
+# Vesktop (Discord), themed by `look` through Quick CSS and sized to tile.
+"$REPO_ROOT/scripts/helpers/vesktop.sh" || true

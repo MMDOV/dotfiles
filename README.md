@@ -93,7 +93,7 @@ look status
 
 Keybinds: `SUPER+E` launcher, `SUPER+SHIFT+E` wallpaper picker (Quickshell), `SUPER+ALT+H` notification history, `SUPER+ALT+N` do-not-disturb, `SUPER+ALT+SHIFT+N` dismiss all.
 
-Not themed: Zen, Discord, TeamSpeak and Telegram. Their theming needs client mods or per-app style files that did not look right, so they keep their own looks.
+Not themed: Zen, TeamSpeak and Telegram. Discord is themed through Vesktop. Their theming needs client mods or per-app style files that did not look right, so they keep their own looks.
 
 ## Machine Detection
 
@@ -120,7 +120,7 @@ Since Hyprland 0.55 the compositor is configured in Lua rather than hyprlang. `h
 - `hyprland/rules.lua` defines shared window behavior, then loads app-specific rule modules.
 - `hyprland/execs.lua` registers startup orchestration through a `hyprland.start` hook for launcher services, input methods, clipboard history, authentication agents, network applets, terminals, browsers, file managers, and VPN-related workspaces.
 - `hyprland/keybinds.lua` composes keybinding modules for window management, media keys, playback controls, and application shortcuts.
-- `hyprland/apps/*.lua` separates advanced window rules by application domain: browsers, Steam/games, Discord/Vesktop, TeamSpeak, Spotify, terminals, VPN clients, QEMU, MPV, picture-in-picture overlays, RTL popups, Dolphin/Thunar progress dialogs, and Zenity/Tkinter windows.
+- `hyprland/apps/*.lua` separates advanced window rules by application domain: browsers, Steam/games, Vesktop, TeamSpeak, Spotify, terminals, VPN clients, QEMU, MPV, picture-in-picture overlays, RTL popups, Dolphin/Thunar progress dialogs, and Zenity/Tkinter windows.
 - `hyprland/facts.lua` is **generated** by `scripts/utils/facts.sh --write-lua` and is not tracked. It lets the config branch on hardware without probing the system from inside the compositor.
 
 This Lua layout makes the desktop configuration more programmable than plain Hyprland config. It uses structured function calls such as `hl.window_rule`, `hl.workspace_rule`, `hl.bind`, and `hl.exec_cmd` to express routing logic, reusable matchers, dynamic sizes/positions, special workspaces, startup placement, tags, opacity, pinning, floating behavior, and monitor-specific workspace defaults.
@@ -130,7 +130,7 @@ Examples of the routing model:
 - Workspaces `1-3` land on the primary display and the rest on the secondaries, with the split resolved at runtime rather than pinned to connector names. Roles are recomputed on `monitor.added` / `monitor.removed`, so docking, undocking, and plugging in a TV all reassign correctly without a reload. With one display connected, everything collapses onto it.
 - Browser windows are tiled on workspace `2`, while music web apps are routed to workspace `6`.
 - Games and Steam app windows are routed to workspace `1` with full opacity and game-friendly behavior.
-- Communication tools such as Discord, Vesktop, and TeamSpeak are routed to workspace `5`.
+- Communication tools such as Vesktop and TeamSpeak are routed to workspace `5`.
 - VPN tools are tagged and routed to the named special workspace `special:vpn`.
 - Picture-in-picture windows are tagged, floated, pinned, resized, and moved to a predictable screen position.
 

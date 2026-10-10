@@ -18,6 +18,13 @@ hl.window_rule({
 	opacity = "opacity 1.0 override 1.0 override",
 	no_blur = false,
 })
+-- Vesktop fades its own background (Quick CSS from `look`, with its
+-- `transparent` setting on), same idea as Konsole: blur, no window-wide fade.
+hl.window_rule({
+	match = { class = "^vesktop$" },
+	opacity = "opacity 1.0 override 1.0 override",
+	no_blur = false,
+})
 -- Notification cards and history (quickshell/notifd): blur what is behind them.
 hl.layer_rule({ match = { namespace = "^notifd(-history)?$" }, blur = true, ignore_alpha = 0.2 })
 -- Dolphin fades its own background through the translucent Kvantum `Look` theme

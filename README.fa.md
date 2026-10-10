@@ -94,7 +94,7 @@ look status
 
 کلیدها: `SUPER+E` لانچر، `SUPER+SHIFT+E` انتخاب والپیپر (Quickshell)، `SUPER+ALT+H` تاریخچهٔ اعلان‌ها، `SUPER+ALT+N` مزاحم نشوید، `SUPER+ALT+SHIFT+N` بستن همهٔ اعلان‌ها.
 
-تم نشده‌اند: Zen، Discord، TeamSpeak و Telegram. تم‌دادن به آن‌ها به mod برای کلاینت یا فایل سبک جدا نیاز دارد که خوب از آب درنیامد، پس ظاهر خودشان را نگه می‌دارند.
+تم نشده‌اند: Zen، TeamSpeak و Telegram. تم‌دادن به آن‌ها به mod برای کلاینت یا فایل سبک جدا نیاز دارد که خوب از آب درنیامد، پس ظاهر خودشان را نگه می‌دارند.
 
 ## تشخیص دستگاه
 
@@ -121,7 +121,7 @@ look status
 - `hyprland/rules.lua` رفتارهای مشترک window ها را تعریف می‌کند و سپس rule های مخصوص هر برنامه را load می‌کند.
 - `hyprland/execs.lua` orchestration شروع session را از طریق hook مربوط به `hyprland.start` ثبت می‌کند؛ مثل سرویس launcher، input method، تاریخچه clipboard، authentication agent، network applet، ترمینال، مرورگر، file manager و workspace های مرتبط با VPN.
 - `hyprland/keybinds.lua` ماژول‌های keybind مربوط به مدیریت window، کلیدهای مالتی‌مدیا، کنترل playback و shortcut های برنامه‌ها را ترکیب می‌کند.
-- `hyprland/apps/*.lua` قوانین پیشرفته window را بر اساس دامنه برنامه جدا می‌کند: مرورگرها، Steam/game ها، Discord/Vesktop، TeamSpeak، Spotify، ترمینال‌ها، VPN client ها، QEMU، MPV، picture-in-picture، popup های RTL، دیالوگ‌های پیشرفت Dolphin/Thunar و پنجره‌های Zenity/Tkinter.
+- `hyprland/apps/*.lua` قوانین پیشرفته window را بر اساس دامنه برنامه جدا می‌کند: مرورگرها، Steam/game ها، Vesktop، TeamSpeak، Spotify، ترمینال‌ها، VPN client ها، QEMU، MPV، picture-in-picture، popup های RTL، دیالوگ‌های پیشرفت Dolphin/Thunar و پنجره‌های Zenity/Tkinter.
 - `hyprland/facts.lua` توسط `scripts/utils/facts.sh --write-lua` **تولید می‌شود** و track نمی‌شود. به config اجازه می‌دهد بر اساس سخت‌افزار تصمیم بگیرد، بدون اینکه لازم باشد سیستم از داخل compositor بررسی شود.
 
 این ساختار Lua تنظیمات دسکتاپ را نسبت به config ساده Hyprland قابل‌برنامه‌نویسی‌تر می‌کند. با function call هایی مثل `hl.window_rule`، `hl.workspace_rule`، `hl.bind` و `hl.exec_cmd` می‌شود routing logic، matcher های قابل استفاده مجدد، اندازه و موقعیت پویا، special workspace ها، جای‌گذاری startup، tag ها، opacity، pin شدن، حالت floating و workspace های وابسته به مانیتور را دقیق‌تر تعریف کرد.
@@ -131,7 +131,7 @@ look status
 - workspace های `1-3` روی نمایشگر primary و بقیه روی نمایشگرهای secondary قرار می‌گیرند؛ این تقسیم در زمان اجرا تعیین می‌شود و به نام connector گره نخورده است. نقش‌ها با رویدادهای `monitor.added` و `monitor.removed` دوباره محاسبه می‌شوند، بنابراین dock کردن، جدا کردن و وصل کردن تلویزیون همگی بدون reload درست تخصیص داده می‌شوند. با یک نمایشگر، همه چیز روی همان جمع می‌شود.
 - پنجره‌های مرورگر به‌صورت tiled روی workspace `2` می‌روند، در حالی که web app های موسیقی به workspace `6` فرستاده می‌شوند.
 - game ها و پنجره‌های Steam به workspace `1` می‌روند و opacity کامل و رفتار مناسب بازی می‌گیرند.
-- ابزارهای ارتباطی مثل Discord، Vesktop و TeamSpeak به workspace `5` هدایت می‌شوند.
+- ابزارهای ارتباطی مثل Vesktop و TeamSpeak به workspace `5` هدایت می‌شوند.
 - ابزارهای VPN tag می‌شوند و به special workspace با نام `special:vpn` می‌روند.
 - پنجره‌های picture-in-picture tag، float، pin و resize می‌شوند و در موقعیت قابل پیش‌بینی روی صفحه قرار می‌گیرند.
 
