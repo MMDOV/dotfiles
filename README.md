@@ -93,7 +93,7 @@ look status
 
 Keybinds: `SUPER+E` launcher, `SUPER+SHIFT+E` wallpaper picker (Quickshell), `SUPER+ALT+H` notification history, `SUPER+ALT+N` do-not-disturb, `SUPER+ALT+SHIFT+N` dismiss all.
 
-Not themed: Zen, TeamSpeak and Telegram. Discord is themed through Vesktop. Their theming needs client mods or per-app style files that did not look right, so they keep their own looks.
+Not themed: Zen and Telegram. Discord is themed through Vesktop, and TeamSpeak only gets its background tint, applied to the DarkenTS style if you have installed it. Their theming needs client mods or per-app style files that did not look right, so they keep their own looks.
 
 ## Machine Detection
 

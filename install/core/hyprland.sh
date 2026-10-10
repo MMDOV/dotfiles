@@ -71,3 +71,5 @@ chmod +x "$REPO_ROOT/scripts/utils/install.sh"
 
 # Vesktop (Discord), themed by `look` through Quick CSS and sized to tile.
 "$REPO_ROOT/scripts/helpers/vesktop.sh" || true
+# TeamSpeak: tints the user's own DarkenTS style (a no-op when it is not installed).
+"$REPO_ROOT/scripts/helpers/teamspeak.sh" || true

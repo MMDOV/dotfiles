@@ -153,6 +153,23 @@ optional = true
 # Vesktop watches this exact file; replacing it with a new one would end the watch.
 in_place = true
 
+# TeamSpeak 3 with the DarkenTS style the user installed. DarkenTS may not be shared or
+# remade, so none of it lives in this repo: scripts/helpers/teamspeak.sh keeps an untouched
+# copy of the user's own files under ~/.local/share/look/darkents, and these targets only
+# write a hue-shifted version of it back into the user's TeamSpeak folder. Only the
+# background tint changes; TeamSpeak reads the style at start, so it needs a restart.
+[teamspeak]
+recolor  = "~/.local/share/look/darkents/DarkenTS.qss"
+hue_tint = true
+output   = "~/.ts3client/styles/DarkenTS.qss"
+optional = true
+
+[teamspeak_chat]
+recolor  = "~/.local/share/look/darkents/DarkenTS_chat.qss"
+hue_tint = true
+output   = "~/.ts3client/styles/DarkenTS_chat.qss"
+optional = true
+
 [nvim]
 template = "nvim.lua"
 output   = "~/.config/nvim/lua/config/look.lua"
