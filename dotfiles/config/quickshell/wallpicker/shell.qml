@@ -13,7 +13,7 @@ ShellRoot {
     id: root
 
     readonly property string lookCommand: Quickshell.env("HOME") + "/.local/bin/look"
-    property var cfg: ({ dir: "", wallpaper: "" })
+    property var cfg: ({ dir: "", wallpaper: "", thumbs: "" })
     property bool cfgReady: false
     property int collection: 0
     property string wantedFile: ""      // wallpaper to land on once its folder is listed
@@ -61,6 +61,18 @@ ShellRoot {
         }
     }
     property string wantedCollection: ""
+
+    // Small copies of the wallpapers (look makes them): decoding a 15 MB original for a
+    // 320 px card is what made the strip fill in slowly. Anything without one yet shows the
+    // original, and this makes the missing ones for next time.
+    Process {
+        command: [root.lookCommand, "thumbs"]
+        running: true
+    }
+    function thumbFor(fileUrl) {
+        const p = fileUrl.toString().replace("file://", "")
+        return cfg.thumbs && p.startsWith(cfg.dir + "/") ? "file://" + cfg.thumbs + p.substring(cfg.dir.length) + ".jpg" : fileUrl
+    }
 
     FolderListModel {
         id: dirs
@@ -184,9 +196,10 @@ ShellRoot {
                             Image {
                                 anchors.fill: parent
                                 anchors.margins: 2
-                                source: card.fileUrl
+                                source: root.thumbFor(card.fileUrl)
                                 sourceSize.width: 640
                                 sourceSize.height: 360
+                                onStatusChanged: if (status === Image.Error && source != card.fileUrl) source = card.fileUrl
                                 fillMode: Image.PreserveAspectCrop
                                 asynchronous: true
                                 cache: true

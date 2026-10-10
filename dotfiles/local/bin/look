@@ -11,9 +11,10 @@ matugen instead.
   look restore             re-apply the saved look and wallpaper (for login)
   look pin | unpin         keep the current colors when the wallpaper changes
   look mode dark|light     appearance used when deriving colors from a wallpaper
-  look list | status | info
+  look list | status | info | thumbs
 """
-import argparse, colorsys, fcntl, filecmp, json, os, re, shlex, shutil, subprocess, sys, tempfile, tomllib
+import argparse, colorsys, fcntl, filecmp, hashlib, json, os, re, shlex, shutil, subprocess, sys, tempfile, threading, tomllib
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -27,6 +28,8 @@ BINDINGS = CONFIG / "bindings.toml"
 SETTINGS = CONFIG / "config.toml"
 STATE = STATE_DIR / "state.json"
 PALETTE = STATE_DIR / "palette.json"
+THUMBS = Path(os.environ.get("XDG_CACHE_HOME", HOME / ".cache")) / "look" / "thumbs"
+THUMB_SIZE = "640x360"
 
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 NAME = re.compile(r"^[A-Za-z0-9._-]+$")
@@ -221,7 +224,7 @@ def look_palette(name):
 TINT_KEYS = ("bg", "bg_alt", "surface", "border", "fg_faint", "t0", "t8")
 # How much of the base look's saturation those keep, in the wallpaper's hue.
 # 0 = plain gray, 1 = the base look's own tint (tokyo's blue-black) but wallpaper-colored.
-BG_SATURATION = 0.0
+BG_SATURATION = 1.0
 # Per-app overrides the base look may carry; they would pin the accent, so a
 # wallpaper lets them derive from its accent instead.
 ACCENT_BOUND = ("selection", "cursor", "bar_bg", "bar_accent", "lock_accent",
@@ -246,10 +249,53 @@ def tinted_base(accent, base_name):
     return pal
 
 
+def thumb_path(src):
+    """Where the small copy of a wallpaper lives. It mirrors the library's folders, so the
+    picker can find it from the file's own path."""
+    src = Path(src)
+    try:
+        rel = src.relative_to(wallpaper_dir())
+    except ValueError:
+        rel = Path("_other") / (hashlib.sha1(str(src).encode()).hexdigest()[:12] + "_" + src.name)
+    return THUMBS / (str(rel) + ".jpg")
+
+
+def make_thumb(src):
+    """Make (or reuse) the 640x360 copy of a wallpaper; None if it cannot be made. Wallpapers
+    are often 10+ MB; the picker and the color extraction both only need this."""
+    src = Path(src)
+    dst = thumb_path(src)
+    try:
+        if dst.stat().st_mtime >= src.stat().st_mtime:
+            return dst
+    except OSError:
+        pass
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    tmp = dst.with_name(f".{dst.name}.tmp.jpg")
+    if shutil.which("vipsthumbnail"):
+        cmd = ["vipsthumbnail", str(src), "-s", THUMB_SIZE, "-o", f"{tmp}[Q=85]"]
+    elif shutil.which("magick"):
+        cmd = ["magick", str(src), "-thumbnail", THUMB_SIZE, "-quality", "85", str(tmp)]
+    else:
+        return None
+    try:
+        if subprocess.run(cmd, stdin=subprocess.DEVNULL, capture_output=True, timeout=60).returncode != 0:
+            return None
+        os.replace(tmp, dst)
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    finally:
+        tmp.unlink(missing_ok=True)
+    return dst
+
+
 def wallpaper_palette(path, mode):
     """Derive a palette from an image with matugen. Raises on any failure."""
     if not shutil.which("matugen"):
         raise RuntimeError("matugen is not installed")
+    # matugen on the original takes 0.7-2.5 s for a big wallpaper and ~50 ms on the thumbnail;
+    # the accent comes out the same to within a few shades.
+    path = make_thumb(path) or path
     r = subprocess.run(
         ["matugen", "image", str(path), "--dry-run", "--json", "hex", "-m", mode,
          "-t", "scheme-tonal-spot", "--source-color-index", "0", "-q"],
@@ -539,8 +585,9 @@ def restart_konsole(pids=None, tmux=("tmux",), konsole=("uwsm", "app", "--", "ko
         animations(True)
 
 
-def apply_palette(pal, reload=True):
-    """Render every target, replace the files only if all rendered, then reload."""
+def apply_palette(pal, reload=True, force=False):
+    """Render every target, replace the files only if all rendered, then reload what changed
+    (everything when force)."""
     targets = load_toml(TARGETS) if TARGETS.is_file() else {}
     try:
         old_pal = json.loads(PALETTE.read_text())
@@ -569,26 +616,36 @@ def apply_palette(pal, reload=True):
                     f.write_text(recolor(src.read_text(), mapping, pal, src.parent))
             else:
                 f.write_text(render((TEMPLATES / t["template"]).read_text(), pal, name))
-            staged.append((f, dst))
-            if t.get("reload") and t["reload"] not in hooks:
-                hooks.append(t["reload"])
-        for f, dst in staged:
+            staged.append((f, dst, t.get("reload"), t.get("in_place")))
+        for f, dst, hook, in_place in staged:
             dst.parent.mkdir(parents=True, exist_ok=True)
-            tmp = dst.with_name(f".{dst.name}.look-tmp")
-            shutil.copyfile(f, tmp)
-            os.replace(tmp, dst)
+            same = dst.is_file() and f.read_bytes() == dst.read_bytes()
+            if not same and in_place and dst.is_file():
+                # An app watching this very file (Vesktop's Quick CSS) loses it when it is
+                # replaced by a new one, so write into the existing file instead.
+                with open(dst, "r+b") as out:
+                    out.write(f.read_bytes())
+                    out.truncate()
+            elif not same:
+                tmp = dst.with_name(f".{dst.name}.look-tmp")
+                shutil.copyfile(f, tmp)
+                os.replace(tmp, dst)
+            if hook and (force or not same) and hook not in hooks:
+                hooks.append(hook)
         atomic_write(PALETTE, json.dumps(pal, indent=2))
     finally:
         shutil.rmtree(stage, ignore_errors=True)
     if not reload:
         return
-    for h in hooks:
+    def run_hook(h):
         try:
             r = subprocess.run(h, stdin=subprocess.DEVNULL, capture_output=True, timeout=10)
             if r.returncode != 0 and not (Path(h[0]).name == "pkill" and r.returncode == 1):
                 warn(f"reload {h} exited {r.returncode}")
         except Exception as e:
             warn(f"reload {h} failed: {e}")
+    with ThreadPoolExecutor(max_workers=max(1, len(hooks))) as ex:   # independent apps: reload together
+        list(ex.map(run_hook, hooks))
     push_konsole(pal)
     cfg = load_toml(CONFIG / "config.toml") if (CONFIG / "config.toml").is_file() else {}
     if cfg.get("restart_konsole", True) and palette_changed_for_terminals(old_pal, pal):
@@ -668,7 +725,7 @@ def cmd_apply(a):
         else:
             pal = look_palette(st.get("look") or default_look())
             st.update(look=st.get("look") or default_look(), source="look")
-        apply_palette(pal, reload=not a.no_reload)
+        apply_palette(pal, reload=not a.no_reload, force=True)
         st["appearance"] = pal.get("_appearance", "dark")
         save_state(st)
         sync_wallpaper_copies(st.get("wallpaper"))
@@ -685,6 +742,12 @@ def cmd_wallpaper(a):
     p = Path(a.path).expanduser().resolve()
     if not p.is_file() or p.suffix.lower() not in IMAGE_EXT:
         die(f"not a usable image: {p}")
+    # Start the wallpaper right away: the image transition runs while the colors are worked out
+    # and applied, instead of starting only after all of that.
+    painter = None
+    if not a.no_reload:
+        painter = threading.Thread(target=set_wallpaper, args=(p,))
+        painter.start()
     with lock():
         st = load_state()
         bound = bound_look(p)
@@ -705,8 +768,8 @@ def cmd_wallpaper(a):
         st["wallpaper"] = str(p)
         save_state(st)
         sync_wallpaper_copies(p)
-    if not a.no_reload:
-        set_wallpaper(p)
+    if painter:
+        painter.join()
 
 
 def cmd_restore(a):
@@ -744,7 +807,26 @@ def cmd_info(_):
     st = load_state()
     print(json.dumps({"dir": str(wallpaper_dir()), "wallpaper": st.get("wallpaper", ""),
                       "look": st.get("look", ""), "pinned": bool(st.get("pinned")),
-                      "palette": str(PALETTE)}))
+                      "palette": str(PALETTE), "thumbs": str(THUMBS)}))
+
+
+def cmd_thumbs(_):
+    """Make the small copies the picker shows (and color extraction reads) for every wallpaper
+    that lacks a current one."""
+    root = wallpaper_dir()
+    files = sorted(f for f in root.rglob("*") if f.is_file() and f.suffix.lower() in IMAGE_EXT) if root.is_dir() else []
+    todo = []
+    for f in files:
+        try:
+            if thumb_path(f).stat().st_mtime >= f.stat().st_mtime:
+                continue
+        except OSError:
+            pass
+        todo.append(f)
+    with ThreadPoolExecutor(max_workers=max(1, min(4, os.cpu_count() or 1))) as ex:
+        done = list(ex.map(make_thumb, todo))
+    if todo:
+        print(f"thumbnails: {sum(1 for d in done if d)}/{len(todo)} made")
 
 
 def cmd_list(_):
@@ -771,6 +853,7 @@ def main():
     s = sp.add_parser("unpin"); s.set_defaults(f=cmd_pin, pin=False)
     s = sp.add_parser("mode"); s.add_argument("value", choices=["dark", "light"]); s.set_defaults(f=cmd_mode)
     s = sp.add_parser("info"); s.set_defaults(f=cmd_info)
+    s = sp.add_parser("thumbs"); s.set_defaults(f=cmd_thumbs)
     s = sp.add_parser("list"); s.set_defaults(f=cmd_list)
     s = sp.add_parser("status"); s.set_defaults(f=cmd_status)
     a = p.parse_args()

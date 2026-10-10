@@ -10,7 +10,7 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("pkill -x rofi || rofi -show drun"))
 -- Wallpaper / look picker (toggles: a second press closes it)
 hl.bind(
 	mainMod .. " + SHIFT + E",
-	hl.dsp.exec_cmd("qs kill -p $HOME/.config/quickshell/wallpicker || uwsm app -- qs -n -p $HOME/.config/quickshell/wallpicker")
+	hl.dsp.exec_cmd("qs kill -p $HOME/.config/quickshell/wallpicker || qs -n -p $HOME/.config/quickshell/wallpicker")
 )
 
 -- Notifications: history panel, do-not-disturb toggle, dismiss all
