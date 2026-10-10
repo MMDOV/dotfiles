@@ -2,6 +2,7 @@
 # Point spicetify at the spotify-launcher install and apply the `look` theme.
 # Safe to run any time: `look apply` calls it, and it repairs the patch after a
 # Spotify update replaces the install. Does nothing until Spotify has run once.
+# A running Spotify is closed, patched and reopened so the new colors show at once.
 
 command -v spicetify >/dev/null || exit 0
 
@@ -27,10 +28,55 @@ if [ -d "${XDG_CONFIG_HOME:-$HOME/.config}/spicetify/CustomApps/marketplace" ]; 
   spicetify config custom_apps marketplace >/dev/null
 fi
 
+STATE="${XDG_STATE_HOME:-$HOME/.local/state}/look"
+COLORS="${XDG_CONFIG_HOME:-$HOME/.config}/spicetify/Themes/look/color.ini"
+
+# One run at a time, in order. Picking wallpapers quickly queues runs; the first one
+# applies the latest colors and the rest find nothing new to do.
+exec 9>"$STATE/spicetify.lock"
+flock -w 300 9 || exit 0
+sum=$(cksum <"$COLORS" 2>/dev/null)
+[ "$sum" = "$(cat "$STATE/spicetify.applied" 2>/dev/null)" ] && exit 0
+
+spotify_pid() { pgrep -f "${SPOTIFY}/spotify\$" | head -1; }
+
+# Close a running Spotify the way the window's close button does (SIGTERM is ignored) and
+# remember where its window was and whether it was playing. spicetify's own restart kills it
+# outright, which crashed it with a core dump each time, so it is told not to (-n) below.
+reopen=false
+pid=$(spotify_pid)
+if [ -n "$pid" ]; then
+  read -r ws addr < <(hyprctl clients -j 2>/dev/null | python3 -c 'import sys,json
+for c in json.load(sys.stdin):
+    if c.get("class", "").lower() == "spotify":
+        print(c["workspace"]["id"], c["address"]); break' 2>/dev/null)
+  [ "$(playerctl -p spotify status 2>/dev/null)" = Playing ] && was_playing=true || was_playing=false
+  if [ -n "$addr" ]; then
+    hyprctl dispatch "hl.dsp.window.close({ window = \"address:$addr\" })" >/dev/null 2>&1
+    for _ in $(seq 50); do kill -0 "$pid" 2>/dev/null || { reopen=true; break; }; sleep 0.2; done
+  fi
+  $reopen || echo "spicetify-setup: Spotify did not close; patching anyway, it keeps the old colors until reopened" >&2
+fi
+
 # A plain apply is quick once a backup exists. The first run, or a run after a
 # Spotify update, has to back up and patch (about a minute); `backup apply`
 # fails when the backup belongs to an older Spotify, so redo that as a last step.
-spicetify apply >/dev/null 2>&1 ||
-  spicetify backup apply >/dev/null 2>&1 ||
-  spicetify restore backup apply >/dev/null 2>&1 ||
+if spicetify apply -n >/dev/null 2>&1 ||
+  spicetify backup apply -n >/dev/null 2>&1 ||
+  spicetify restore backup apply -n >/dev/null 2>&1; then
+  printf '%s\n' "$sum" >"$STATE/spicetify.applied"
+else
   echo "spicetify-setup: could not apply the theme" >&2
+fi
+
+if $reopen; then
+  rule=""; [ -n "$ws" ] && rule="[workspace $ws silent] "
+  hyprctl dispatch "hl.dsp.exec_cmd(\"${rule}uwsm app -- spotify-launcher\")" >/dev/null 2>&1 ||
+    setsid -f spotify-launcher >/dev/null 2>&1 </dev/null
+  if $was_playing; then   # pick the music back up once Spotify is back on the bus
+    for _ in $(seq 100); do
+      playerctl -p spotify status >/dev/null 2>&1 && { sleep 2; playerctl -p spotify play; break; }
+      sleep 0.3
+    done
+  fi
+fi
