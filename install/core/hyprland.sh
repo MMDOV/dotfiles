@@ -67,7 +67,7 @@ chmod +x "$REPO_ROOT/scripts/utils/install.sh"
 # in dotfiles/config/waybar depends on it — the workspace scroll handlers
 # dispatch Lua, e.g. hyprctl dispatch 'hl.dsp.focus({ workspace = "-1" })'.
 # Second argument is the config directory, which stays "waybar".
-"$REPO_ROOT/scripts/utils/install.sh" waybar waybar
+"$REPO_ROOT/scripts/utils/install.sh" waybar-git waybar
 
 # Vesktop (Discord), themed by `look` through Quick CSS and sized to tile.
 "$REPO_ROOT/scripts/helpers/vesktop.sh" || true
