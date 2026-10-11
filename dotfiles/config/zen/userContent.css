@@ -21,8 +21,9 @@
   html,
   body,
   #root,
-  #root > div,
-  #root > div > div,
+  /* not the popups FrankerFaceZ appends straight to #root (emote tooltips) */
+  #root > div:not(.ffz__tooltip),
+  #root > div:not(.ffz__tooltip) > div,
   nav,
   header,
   .top-nav__menu,
@@ -63,9 +64,21 @@
       #live-page-chat,
       #live-page-chat div:not(
         [class*="chat-input"], [role="dialog"], [role="menu"], [class*="balloon"], [class*="tooltip"],
-        [class*="community-highlight"], [class*="hype-train"], [class*="drops"], [class*="pinned"],
-        [class*="prediction"], [class*="poll"], [class*="raid"], [class*="community-points"],
-        [class*="channel-points"], [class*="chat-banner"], [class*="highlight"]
+        :is([role="dialog"], [role="menu"], [role="tooltip"], [class*="balloon"], [class*="tooltip"]) *,
+        :is(
+          [class*="community-highlight"], [class*="hype"], [class*="drops"], [class*="pinned"],
+          [class*="prediction"], [class*="poll"], [class*="raid"], [class*="community-points"],
+          [class*="channel-points"], [class*="chat-banner"], [class*="highlight"], [class*="train"],
+          [data-test-selector*="hype" i], [data-a-target*="hype" i], [data-test-selector*="highlight" i],
+          [data-test-selector*="drops" i], [data-a-target*="highlight" i]
+        ),
+        :is(
+          [class*="community-highlight"], [class*="hype"], [class*="drops"], [class*="pinned"],
+          [class*="prediction"], [class*="poll"], [class*="raid"], [class*="community-points"],
+          [class*="channel-points"], [class*="chat-banner"], [class*="highlight"], [class*="train"],
+          [data-test-selector*="hype" i], [data-a-target*="hype" i], [data-test-selector*="highlight" i],
+          [data-test-selector*="drops" i], [data-a-target*="highlight" i]
+        ) *
       )
     ) {
     background-color: transparent !important;
@@ -74,7 +87,7 @@
   /* if a card is still see-through, its background comes from the base token that is cleared
      above; give those cards the token back */
   #live-page-chat :is(
-      [class*="community-highlight"], [class*="hype-train"], [class*="pinned"],
+      [class*="community-highlight"], [class*="hype"], [class*="pinned"],
       [class*="prediction"], [class*="poll"], [class*="raid"], [class*="chat-banner"]
     ) {
     --color-background-base: var(--color-background-alt-2, #18181b);
