@@ -21,12 +21,12 @@
     "modules-right": [
         "custom/ping",
         "custom/vpn",
-        "custom/notifications",
         "group/group-stats",
         "wireplumber",
         "backlight",
         "battery",
         "tray",
+        "custom/notifications",
         "group/group-power",
     ],
 
