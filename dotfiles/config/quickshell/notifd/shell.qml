@@ -7,7 +7,8 @@ import Quickshell.Hyprland
 import Quickshell.Services.Notifications
 
 // Notification daemon. Cards stack at the top right under the bar.
-//   click a card         dismiss it          action buttons   invoke and dismiss
+//   left click           default action (if any) and dismiss (mako's invoke-default-action)
+//   right click          dismiss             action buttons   invoke and dismiss
 //   hover                pauses its timer    critical         stays until dismissed
 // Everything that arrives is also kept in a history list (even what do-not-disturb hides).
 // qs -p ~/.config/quickshell/notifd ipc call notifd toggleDnd | dismissAll | toggleHistory | clearHistory | status
@@ -100,6 +101,8 @@ ShellRoot {
                     required property var modelData
                     readonly property bool critical: modelData.urgency === NotificationUrgency.Critical
                     readonly property bool hovered: hover.hovered
+                    // "default" is the click-the-card action, not a button
+                    readonly property var buttons: modelData.actions.filter(a => a.identifier !== "default")
                     readonly property string picture: modelData.image !== "" ? modelData.image
                                                   : modelData.appIcon !== "" ? Quickshell.iconPath(modelData.appIcon, true) : ""
 
@@ -126,7 +129,15 @@ ShellRoot {
 
 
                     HoverHandler { id: hover }
-                    TapHandler { onTapped: card.modelData.dismiss() }
+                    TapHandler {
+                        acceptedButtons: Qt.LeftButton
+                        onTapped: {
+                            const d = card.modelData.actions.find(a => a.identifier === "default")
+                            if (d) d.invoke()
+                            card.modelData.dismiss()
+                        }
+                    }
+                    TapHandler { acceptedButtons: Qt.RightButton; onTapped: card.modelData.dismiss() }
 
                     RowLayout {
                         id: body
@@ -187,10 +198,10 @@ ShellRoot {
                                 Layout.fillWidth: true
                                 Layout.topMargin: 4
                                 spacing: 6
-                                visible: card.modelData.actions.length > 0
+                                visible: card.buttons.length > 0
 
                                 Repeater {
-                                    model: card.modelData.actions
+                                    model: card.buttons
                                     delegate: Rectangle {
                                         id: btn
                                         required property var modelData
