@@ -63,6 +63,10 @@ set_pref zen.widget.linux.transparency true
 set_pref zen.view.compact.enable-at-startup true
 set_pref zen.view.compact.hide-toolbar true
 set_pref zen.view.use-single-toolbar false
+# Pushing the cursor against the screen edge counts as leaving the window, which Zen cannot
+# track here, so it hides the bar after this fixed time even while you keep hovering. Make it
+# long; moving the mouse off the bar still closes it at once.
+set_pref zen.view.compact.toolbar-hide-after-hover.duration 600000
 
 if pgrep -x zen-bin >/dev/null; then
   echo "Zen is running; restart it to load the style."
