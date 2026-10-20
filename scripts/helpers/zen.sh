@@ -59,6 +59,8 @@ set_pref() {
 set_pref toolkit.legacyUserProfileCustomizations.stylesheets true
 set_pref browser.tabs.allow_transparent_browser true
 set_pref zen.widget.linux.transparency true
+# Zen paints an opaque grey over the window when it loses focus, which kills the blur.
+set_pref zen.view.grey-out-inactive-windows false
 # Compact mode (sidebar and toolbar hidden until you hover the edge), one toolbar.
 set_pref zen.view.compact.enable-at-startup true
 set_pref zen.view.compact.hide-toolbar true
