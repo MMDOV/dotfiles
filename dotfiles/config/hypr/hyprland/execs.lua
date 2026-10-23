@@ -1,8 +1,6 @@
 local homeDir = os.getenv("HOME")
 hl.on("hyprland.start", function()
 	local dotfilesRoot = os.getenv("DOTFILES_ROOT")
-	-- Morning gate: once per boot, the desktop waits behind a one-time code (no-op until set up)
-	hl.exec_cmd(dotfilesRoot .. "/scripts/helpers/morning-gate.sh lock")
 	-- Input method
 	hl.exec_cmd("fcitx5")
 	hl.exec_cmd("blueman-applet &")
@@ -34,6 +32,9 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("uwsm app -- wl-paste --type image --watch cliphist store")
 	-- Cursor
 	hl.exec_cmd("uwsm app -- hyprctl setcursor breeze_cursors 24")
+
+	-- Morning gate: once per boot, the desktop waits behind a one-time code (no-op until set up)
+	hl.exec_cmd(dotfilesRoot .. "/scripts/helpers/morning-gate.sh lock")
 
 	-- Custom execs
 	hl.exec_cmd("uwsm app -- zen-browser")
