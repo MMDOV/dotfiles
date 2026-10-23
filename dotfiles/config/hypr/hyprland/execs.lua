@@ -1,6 +1,8 @@
 local homeDir = os.getenv("HOME")
 hl.on("hyprland.start", function()
 	local dotfilesRoot = os.getenv("DOTFILES_ROOT")
+	-- Morning gate: once per boot, the desktop waits behind a one-time code (no-op until set up)
+	hl.exec_cmd(dotfilesRoot .. "/scripts/helpers/morning-gate.sh lock")
 	-- Input method
 	hl.exec_cmd("fcitx5")
 	hl.exec_cmd("blueman-applet &")
