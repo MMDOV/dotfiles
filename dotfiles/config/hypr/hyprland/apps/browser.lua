@@ -8,7 +8,7 @@ hl.window_rule({
 	no_blur = false,
 	tile = true,
 	workspace = "2 silent",
-	match = { class = "(chromium|zen|([Vv]ivaldi)(.*))" },
+	match = { class = "(chromium|zen|([Vv]ivaldi)(.*)|firefox|helium)" },
 })
 
 -- music is on 6 dont question it
