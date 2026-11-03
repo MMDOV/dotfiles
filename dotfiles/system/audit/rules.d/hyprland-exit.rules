@@ -1,0 +1,39 @@
+## Hyprland exit recorder
+##
+## Records how and why the compositor stops, without touching it (no tracing,
+## no per-frame cost). Installed to /etc/audit/rules.d/ by
+## scripts/helpers/hyprland-exit-recorder.sh, read with hyprland-exit-report.sh.
+##
+## What each key tells you:
+##   hypr-exit  Hyprland itself called exit_group(); a0 is its exit status.
+##              Present => it chose to exit (clean or error exit).
+##   hypr-sig   somebody sent a signal. a0 is the target pid, the record names
+##              the sender (pid, comm, exe). Match a0 to Hyprland's pid.
+##   (ANOM_ABEND records, no key) the kernel killed it with a core-dumping
+##              signal (SEGV/ABRT/...). Emitted automatically, not by a rule.
+## Neither hypr-exit nor a signal record nor ANOM_ABEND => killed by the kernel
+## without a syscall (OOM killer, check `journalctl -k`) or a hard reset.
+
+
+# Hyprland exit status.
+-a always,exit -F arch=b64 -S exit_group -F exe=/usr/bin/Hyprland -k hypr-exit
+
+# Signals sent by anyone: HUP, INT, ABRT, KILL, SEGV, TERM.
+# kill(pid, sig) and tkill(tid, sig): signal is a1.
+-a always,exit -F arch=b64 -S kill,tkill -F a1=1  -k hypr-sig
+-a always,exit -F arch=b64 -S kill,tkill -F a1=2  -k hypr-sig
+-a always,exit -F arch=b64 -S kill,tkill -F a1=6  -k hypr-sig
+-a always,exit -F arch=b64 -S kill,tkill -F a1=9  -k hypr-sig
+-a always,exit -F arch=b64 -S kill,tkill -F a1=11 -k hypr-sig
+-a always,exit -F arch=b64 -S kill,tkill -F a1=15 -k hypr-sig
+# tgkill(tgid, tid, sig): signal is a2.
+-a always,exit -F arch=b64 -S tgkill -F a2=1  -k hypr-sig
+-a always,exit -F arch=b64 -S tgkill -F a2=2  -k hypr-sig
+-a always,exit -F arch=b64 -S tgkill -F a2=6  -k hypr-sig
+-a always,exit -F arch=b64 -S tgkill -F a2=9  -k hypr-sig
+-a always,exit -F arch=b64 -S tgkill -F a2=11 -k hypr-sig
+-a always,exit -F arch=b64 -S tgkill -F a2=15 -k hypr-sig
+# pidfd_send_signal(fd, sig): signal is a1; a0 is a file descriptor, so the
+# target is not visible, but the sender and time still are.
+-a always,exit -F arch=b64 -S pidfd_send_signal -F a1=9  -k hypr-sig
+-a always,exit -F arch=b64 -S pidfd_send_signal -F a1=15 -k hypr-sig

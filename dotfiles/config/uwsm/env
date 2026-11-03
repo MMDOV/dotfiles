@@ -24,3 +24,10 @@ export XDG_SESSION_TYPE=wayland
 export XDG_CURRENT_DESKTOP=Hyprland
 export XDG_SESSION_DESKTOP=Hyprland
 export XCOMPOSEFILE="$HOME/.XCompose"
+
+# --- Hyprland scheduling ---
+# 0.57.0 requests SCHED_RR via rtkit; rtkit's 200 ms RLIMIT_RTTIME makes the
+# kernel SIGKILL the compositor on any long DRM call (no crash report, then
+# start-hyprland falls into safe mode). Must be 1: "0" is treated as unset.
+# Remove once hyprwm/Hyprland#16737 is released.
+export HYPRLAND_NO_RT=1
