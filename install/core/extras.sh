@@ -14,3 +14,12 @@ fi
 
 paru -S --noconfirm --needed thunderbird telegram-desktop teamspeak3 torguard aria2
 paru -S --noconfirm --needed btop espeakup gimp libreoffice-still remmina freerdp zathura zathura-pdf-mupdf mpv debtap
+
+# --- AB Download Manager ----------------------------------------------------
+# CachyOS ships it in its repo; plain Arch gets the AUR build. The two conflict,
+# so only one is ever installed.
+if pacman -Si ab-download-manager &>/dev/null; then
+  sudo pacman -S --noconfirm --needed ab-download-manager
+else
+  paru -S --noconfirm --needed ab-download-manager-bin
+fi
