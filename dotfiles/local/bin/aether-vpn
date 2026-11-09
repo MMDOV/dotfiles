@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Runs the Aether core as a local SOCKS5 proxy (127.0.0.1:1819), restarting it if it exits.
+# Flags are the ones the 8VPN Windows GUI uses by default: MASQUE over HTTP/2 is what survives
+# filtering, a bare `aether` does not. Installs the pinned release on first run.
+#   aether-vpn            run (installs first if missing)
+#   aether-vpn install    download / update to $AETHER_VERSION only
+set -euo pipefail
+
+AETHER_VERSION="${AETHER_VERSION:-v2.4.0}"
+AETHER_DIR="${AETHER_DIR:-$HOME/.local/share/aether}"
+AETHER_PORT="${AETHER_PORT:-1819}"
+ASSET="aether-linux-x86_64.tar.gz"
+
+install_aether() {
+  local tmp url
+  tmp="$(mktemp -d)"
+  trap 'rm -rf "$tmp"' RETURN
+  url="https://github.com/CluvexStudio/Aether/releases/download/$AETHER_VERSION/$ASSET"
+  echo "Downloading Aether $AETHER_VERSION"
+  curl -fsSL -o "$tmp/$ASSET" "$url"
+  curl -fsSL -o "$tmp/$ASSET.sha256" "$url.sha256"
+  (cd "$tmp" && sha256sum -c "$ASSET.sha256")
+  mkdir -p "$AETHER_DIR"
+  tar -xzf "$tmp/$ASSET" -C "$AETHER_DIR"
+  echo "$AETHER_VERSION" >"$AETHER_DIR/.version"
+}
+
+if [ "${1:-}" = "install" ]; then
+  install_aether
+  exit 0
+fi
+
+if [ ! -x "$AETHER_DIR/aether" ]; then
+  install_aether
+fi
+
+cd "$AETHER_DIR"
+while true; do
+  echo "[$(date +%T)] starting aether (first scan can take a few minutes)"
+  ./aether --protocol masque --h2 --scan turbo -4 --no-quick-reconnect \
+    --bind "127.0.0.1:$AETHER_PORT" || true
+  echo "[$(date +%T)] aether exited, restarting in 5s (Ctrl+C to stop)"
+  sleep 5
+done

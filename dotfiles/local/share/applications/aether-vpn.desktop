@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Aether VPN
+Comment=Aether SOCKS5 proxy on 127.0.0.1:1819
+Exec=sh -c "exec alacritty --class aether -e ~/.local/bin/aether-vpn"
+Icon=network-vpn
+Terminal=false
+Categories=Network;
